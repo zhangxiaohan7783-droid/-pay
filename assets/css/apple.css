@@ -1,0 +1,239 @@
+/* =====================================================================
+ * 叮当支付 Dingdang Pay · 四端统一设计系统（Apple HIG 融合版）
+ * 适用：官网 / Web 客户端 / App 客户端 / 内部员工后台
+ * 原则：品牌黄 #FFD008 + 深棕 #382b1b 保留；圆角、阴影、字体、动效向 iOS 靠拢
+ * 通过覆盖常用 Tailwind 类实现全站无侵入升级
+ * ===================================================================== */
+
+:root {
+  /* 品牌色 */
+  --dd-primary: #FFD008;
+  --dd-primary-press: #F2C200;
+  --dd-primary-soft: rgba(255, 208, 8, .14);
+  --dd-ink: #1d1d1f;          /* Apple 正文黑 */
+  --dd-brand-ink: #382b1b;    /* 品牌深棕，用于品牌按钮文字 */
+  --dd-ink-2: #6e6e73;        /* 次级文字 */
+  --dd-ink-3: #a1a1a6;        /* 三级文字 / 占位 */
+  --dd-line: rgba(0, 0, 0, .08);
+  --dd-line-2: rgba(0, 0, 0, .05);
+  --dd-bg: #f5f5f7;           /* Apple 系统灰背景 */
+  --dd-card: #ffffff;
+  /* 系统语义色（iOS） */
+  --dd-blue: #007AFF;
+  --dd-green: #34C759;
+  --dd-red: #FF3B30;
+  --dd-orange: #FF9500;
+  --dd-purple: #AF52DE;
+  /* 圆角阶梯 */
+  --dd-r-xs: 8px;
+  --dd-r-sm: 10px;
+  --dd-r-md: 14px;
+  --dd-r-lg: 18px;
+  --dd-r-xl: 24px;
+  /* 阴影阶梯（柔和、多层） */
+  --dd-sh-1: 0 1px 2px rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .02);
+  --dd-sh-2: 0 2px 8px rgba(0, 0, 0, .04), 0 8px 24px rgba(0, 0, 0, .05);
+  --dd-sh-3: 0 8px 24px rgba(0, 0, 0, .08), 0 24px 64px rgba(0, 0, 0, .10);
+  /* 动效曲线 */
+  --dd-ease: cubic-bezier(.25, .1, .25, 1);
+  --dd-spring: cubic-bezier(.34, 1.36, .64, 1);
+  --dd-dur: .28s;
+  /* 字体 */
+  --dd-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "PingFang SC", "Helvetica Neue", "Inter", "Microsoft YaHei", sans-serif;
+  --dd-mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+
+/* ---------- 基础 ---------- */
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  font-family: var(--dd-font) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -.01em;
+  text-rendering: optimizeLegibility;
+}
+.font-mono { font-family: var(--dd-mono) !important; letter-spacing: 0; }
+::selection { background: var(--dd-primary-soft); }
+:focus-visible { outline: 3px solid rgba(0, 122, 255, .35); outline-offset: 2px; border-radius: 6px; }
+
+/* 页面入场 + 离场过渡 */
+/* 只动 opacity，避免 transform 让内部 fixed 弹窗失去视口定位 */
+@keyframes dd-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dd-page-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+main, body > section:first-of-type { animation: dd-fade-in .32s var(--dd-ease) both; }
+.dd-page { animation: dd-page-in .38s var(--dd-ease) both; }
+body.dd-leaving main, body.dd-leaving > section { opacity: 0; transition: opacity .14s; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* 背景 */
+body.bg-gray-50, .bg-gray-50.min-h-screen { background-color: var(--dd-bg) !important; }
+
+/* ---------- 标题层级（SF Display 风） ---------- */
+h1, h2, h3, .font-extrabold { letter-spacing: -.022em; }
+.text-5xl, .text-6xl { letter-spacing: -.035em; }
+.text-3xl, .text-4xl { letter-spacing: -.028em; }
+.text-gray-400 { color: var(--dd-ink-3) !important; }
+.text-gray-500 { color: var(--dd-ink-2) !important; }
+
+/* ---------- 圆角升级 ---------- */
+.rounded-8, .rounded-\[8px\], .card-radius, .rounded-card { border-radius: var(--dd-r-md) !important; }
+.rounded-lg { border-radius: var(--dd-r-sm) !important; }
+.rounded-xl { border-radius: var(--dd-r-lg) !important; }
+.rounded-2xl { border-radius: var(--dd-r-xl) !important; }
+
+/* ---------- 卡片：柔和多层阴影 + 极细描边 ---------- */
+.custom-shadow, .shadow-sm { box-shadow: var(--dd-sh-1), 0 0 0 1px var(--dd-line-2) !important; }
+.shadow-lg, .shadow-xl { box-shadow: var(--dd-sh-2) !important; }
+.shadow-2xl { box-shadow: var(--dd-sh-3) !important; }
+.bg-white.custom-shadow, .bg-white.shadow-sm, .hover-lift, .corridor-card {
+  transition: box-shadow var(--dd-dur) var(--dd-ease), transform var(--dd-dur) var(--dd-ease);
+}
+.bg-white.custom-shadow:hover, .hover-lift:hover, .corridor-card:hover { box-shadow: var(--dd-sh-2), 0 0 0 1px var(--dd-line-2) !important; }
+.border-gray-100, .border-gray-50 { border-color: var(--dd-line-2) !important; }
+.border-gray-200 { border-color: var(--dd-line) !important; }
+
+/* ---------- 按钮：按压反馈 + 统一高度 ---------- */
+button, a[class*="bg-primary"], a[class*="px-"][class*="py-"], .ddui-btn {
+  transition: transform .14s var(--dd-ease), background-color .2s, box-shadow .2s, opacity .2s, color .2s !important;
+  -webkit-tap-highlight-color: transparent;
+}
+button:active:not(:disabled), a[class*="bg-primary"]:active, .ddui-btn:active { transform: scale(.97); }
+.bg-primary, .bg-\[\#FFD008\] { background-color: var(--dd-primary) !important; }
+button.bg-primary:hover, a.bg-primary:hover { background-color: var(--dd-primary-press) !important; box-shadow: 0 4px 14px rgba(255, 208, 8, .35) !important; }
+button:disabled, button[aria-busy="true"] { opacity: .5; cursor: not-allowed; }
+button[aria-busy="true"] { position: relative; color: transparent !important; }
+button[aria-busy="true"]::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px;
+  border-radius: 50%; border: 2px solid rgba(0, 0, 0, .18); border-top-color: var(--dd-brand-ink);
+  animation: dd-spin .7s linear infinite;
+}
+@keyframes dd-spin { to { transform: rotate(360deg); } }
+
+/* ---------- 表单：iOS 填充式输入框 + 蓝色聚焦环 ---------- */
+input[type="text"], input[type="email"], input[type="password"], input[type="number"], input[type="tel"],
+input[type="search"], input[type="date"], input:not([type]), select, textarea {
+  border-radius: var(--dd-r-sm) !important;
+  transition: border-color .2s, box-shadow .2s, background-color .2s;
+  font-family: inherit;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none !important;
+  border-color: var(--dd-blue) !important;
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, .14) !important;
+  background-color: #fff;
+}
+.dd-invalid, input.dd-invalid, select.dd-invalid, textarea.dd-invalid {
+  border-color: var(--dd-red) !important; box-shadow: 0 0 0 4px rgba(255, 59, 48, .12) !important;
+  animation: dd-shake .32s;
+}
+@keyframes dd-shake { 0%, 100% { transform: none; } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+.dd-field-err { color: var(--dd-red); font-size: 12px; margin-top: 6px; display: flex; align-items: center; gap: 4px; }
+
+/* iOS 风开关 */
+.dd-switch { appearance: none; width: 51px; height: 31px; border-radius: 999px; background: #e9e9eb; position: relative; cursor: pointer; transition: background .25s; flex: none; }
+.dd-switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: #fff; box-shadow: 0 3px 8px rgba(0, 0, 0, .15), 0 1px 1px rgba(0, 0, 0, .16); transition: transform .28s var(--dd-spring); }
+.dd-switch:checked { background: var(--dd-green); }
+.dd-switch:checked::after { transform: translateX(20px); }
+
+/* 分段控件 */
+.dd-seg { display: inline-flex; background: rgba(118, 118, 128, .12); border-radius: 9px; padding: 2px; gap: 2px; }
+.dd-seg > * { padding: 6px 14px; border-radius: 7px; font-size: 13px; font-weight: 500; color: var(--dd-ink); cursor: pointer; transition: all .2s; border: 0; background: transparent; }
+.dd-seg > .on, .dd-seg > [aria-selected="true"] { background: #fff; box-shadow: 0 3px 8px rgba(0, 0, 0, .12), 0 3px 1px rgba(0, 0, 0, .04); font-weight: 600; }
+
+/* ---------- 表格：Apple 列表风 ---------- */
+table thead th, table thead td {
+  font-size: 12px !important; font-weight: 600 !important; color: var(--dd-ink-2) !important;
+  text-transform: none !important; letter-spacing: 0 !important;
+}
+table tbody tr { transition: background-color .15s; }
+table tbody tr:hover { background-color: rgba(0, 0, 0, .018); }
+
+/* ---------- Web 客户端侧栏 & 顶栏：毛玻璃 ---------- */
+#sidebar { border-right-color: var(--dd-line-2) !important; }
+.dd-sidenav-link { border-radius: var(--dd-r-sm) !important; font-weight: 500; transition: background .18s, color .18s, transform .14s !important; }
+.dd-sidenav-link:active { transform: scale(.98); }
+.dd-sidenav-active, .dd-sidenav-active:hover { background: var(--dd-primary) !important; box-shadow: 0 2px 8px rgba(255, 208, 8, .35); }
+.dd-sidenav-sec, .ad-sidenav-sec { text-transform: none; letter-spacing: 0 !important; font-size: 12px !important; }
+.ad-sidenav-link { border-radius: var(--dd-r-sm) !important; font-weight: 500; }
+.ad-sidenav-active, .ad-sidenav-active:hover { box-shadow: 0 2px 10px rgba(255, 208, 8, .3); }
+main > header, header.sticky, nav.sticky {
+  background-color: rgba(255, 255, 255, .72) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+  border-bottom-color: var(--dd-line-2) !important;
+}
+main > header { position: sticky; top: 0; z-index: 40; }
+
+/* 状态徽章更柔和 */
+.bg-green-50 { background-color: rgba(52, 199, 89, .10) !important; }
+.bg-red-50 { background-color: rgba(255, 59, 48, .08) !important; }
+.bg-yellow-50 { background-color: rgba(255, 208, 8, .12) !important; }
+.bg-blue-50 { background-color: rgba(0, 122, 255, .08) !important; }
+.bg-orange-50 { background-color: rgba(255, 149, 0, .10) !important; }
+.bg-purple-50 { background-color: rgba(175, 82, 222, .09) !important; }
+
+/* 滚动条（细） */
+* { scrollbar-width: thin; scrollbar-color: rgba(0, 0, 0, .18) transparent; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, .16); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+
+/* =====================================================================
+ * 状态组件：空状态 / 加载 / 骨架屏 / 错误
+ * ===================================================================== */
+.dd-state { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 48px 24px; color: var(--dd-ink-2); }
+.dd-state-ic { width: 64px; height: 64px; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; background: var(--dd-bg); color: var(--dd-ink-3); }
+.dd-state-ic svg { width: 30px; height: 30px; }
+.dd-state-ic.err { background: rgba(255, 59, 48, .08); color: var(--dd-red); }
+.dd-state-ic.ok { background: rgba(52, 199, 89, .10); color: var(--dd-green); }
+.dd-state h4 { font-size: 17px; font-weight: 600; color: var(--dd-ink); margin: 0 0 6px; }
+.dd-state p { font-size: 14px; margin: 0 0 18px; max-width: 320px; line-height: 1.55; }
+.dd-state-btn { background: var(--dd-primary); color: var(--dd-brand-ink); border: 0; font-weight: 600; font-size: 14px; padding: 10px 20px; border-radius: 999px; cursor: pointer; }
+.dd-state-btn.ghost { background: rgba(0, 122, 255, .1); color: var(--dd-blue); }
+.dd-spinner { width: 28px; height: 28px; border-radius: 50%; border: 3px solid rgba(0, 0, 0, .08); border-top-color: var(--dd-primary); animation: dd-spin .8s linear infinite; margin-bottom: 14px; }
+.dd-skel { background: linear-gradient(90deg, #eeeef0 25%, #f6f6f8 37%, #eeeef0 63%); background-size: 400% 100%; animation: dd-shimmer 1.3s ease infinite; border-radius: 8px; }
+@keyframes dd-shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+.dd-skel-row { display: flex; gap: 14px; align-items: center; padding: 14px 20px; }
+
+/* 顶部进度条（页面切换 / 请求中） */
+#dd-progress { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: var(--dd-primary); z-index: 2000; box-shadow: 0 0 8px rgba(255, 208, 8, .6); transition: width .4s var(--dd-ease), opacity .3s; }
+
+/* 离线横幅 */
+#dd-offline { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 40px); opacity: 0; background: rgba(29, 29, 31, .92); color: #fff; font-size: 13px; padding: 10px 18px; border-radius: 999px; z-index: 2000; transition: all .3s var(--dd-spring); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); display: flex; gap: 8px; align-items: center; }
+#dd-offline.show { transform: translate(-50%, 0); opacity: 1; }
+
+/* =====================================================================
+ * DDUI 弹窗 / Toast / 面板 —— iOS Sheet 风
+ * ===================================================================== */
+.ddui-mask { background: rgba(0, 0, 0, .32) !important; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.ddui-box { border-radius: var(--dd-r-xl) !important; box-shadow: var(--dd-sh-3) !important; transform: scale(.94) !important; transition: transform .34s var(--dd-spring), opacity .2s !important; }
+.ddui-mask.ddui-show .ddui-box { transform: scale(1) !important; }
+.ddui-head { border-bottom: 0 !important; padding: 22px 24px 8px !important; }
+.ddui-title { font-size: 18px !important; font-weight: 700 !important; letter-spacing: -.02em; }
+.ddui-close { width: 30px; height: 30px; border-radius: 50% !important; background: rgba(118, 118, 128, .12) !important; font-size: 13px !important; color: var(--dd-ink-2) !important; display: flex; align-items: center; justify-content: center; }
+.ddui-body { padding: 12px 24px 20px !important; }
+.ddui-foot { border-top: 0 !important; padding: 4px 24px 24px !important; }
+.ddui-btn { border-radius: var(--dd-r-sm) !important; padding: 13px 16px !important; font-weight: 600 !important; }
+.ddui-btn-ghost { background: rgba(118, 118, 128, .12) !important; border: 0 !important; color: var(--dd-ink) !important; }
+.ddui-btn-danger { background: var(--dd-red) !important; }
+.ddui-input, .ddui-select, .ddui-textarea { background: rgba(118, 118, 128, .08) !important; border: 1px solid transparent !important; border-radius: var(--dd-r-sm) !important; padding: 12px 14px !important; }
+.ddui-toast { background: rgba(29, 29, 31, .9) !important; -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border-radius: 999px !important; font-weight: 500; padding: 11px 20px !important; box-shadow: var(--dd-sh-3) !important; transition: all .34s var(--dd-spring) !important; }
+.ddui-toast.ok iconify-icon, .ddui-toast.ok svg { color: var(--dd-green); }
+.ddui-toast.err iconify-icon, .ddui-toast.err svg { color: var(--dd-red); }
+.ddui-panel { border-radius: var(--dd-r-lg) !important; box-shadow: var(--dd-sh-3) !important; background: rgba(255, 255, 255, .86) !important; -webkit-backdrop-filter: saturate(180%) blur(24px); backdrop-filter: saturate(180%) blur(24px); }
+.ddui-search-row, .ddui-notif-row { border-radius: var(--dd-r-sm); }
+
+/* =====================================================================
+ * 官网通用导航（四端统一入口）
+ * ===================================================================== */
+.dd-site-nav { position: sticky; top: 0; z-index: 50; background: rgba(255, 255, 255, .72); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--dd-line-2); }
+.dd-site-nav .nav-link { color: var(--dd-ink); font-size: 14px; font-weight: 500; opacity: .82; transition: opacity .2s, color .2s; position: relative; }
+.dd-site-nav .nav-link:hover { opacity: 1; color: var(--dd-ink); }
+.dd-site-nav .nav-link.on { opacity: 1; font-weight: 600; }
+.dd-site-nav .nav-link.on::after { content: ""; position: absolute; left: 0; right: 0; bottom: -8px; height: 2px; border-radius: 2px; background: var(--dd-primary); }
+.dd-burger { display: none; }
+@media (max-width: 767px) {
+  .dd-burger { display: inline-flex; }
+  .dd-site-menu { position: fixed; inset: 64px 0 auto 0; background: rgba(255, 255, 255, .96); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); flex-direction: column; padding: 12px 24px 24px; gap: 4px !important; box-shadow: var(--dd-sh-2); display: none !important; }
+  .dd-site-menu.open { display: flex !important; animation: dd-page-in .25s var(--dd-ease); }
+  .dd-site-menu .nav-link { padding: 12px 0; border-bottom: 1px solid var(--dd-line-2); font-size: 16px; }
+  .dd-site-menu .nav-link.on::after { display: none; }
+}

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>收银台 - Dingdang Pay</title>
+<script src="assets/vendor/tailwindcss.js"></script>
+<script src="assets/vendor/iconify-icon.min.js"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FFD008',
+                        dark: '#382b1b',
+                        accent2: '#00B7EC'
+                    },
+                    borderRadius: { '8': '8px' }
+                }
+            }
+        }
+    </script>
+<link rel="stylesheet" href="assets/css/apple.css" data-dd-apple="1"/>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+<!-- 模拟移动端收银台容器 -->
+<div class="w-full max-w-[375px] h-[812px] bg-white rounded-[40px] shadow-2xl overflow-hidden flex flex-col border-[8px] border-dark relative">
+<!-- 顶部状态栏模拟 -->
+<div class="h-10 flex justify-between items-center px-8 pt-4">
+<span class="text-xs font-bold">16:18</span>
+<div class="flex gap-1.5 items-center">
+<iconify-icon class="text-xs" icon="solar:signal-combined-bold"></iconify-icon>
+<iconify-icon class="text-xs" icon="solar:wifi-router-bold"></iconify-icon>
+<iconify-icon class="text-sm" icon="solar:battery-charge-bold"></iconify-icon>
+</div>
+</div>
+<!-- 导航 -->
+<div class="px-6 py-4 flex items-center justify-between">
+<button class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center">
+<iconify-icon class="text-xl" icon="solar:alt-arrow-left-bold"></iconify-icon>
+</button>
+<h2 class="font-bold text-dark text-lg">确认支付</h2>
+<div class="w-10"></div>
+</div>
+<!-- 支付金额 -->
+<div class="px-6 py-10 text-center">
+<p class="text-gray-500 text-sm mb-2">支付给：Dingdang Merchant</p>
+<div class="flex items-baseline justify-center gap-1">
+<span class="text-2xl font-bold">€</span>
+<span class="text-5xl font-extrabold tracking-tight">128.50</span>
+</div>
+</div>
+<!-- 支付方式 -->
+<div class="flex-1 px-6 space-y-4 overflow-y-auto">
+<p class="text-xs font-bold text-gray-400 uppercase">选择支付方式</p>
+<label class="block cursor-pointer">
+<input checked="" class="hidden peer" name="pay_method" type="radio"/>
+<div class="flex items-center gap-4 p-4 border-2 border-gray-100 rounded-8 peer-checked:border-primary peer-checked:bg-primary/5 transition-all">
+<div class="w-10 h-10 bg-dark rounded-8 flex items-center justify-center text-primary">
+<svg class="text-2xl" style="width:1em;height:1em;display:inline-block;vertical-align:-0.125em;flex:none" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><g fill="currentColor" fill-rule="evenodd" clip-rule="evenodd"><path d="M21.1 8.004q-.085-.005-.181-.004h-2.525c-2.068 0-3.837 1.628-3.837 3.75s1.77 3.75 3.837 3.75h2.525q.096.001.182-.004a1.755 1.755 0 0 0 1.645-1.628c.004-.06.004-.125.004-.185V9.817c0-.06 0-.125-.004-.185a1.755 1.755 0 0 0-1.645-1.628m-2.928 4.746c.532 0 .963-.448.963-1s-.431-1-.963-1c-.533 0-.964.448-.964 1s.431 1 .964 1"/><path d="M20.918 17a.22.22 0 0 1 .221.278c-.2.712-.519 1.32-1.03 1.83c-.749.75-1.698 1.081-2.87 1.239c-1.14.153-2.595.153-4.433.153h-2.112c-1.838 0-3.294 0-4.433-.153c-1.172-.158-2.121-.49-2.87-1.238c-.748-.749-1.08-1.698-1.238-2.87C2 15.099 2 13.644 2 11.806v-.112C2 9.856 2 8.4 2.153 7.26c.158-1.172.49-2.121 1.238-2.87c.749-.748 1.698-1.08 2.87-1.238C7.401 3 8.856 3 10.694 3h2.112c1.838 0 3.294 0 4.433.153c1.172.158 2.121.49 2.87 1.238c.511.512.83 1.119 1.03 1.831a.22.22 0 0 1-.221.278h-2.524c-2.837 0-5.337 2.24-5.337 5.25s2.5 5.25 5.337 5.25zM5.75 7a.75.75 0 0 0 0 1.5h4a.75.75 0 0 0 0-1.5z"/></g></svg>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-dark">Dingdang 钱包余额</p>
+<p class="text-[10px] text-gray-500">当前余额: € 8,245.50</p>
+</div>
+<iconify-icon class="text-2xl text-primary opacity-0 peer-checked:opacity-100" icon="solar:check-circle-bold"></iconify-icon>
+</div>
+</label>
+<label class="block cursor-pointer">
+<input class="hidden peer" name="pay_method" type="radio"/>
+<div class="flex items-center gap-4 p-4 border-2 border-gray-100 rounded-8 peer-checked:border-primary peer-checked:bg-primary/5 transition-all">
+<div class="w-10 h-10 bg-accent2/10 rounded-8 flex items-center justify-center text-accent2">
+<svg class="text-2xl" style="width:1em;height:1em;display:inline-block;vertical-align:-0.125em;flex:none" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><defs><mask id="SVGBcZ8Eejn"><g fill="none"><path fill="#fff" d="M14 4h-4C6.229 4 4.343 4 3.172 5.172c-.844.843-1.08 2.057-1.146 4.078h19.948c-.066-2.021-.302-3.235-1.146-4.078C19.657 4 17.771 4 14 4m-4 16h4c3.771 0 5.657 0 6.828-1.172S22 15.771 22 12q0-.662-.002-1.25H2.002Q1.999 11.338 2 12c0 3.771 0 5.657 1.172 6.828S6.229 20 10 20"/><path fill="#000" fill-rule="evenodd" d="M5.25 16a.75.75 0 0 1 .75-.75h4a.75.75 0 0 1 0 1.5H6a.75.75 0 0 1-.75-.75m6.5 0a.75.75 0 0 1 .75-.75H14a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75" clip-rule="evenodd"/></g></mask></defs><path fill="currentColor" d="M0 0h24v24H0z" mask="url(#SVGBcZ8Eejn)"/></svg>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-dark">Visa / MasterCard</p>
+<p class="text-[10px] text-gray-500">使用绑定的银行卡支付</p>
+</div>
+<iconify-icon class="text-2xl text-primary opacity-0 peer-checked:opacity-100" icon="solar:check-circle-bold"></iconify-icon>
+</div>
+</label>
+<label class="block cursor-pointer">
+<input class="hidden peer" name="pay_method" type="radio"/>
+<div class="flex items-center gap-4 p-4 border-2 border-gray-100 rounded-8 peer-checked:border-primary peer-checked:bg-primary/5 transition-all">
+<div class="w-10 h-10 bg-green-50 rounded-8 flex items-center justify-center text-green-600">
+<iconify-icon class="text-2xl" icon="logos:alipay"></iconify-icon>
+</div>
+<div class="flex-1">
+<p class="text-sm font-bold text-dark">支付宝支付</p>
+<p class="text-[10px] text-gray-500">实时汇率结算</p>
+</div>
+<iconify-icon class="text-2xl text-primary opacity-0 peer-checked:opacity-100" icon="solar:check-circle-bold"></iconify-icon>
+</div>
+</label>
+</div>
+<!-- 底部按钮 -->
+<div class="p-6 border-t border-gray-100">
+<button class="w-full bg-primary text-dark font-bold py-4 rounded-full text-lg shadow-lg hover:shadow-xl active:scale-95 transition-all" onclick="this.innerHTML='支付中...'; setTimeout(()=&gt;location.href='dashboard.html', 1500);">
+                立即支付 € 128.50
+            </button>
+<div class="mt-4 flex justify-center items-center gap-2">
+<svg class="text-green-500" style="width:1em;height:1em;display:inline-block;vertical-align:-0.125em;flex:none" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" fill-rule="evenodd" d="M3.378 5.082C3 5.62 3 7.22 3 10.417v1.574c0 5.638 4.239 8.375 6.899 9.536c.721.315 1.082.473 2.101.473c1.02 0 1.38-.158 2.101-.473C16.761 20.365 21 17.63 21 11.991v-1.574c0-3.198 0-4.797-.378-5.335c-.377-.537-1.88-1.052-4.887-2.081l-.573-.196C13.595 2.268 12.812 2 12 2s-1.595.268-3.162.805L8.265 3c-3.007 1.03-4.51 1.545-4.887 2.082M15.06 10.5a.75.75 0 0 0-1.12-.999l-3.011 3.374l-.87-.974a.75.75 0 0 0-1.118 1l1.428 1.6a.75.75 0 0 0 1.119 0z" clip-rule="evenodd"/></svg>
+<span class="text-[10px] text-gray-400">资金由 Dingdang Pay 安全加密保护</span>
+</div>
+</div>
+<!-- iOS Home Indicator -->
+<div class="h-1.5 w-32 bg-gray-200 rounded-full mx-auto mb-2 mt-2"></div>
+</div>
+<script src="assets/js/ui.js"></script>
+<script>
+/* wire:checkout.html */
+
+document.addEventListener('DOMContentLoaded', function () {
+    // 左上角返回
+    var backBtn = document.querySelector('button.w-10.h-10.rounded-full');
+    if (backBtn && !backBtn.dataset.wired) {
+        backBtn.dataset.wired = 1;
+        backBtn.addEventListener('click', function () { history.back(); });
+    }
+    // 支付按钮
+    document.querySelectorAll('button').forEach(function (b) {
+        var t = b.textContent.trim();
+        if (b.dataset.wired) return;
+        if (/确认支付|立即支付|支付 €|支付 ¥/.test(t)) {
+            b.dataset.wired = 1;
+            b.addEventListener('click', function () {
+                var method = document.querySelector('input[name="pay_method"]:checked');
+                var label = method ? method.closest('label').querySelector('.font-bold').textContent.trim() : 'Dingdang 钱包余额';
+                b.disabled = true;
+                b.textContent = '支付处理中...';
+                setTimeout(function () {
+                    DDUI.modal({
+                        title: '支付成功', width: '380px',
+                        body: '<div style="text-align:center;padding:8px 0">' +
+                            '<div class="w-16 h-16 rounded-full bg-green-50 mx-auto flex items-center justify-center mb-4"><iconify-icon class="text-4xl text-green-500" icon="solar:check-circle-bold"></iconify-icon></div>' +
+                            '<p style="font-size:14px;color:#4b5563">已通过 <b>' + label + '</b> 完成支付</p></div>',
+                        actions: [{ text: '查看订单', type: 'primary', onClick: function (close) { location.href = 'pay-process.html'; } }]
+                    });
+                    b.disabled = false;
+                    b.textContent = t;
+                }, 1200);
+            });
+        }
+    });
+});
+
+</script>
+<script src="assets/js/i18n.js"></script>
+</body>
+</html>

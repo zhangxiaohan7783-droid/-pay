@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>页面不存在 - Dingdang Pay 叮当支付</title>
+<script src="assets/vendor/tailwindcss.js"></script>
+<script>tailwind.config = { theme: { extend: { colors: { primary: '#FFD008', dark: '#382b1b' }, borderRadius: { '8': '8px' } } } }</script>
+<link rel="stylesheet" href="assets/css/apple.css" data-dd-apple="1"/>
+<style>
+.err-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--dd-bg)}
+.err-card{background:#fff;border-radius:var(--dd-r-xl);box-shadow:var(--dd-sh-2);padding:56px 40px;max-width:520px;width:100%;text-align:center;animation:dd-page-in .38s var(--dd-ease) both}
+.err-code{font-size:13px;font-weight:700;letter-spacing:.2em;color:var(--dd-ink-3);margin-bottom:20px}
+.err-ico{width:88px;height:88px;border-radius:24px;margin:0 auto 28px;display:flex;align-items:center;justify-content:center;background:rgba(255,208,8,.16)}
+.err-ico svg{width:44px;height:44px;color:#b38f00}
+.err-card h1{font-size:26px;font-weight:700;color:var(--dd-ink);margin-bottom:10px}
+.err-card p{font-size:15px;color:var(--dd-ink-2);line-height:1.7;margin-bottom:32px}
+.err-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.err-btns a,.err-btns button{padding:12px 26px;border-radius:999px;font-weight:600;font-size:15px}
+.err-meta{margin-top:28px;font-size:12px;color:var(--dd-ink-3)}
+</style>
+</head>
+<body>
+<!-- dd-site-nav:start -->
+<nav class="dd-site-nav">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16 items-center">
+<a class="flex items-center" href="home.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="assets/img/logo-h.png"/></a>
+<div class="dd-site-menu hidden md:flex items-center gap-8" id="dd-site-menu"><a class="nav-link" href="home.html">首页</a><a class="nav-link" href="product-accounts.html">全球账户</a><a class="nav-link" href="product-expense.html">费用管理</a><a class="nav-link" href="product-payments.html">全球即时付款</a><a class="nav-link" href="product-acquiring.html">全球收单</a><a class="nav-link" href="about.html">关于我们</a><a class="nav-link" href="help.html">帮助</a></div>
+<div class="flex items-center gap-3"><a class="hidden sm:inline text-sm font-medium text-dark hover:opacity-70" href="login.html">登录</a><a class="bg-primary text-dark px-5 py-2 rounded-full text-sm font-bold" href="register.html?demo=1">立即开户</a><button class="dd-burger w-10 h-10 items-center justify-center rounded-full hover:bg-gray-100" aria-label="菜单" aria-expanded="false" aria-controls="dd-site-menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div>
+</div>
+</div>
+</nav>
+<!-- dd-site-nav:end -->
+<div class="err-wrap"><div class="err-card" role="alert">
+<div class="err-code">ERROR 404</div>
+<div class="err-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M8.5 11h5"/></svg></div>
+<h1>页面走丢了</h1>
+<p>您访问的页面可能已被移动或删除。请检查网址，或返回首页继续浏览。</p>
+<div class="err-btns"><a class="bg-primary text-dark" href="home.html">返回首页</a><a class="bg-gray-100 text-dark" href="help.html">帮助中心</a></div>
+<div class="err-meta">如持续出现此问题，请联系 support@dingdangpay.com</div>
+</div></div>
+<!-- dd-site-footer:start -->
+<footer class="bg-dark text-white pt-16 pb-10">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-10 mb-12">
+<div class="col-span-2">
+<div class="flex items-center gap-2 mb-5"><img alt="Dingdang Pay" class="h-9 w-auto" src="assets/img/logo-h-rev.png"/></div>
+<p class="text-gray-400 text-sm leading-relaxed max-w-sm">叮当支付成立于 2025 年，是一家跨境支付科技公司。我们正通过对接 Sokin 系统与开放 API，为全球化企业构建全球收付款基础设施。</p>
+<p class="text-gray-400 text-sm mt-4">客服邮箱: support@dingdangpay.com</p>
+</div>
+<div><h4 class="font-semibold mb-5 text-primary text-sm">产品服务</h4><ul class="space-y-3 text-gray-400 text-sm">
+<li><a class="hover:text-white" href="product-accounts.html">全球账户</a></li>
+<li><a class="hover:text-white" href="product-expense.html">费用管理</a></li>
+<li><a class="hover:text-white" href="product-payments.html">全球即时付款</a></li>
+<li><a class="hover:text-white" href="product-acquiring.html">全球收单</a></li>
+<li><a class="hover:text-white" href="app/index.html">下载 App</a></li></ul></div>
+<div><h4 class="font-semibold mb-5 text-primary text-sm">关于叮当</h4><ul class="space-y-3 text-gray-400 text-sm">
+<li><a class="hover:text-white" href="about.html">关于我们</a></li>
+<li><a class="hover:text-white" href="compliance.html">监管牌照</a></li>
+<li><a class="hover:text-white" href="help.html">帮助中心</a></li>
+<li><a class="hover:text-white" href="register.html?demo=1">注册开户</a></li></ul></div>
+<div><h4 class="font-semibold mb-5 text-primary text-sm">法律条款</h4><ul class="space-y-3 text-gray-400 text-sm">
+<li><a class="hover:text-white" href="privacy.html">隐私协议</a></li>
+<li><a class="hover:text-white" href="terms.html">服务条款</a></li></ul></div>
+</div>
+<div class="pt-8 border-t border-white/10 text-xs text-gray-500 flex flex-col md:flex-row justify-between gap-4">
+<p>© 2026 Dingdang Pay. 支付牌照申请中，资金服务由 Sokin 等持牌合作机构提供。</p>
+<div class="flex gap-6"><span>系统对接: Sokin</span><span>开放 API</span></div>
+</div>
+</div>
+</footer>
+<!-- dd-site-footer:end -->
+<script src="assets/js/ui.js"></script>
+
+<script src="assets/js/i18n.js"></script>
+</body>
+</html>

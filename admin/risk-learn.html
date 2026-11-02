@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>学习中心 - 叮当支付内部运营后台</title>
+<script src="../assets/vendor/tailwindcss.js"></script>
+<script src="../assets/vendor/iconify-icon.min.js"></script>
+<script src="../assets/vendor/echarts.min.js"></script>
+<style>
+        body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #382b1b; background-color: #f5f4f0; }
+        .custom-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
+        .rounded-8 { border-radius: 8px; }
+</style>
+<link rel="stylesheet" href="../assets/css/apple.css" data-dd-apple="1"/>
+</head>
+<body class="bg-gray-50">
+<div class="flex min-h-screen">
+<style>
+.ad-sidenav-link{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;color:#9ca3af;font-size:14px;line-height:1.4;transition:background .15s,color .15s;text-decoration:none}
+.ad-sidenav-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.ad-sidenav-active,.ad-sidenav-active:hover{background:#FFD008;color:#382b1b;font-weight:600}
+.ad-sidenav-sec{padding:16px 12px 6px;font-size:11px;font-weight:600;color:#6b7280;letter-spacing:.05em}
+.ad-noscroll{scrollbar-width:none;-ms-overflow-style:none}
+.ad-noscroll::-webkit-scrollbar{display:none}
+</style>
+<aside class="w-64 flex-none hidden lg:flex flex-col" id="sidebar" style="background:#241d12"><div class="p-6 flex items-center space-x-3"><a class="flex items-center space-x-3" href="index.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="../assets/img/logo-h-rev.png"/></a></div><div class="flex-1 overflow-y-auto px-4 py-2 ad-noscroll"><nav class="space-y-1"><a class="ad-sidenav-link" href="index.html"><iconify-icon class="text-xl" icon="solar:widget-bold"></iconify-icon><span>运营总览</span></a><div class="ad-sidenav-sec">客户与开户</div><div class="ad-sidenav-sec">个人开户管理</div><a class="ad-sidenav-link" href="ob-personal.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>个人开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-personal-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>个人开户资料归档</span></a><a class="ad-sidenav-link" href="ob-personal-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-personal-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-personal-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>个人开户 Sokin</span></a><div class="ad-sidenav-sec">商业开户管理</div><a class="ad-sidenav-link" href="ob-business.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>商业开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-business-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>商业开户资料归档</span></a><a class="ad-sidenav-link" href="ob-business-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-business-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-business-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>商业开户 Sokin</span></a><a class="ad-sidenav-link" href="business.html"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon><span>商业客户管理</span></a><a class="ad-sidenav-link" href="personal.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>个人客户管理</span></a><div class="ad-sidenav-sec">风控与合规</div><a class="ad-sidenav-link" href="risk.html"><iconify-icon class="text-xl" icon="solar:shield-warning-bold"></iconify-icon><span>风控总览</span></a><a class="ad-sidenav-link" href="risk-review.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>审核工作台</span></a><a class="ad-sidenav-link" href="risk-cases.html"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon><span>案件管理</span></a><a class="ad-sidenav-link" href="risk-screening.html"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon><span>制裁筛查</span></a><a class="ad-sidenav-link ad-sidenav-active" href="risk-learn.html"><iconify-icon class="text-xl" icon="solar:square-academic-cap-bold"></iconify-icon><span>学习中心</span></a><div class="ad-sidenav-sec">安全与服务</div><a class="ad-sidenav-link" href="cs.html"><iconify-icon class="text-xl" icon="solar:headphones-round-sound-bold"></iconify-icon><span>客服管理</span></a><div class="ad-sidenav-sec">团队与账务</div><a class="ad-sidenav-link" href="managers.html"><iconify-icon class="text-xl" icon="solar:user-speak-bold"></iconify-icon><span>客户经理管理</span></a><a class="ad-sidenav-link" href="staff.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>员工管理</span></a><a class="ad-sidenav-link" href="bills.html"><iconify-icon class="text-xl" icon="solar:bill-list-bold"></iconify-icon><span>账单管理</span></a><a class="ad-sidenav-link" href="licenses.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>牌照管理</span></a></nav></div><div class="p-4" style="border-top:1px solid rgba(255,255,255,.08)"><div class="flex items-center space-x-3 p-2 rounded-lg" style="background:rgba(255,255,255,.05)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:#FFD008;color:#382b1b">涵</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold truncate text-white">运营-小涵</p><p class="text-xs text-gray-500 truncate">超级管理员</p></div><a href="login.html" class="text-gray-500 hover:text-red-400" title="退出登录"><iconify-icon icon="solar:logout-3-bold"></iconify-icon></a></div></div></aside>
+<main class="flex-1 flex flex-col min-w-0">
+<header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 flex-none">
+<div class="flex items-center">
+<button class="lg:hidden p-2 -ml-2 text-gray-500" onclick="toggleSidebar()">
+<iconify-icon class="text-2xl" icon="solar:hamburger-menu-bold"></iconify-icon>
+</button>
+<h1 class="text-lg font-bold ml-2">学习中心 · 风控新人培训</h1>
+</div>
+<div class="flex items-center space-x-4">
+<div id="dd-role-slot"></div>
+<span class="text-xs text-gray-400 hidden md:block">后台环境 · 数据实时同步</span>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6">
+<div class="rounded-8 custom-shadow p-6 text-white" style="background:linear-gradient(120deg,#241d12 0%,#4a3a1a 60%,#8a6d1f 100%)"><div class="flex items-center justify-between flex-wrap gap-4"><div><p class="text-xs text-white/60 mb-1">风控与合规部 · 新人培养计划</p><h2 class="text-xl font-bold">欢迎加入风控团队 👋</h2><p class="text-sm text-white/70 mt-2 max-w-xl">按学习路径完成 SOP 阅读与知识课程，通过入职测验（≥80 分）后即可在带教下上岗。当前角色：<b id="learn-role">风控员</b></p></div><div class="text-center"><div class="relative w-24 h-24"><svg viewBox="0 0 100 100" class="w-24 h-24"><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="10"/><circle cx="50" cy="50" r="42" fill="none" stroke="#FFD008" stroke-width="10" stroke-linecap="round" id="learn-ring" stroke-dasharray="264" stroke-dashoffset="264" transform="rotate(-90 50 50)"/></svg><div class="absolute inset-0 flex items-center justify-center"><span class="text-lg font-bold" id="learn-pct">0%</span></div></div><p class="text-xs text-white/60 mt-1">总体进度</p></div></div></div><div class="grid grid-cols-1 xl:grid-cols-3 gap-6"><div class="xl:col-span-1"><div class="bg-white rounded-8 custom-shadow p-6"><h3 class="font-bold text-gray-900 mb-5">入职学习路径</h3><div class="flex gap-4"><div class="flex flex-col items-center flex-none"><div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold path-dot" style="background:#FFD008;color:#382b1b">1</div><div class="w-px flex-1 bg-gray-200 mt-1"></div></div><div class="pb-6"><p class="text-xs text-gray-400">第 1 天</p><h4 class="font-bold text-gray-900">入职基础</h4><p class="text-sm text-gray-500 mt-1">公司合规体系、账户与产品架构、风控组织架构与三级审核分工</p></div></div><div class="flex gap-4"><div class="flex flex-col items-center flex-none"><div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold path-dot" style="background:#FFD008;color:#382b1b">2</div><div class="w-px flex-1 bg-gray-200 mt-1"></div></div><div class="pb-6"><p class="text-xs text-gray-400">第 1 周</p><h4 class="font-bold text-gray-900">上岗准备</h4><p class="text-sm text-gray-500 mt-1">开户预审 SOP、制裁筛查 SOP，跟岗学习 10 单预审</p></div></div><div class="flex gap-4"><div class="flex flex-col items-center flex-none"><div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold path-dot" style="background:#FFD008;color:#382b1b">3</div><div class="w-px flex-1 bg-gray-200 mt-1"></div></div><div class="pb-6"><p class="text-xs text-gray-400">第 2 周</p><h4 class="font-bold text-gray-900">独立操作</h4><p class="text-sm text-gray-500 mt-1">案件处置 SOP、入账材料审核 SOP，在带教下处置 3 个案件</p></div></div><div class="flex gap-4"><div class="flex flex-col items-center flex-none"><div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold path-dot" style="background:#FFD008;color:#382b1b">4</div></div><div class="pb-6"><p class="text-xs text-gray-400">第 1 月</p><h4 class="font-bold text-gray-900">考核转正</h4><p class="text-sm text-gray-500 mt-1">UBO 识别、误报与升级上报 SOP，通过入职测验（≥80 分）独立值班</p></div></div></div></div><div class="xl:col-span-2 space-y-6"><div><div class="flex items-center justify-between mb-4 flex-wrap gap-3"><h3 class="font-bold text-gray-900">SOP 文档库</h3><div class="relative"><iconify-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" icon="solar:magnifer-linear"></iconify-icon><input class="pl-9 pr-3 py-2 bg-white border border-gray-200 rounded-8 text-sm focus:outline-none focus:border-[#00B7EC] w-52" id="sop-search" placeholder="搜索 SOP"/></div></div><div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4" id="sop-grid"><div class="bg-white rounded-8 custom-shadow p-5 flex flex-col sop-card" data-sop="sop-kyc"><div class="flex items-start justify-between mb-3"><div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon></div><span class="sop-done hidden px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">已读完</span></div><h4 class="font-bold text-gray-900 text-sm">开户预审 SOP（KYC / KYB）</h4><p class="text-xs text-gray-400 mt-1 mb-4">预审员必读 · 约 15 分钟</p><button class="mt-auto w-full py-2 rounded-8 text-xs font-bold sop-read" style="background:#FFD008;color:#382b1b" type="button">开始阅读</button></div><div class="bg-white rounded-8 custom-shadow p-5 flex flex-col sop-card" data-sop="sop-screen"><div class="flex items-start justify-between mb-3"><div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon></div><span class="sop-done hidden px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">已读完</span></div><h4 class="font-bold text-gray-900 text-sm">制裁筛查与复核 SOP</h4><p class="text-xs text-gray-400 mt-1 mb-4">风控员必读 · 约 20 分钟</p><button class="mt-auto w-full py-2 rounded-8 text-xs font-bold sop-read" style="background:#FFD008;color:#382b1b" type="button">开始阅读</button></div><div class="bg-white rounded-8 custom-shadow p-5 flex flex-col sop-card" data-sop="sop-case"><div class="flex items-start justify-between mb-3"><div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon></div><span class="sop-done hidden px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">已读完</span></div><h4 class="font-bold text-gray-900 text-sm">风险案件处置 SOP</h4><p class="text-xs text-gray-400 mt-1 mb-4">风控员必读 · 约 18 分钟</p><button class="mt-auto w-full py-2 rounded-8 text-xs font-bold sop-read" style="background:#FFD008;color:#382b1b" type="button">开始阅读</button></div><div class="bg-white rounded-8 custom-shadow p-5 flex flex-col sop-card" data-sop="sop-trade"><div class="flex items-start justify-between mb-3"><div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:bill-list-bold"></iconify-icon></div><span class="sop-done hidden px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">已读完</span></div><h4 class="font-bold text-gray-900 text-sm">入账材料审核 SOP（贸易背景真实性）</h4><p class="text-xs text-gray-400 mt-1 mb-4">全员必读 · 约 25 分钟</p><button class="mt-auto w-full py-2 rounded-8 text-xs font-bold sop-read" style="background:#FFD008;color:#382b1b" type="button">开始阅读</button></div><div class="bg-white rounded-8 custom-shadow p-5 flex flex-col sop-card" data-sop="sop-ubo"><div class="flex items-start justify-between mb-3"><div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon></div><span class="sop-done hidden px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">已读完</span></div><h4 class="font-bold text-gray-900 text-sm">KYB 与 UBO 识别 SOP</h4><p class="text-xs text-gray-400 mt-1 mb-4">全员必读 · 约 15 分钟</p><button class="mt-auto w-full py-2 rounded-8 text-xs font-bold sop-read" style="background:#FFD008;color:#382b1b" type="button">开始阅读</button></div><div class="bg-white rounded-8 custom-shadow p-5 flex flex-col sop-card" data-sop="sop-report"><div class="flex items-start justify-between mb-3"><div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:flag-bold"></iconify-icon></div><span class="sop-done hidden px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">已读完</span></div><h4 class="font-bold text-gray-900 text-sm">误报处理与升级上报 SOP</h4><p class="text-xs text-gray-400 mt-1 mb-4">新人必读 · 约 10 分钟</p><button class="mt-auto w-full py-2 rounded-8 text-xs font-bold sop-read" style="background:#FFD008;color:#382b1b" type="button">开始阅读</button></div></div></div><div><h3 class="font-bold text-gray-900 mb-4">知识课程</h3><div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4"><div class="bg-white rounded-8 custom-shadow p-5 course-card" data-course="c-aml"><div class="flex items-center justify-between mb-2"><h4 class="font-bold text-gray-900 text-sm">反洗钱（AML）基础</h4><span class="text-xs text-gray-400"><span class="course-done-n">0</span>/6 课时</span></div><p class="text-xs text-gray-400 mb-3">洗钱三阶段、可疑交易特征、STR 报告义务</p><div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-3"><div class="course-bar h-full rounded-full transition-all" style="width:0%;background:#00B7EC"></div></div><button class="w-full py-2 rounded-8 text-xs font-bold border border-[#00B7EC] text-[#00B7EC] hover:bg-[#00B7EC]/5 course-go" type="button">继续学习</button></div><div class="bg-white rounded-8 custom-shadow p-5 course-card" data-course="c-sanc"><div class="flex items-center justify-between mb-2"><h4 class="font-bold text-gray-900 text-sm">制裁名单体系</h4><span class="text-xs text-gray-400"><span class="course-done-n">0</span>/4 课时</span></div><p class="text-xs text-gray-400 mb-3">OFAC / EU / UN / UK 名单结构与筛查逻辑</p><div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-3"><div class="course-bar h-full rounded-full transition-all" style="width:0%;background:#00B7EC"></div></div><button class="w-full py-2 rounded-8 text-xs font-bold border border-[#00B7EC] text-[#00B7EC] hover:bg-[#00B7EC]/5 course-go" type="button">继续学习</button></div><div class="bg-white rounded-8 custom-shadow p-5 course-card" data-course="c-kyc"><div class="flex items-center justify-between mb-2"><h4 class="font-bold text-gray-900 text-sm">KYC / KYB 与 UBO 识别</h4><span class="text-xs text-gray-400"><span class="course-done-n">0</span>/5 课时</span></div><p class="text-xs text-gray-400 mb-3">客户尽职调查、证件核验、实控人穿透</p><div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-3"><div class="course-bar h-full rounded-full transition-all" style="width:0%;background:#00B7EC"></div></div><button class="w-full py-2 rounded-8 text-xs font-bold border border-[#00B7EC] text-[#00B7EC] hover:bg-[#00B7EC]/5 course-go" type="button">继续学习</button></div><div class="bg-white rounded-8 custom-shadow p-5 course-card" data-course="c-trade"><div class="flex items-center justify-between mb-2"><h4 class="font-bold text-gray-900 text-sm">贸易背景真实性审核</h4><span class="text-xs text-gray-400"><span class="course-done-n">0</span>/4 课时</span></div><p class="text-xs text-gray-400 mb-3">合同/发票/提单核验、电商入金材料要点</p><div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-3"><div class="course-bar h-full rounded-full transition-all" style="width:0%;background:#00B7EC"></div></div><button class="w-full py-2 rounded-8 text-xs font-bold border border-[#00B7EC] text-[#00B7EC] hover:bg-[#00B7EC]/5 course-go" type="button">继续学习</button></div></div></div><div class="bg-white rounded-8 custom-shadow p-6" id="quiz-card"><div class="flex items-center justify-between mb-4 flex-wrap gap-2"><div><h3 class="font-bold text-gray-900">入职测验</h3><p class="text-xs text-gray-400 mt-1">5 道题 · ≥80 分通过 · 最好成绩：<b id="quiz-best">尚未参加</b></p></div><span class="px-2 py-1 rounded-full text-xs font-medium bg-yellow-50 text-yellow-600">转正必考</span></div><div class="mb-5 quiz-q" data-q="0"><p class="font-bold text-sm text-gray-900 mb-2">1. 个人开户申请人最低年龄要求是？</p><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q0" type="radio" value="0"/>16 周岁</label><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q0" type="radio" value="1"/>18 周岁</label><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q0" type="radio" value="2"/>21 周岁</label><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q0" type="radio" value="3"/>无限制</label></div><div class="mb-5 quiz-q" data-q="1"><p class="font-bold text-sm text-gray-900 mb-2">2. 非 EEA 证件开户时，必须额外提供什么材料？</p><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q1" type="radio" value="0"/>银行流水</label><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q1" type="radio" value="1"/>签证或居留许可</label><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q1" type="radio" value="2"/>工作证明</label><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q1" type="radio" value="3"/>税单</label></div><div class="mb-5 quiz-q" data-q="2"><p class="font-bold text-sm text-gray-900 mb-2">3. 企业 UBO 的持股识别阈值是？</p><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q2" type="radio" value="0"/>≥10%</label><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q2" type="radio" value="1"/>≥20%</label><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q2" type="radio" value="2"/>≥25%</label><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q2" type="radio" value="3"/>≥50%</label></div><div class="mb-5 quiz-q" data-q="3"><p class="font-bold text-sm text-gray-900 mb-2">4. 高危风险案件的处置 SLA 是？</p><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q3" type="radio" value="0"/>1 小时</label><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q3" type="radio" value="1"/>4 小时</label><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q3" type="radio" value="2"/>24 小时</label><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q3" type="radio" value="3"/>72 小时</label></div><div class="mb-5 quiz-q" data-q="4"><p class="font-bold text-sm text-gray-900 mb-2">5. 确认制裁名单命中后，以下做法正确的是？</p><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q4" type="radio" value="0"/>立即通知客户核实</label><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q4" type="radio" value="1"/>冻结并上报合规主管，不向客户透露筛查细节</label><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q4" type="radio" value="2"/>直接关闭账户</label><label class="flex items-center gap-2 text-sm text-gray-600 py-1 cursor-pointer"><input class="accent-[#FFD008]" name="q4" type="radio" value="3"/>记录后继续观察</label></div><button class="w-full py-3 rounded-8 font-bold text-sm" style="background:#FFD008;color:#382b1b" id="quiz-submit" type="button">提交测验</button></div></div></div>
+</div>
+</main>
+<div class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+</div>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/risk.js"></script>
+<script>
+DDRisk.renderSwitcher(document.getElementById('dd-role-slot'));
+function toggleSidebar(){var s=document.getElementById('sidebar'),b=document.getElementById('sidebar-backdrop');if(!s)return;s.classList.toggle('hidden');s.classList.toggle('flex');s.classList.toggle('fixed');s.classList.toggle('inset-y-0');s.classList.toggle('left-0');s.classList.toggle('z-50');if(b)b.classList.toggle('hidden');}
+var dKw = '', dSt = '';
+function ddApplyFilter() {
+    document.querySelectorAll('.data-tbody tr').forEach(function (tr) {
+        var ok = (!dKw || tr.textContent.toLowerCase().indexOf(dKw) > -1) && (!dSt || dSt.indexOf('全部') === 0 || tr.textContent.indexOf(dSt) > -1);
+        tr.style.display = ok ? '' : 'none';
+    });
+}
+document.querySelectorAll('.data-search').forEach(function (i) { i.addEventListener('input', function () { dKw = this.value.trim().toLowerCase(); ddApplyFilter(); }); });
+document.querySelectorAll('.data-filter').forEach(function (s) { s.addEventListener('change', function () { dSt = this.value; ddApplyFilter(); }); });
+window.addEventListener('DOMContentLoaded', function(){ DDRisk.guard(); });
+</script>
+<script>
+var SOP_DATA = {"sop-kyc": {"name": "开户预审 SOP（KYC / KYB）", "body": "<h4>一、预审目标</h4><p>在 24 小时内完成开户申请的材料完整性核对与基础风险初判，输出「通过 / 补件 / 驳回」结论。</p>\n<h4>二、个人 KYC 核对清单</h4><ul><li>姓名（名/姓）、出生日期、国籍与证件信息完全一致；</li><li>申请人须年满 18 周岁；</li><li>可接受证件：EEA 国民身份证、护照、EEA 居留卡；<b>非 EEA 证件须额外提供签证或居留许可</b>；</li><li>证件有效期覆盖审核期，临期（< 3 个月）标注「证件临期」标签；</li><li>居住地址：门牌号/楼宇/街道至少一项 + 城市 + 邮编 + 国家，地址证明须为近 3 个月内（水电煤账单、银行对账单、政府信函）。</li></ul>\n<h4>三、企业 KYB 核对清单</h4><ul><li>企业法定全称与注册证书一致，组织形式、注册编号、税号齐全；</li><li>注册地址与经营地址（不一致时分别核验）；</li><li>授权签署人身份 + 授权书；</li><li><b>UBO 实际控制人：持股 ≥25% 或拥有实际控制权的自然人，全部识别并逐一核验（最多 4 位，超出另附表格）</b>；</li><li>无官网企业须提供推广渠道说明。</li></ul>\n<h4>四、结论与流转</h4><p>通过 → 流转风控员复核；材料缺失 → 退回补件（注明缺失项）；明显不符合 → 驳回并记录原因。所有操作留痕。</p>"}, "sop-screen": {"name": "制裁筛查与复核 SOP", "body": "<h4>一、筛查触发场景</h4><ul><li>开户准入：个人/企业/UBO/授权签署人逐一筛查；</li><li>交易事中：收付款双方实时筛查；</li><li>存量回扫：每日 02:00 全量回扫；名单更新后 24 小时内重扫。</li></ul>\n<h4>二、名单源</h4><p>OFAC SDN/综合名单、EU 综合制裁名单、UN 安理会名单、UK HMT 名单、PEP 数据库、负面媒体库。</p>\n<h4>三、复核流程（命中后）</h4><ul><li>比对要素：姓名相似度、出生日期、国籍/注册国、证件号、地址；</li><li>≥2 个要素不一致 → 判误报，记录理由放行；</li><li>要素一致或无法排除 → 确认命中，<b>立即冻结并上报合规主管</b>，不得通知客户筛查细节（防通风报信）；</li><li>无法确认 → 要求客户补充证明材料。</li></ul>\n<h4>四、档案要求</h4><p>筛查记录与复核结论存档至少 5 年。</p>"}, "sop-case": {"name": "风险案件处置 SOP", "body": "<h4>一、SLA 标准</h4><ul><li>高危案件：4 小时内处置；</li><li>中危案件：24 小时内；</li><li>低危案件：72 小时内；超时自动升级合规主管。</li></ul>\n<h4>二、处置动作</h4><ul><li>确认风险：冻结账户 / 限制额度 / 终止合作（关户）；</li><li>误报：放行并加入误报样本库（反哺规则调优）；</li><li>证据不足：持续关注，加观察名单。</li></ul>\n<h4>三、升级红线（发现即报合规主管）</h4><ul><li>疑似制裁命中、恐怖融资、洗钱团伙特征；</li><li>单笔或累计异常超过 €50,000；</li><li>涉及监管问询或执法机关协查。</li></ul>\n<h4>四、关闭归档</h4><p>处置完成后案件进入「待关闭」，由合规主管审核关闭，档案留存。</p>"}, "sop-trade": {"name": "入账材料审核 SOP（贸易背景真实性）", "body": "<h4>一、B2B 货物贸易入金</h4><ul><li>必备：交易说明（自定义）、销售合同、发票（PI/CI）、提单/运输单据；</li><li>提单要求：已发货提供发货时间 + 物流单号 + 物流公司；未发货提供预计发货时间，<b>逾期未发货系统将自动标记该笔订单</b>；</li><li>选填：询盘记录、银行水单、商品销售网站、原产地证书/质检证书等。</li></ul>\n<h4>二、B2B 服务贸易入金</h4><ul><li>必备：合同/协议、发票；</li><li>选填：询盘、银行水单、网站、其他证明材料。</li></ul>\n<h4>三、B2C 电商/独立站入金</h4><ul><li>店铺信息（首次入账时提供）：店铺网址 + 后台截图（全屏且含网址）；</li><li>平台提现记录、店铺交易明细；快递面单（抽查）。</li></ul>\n<h4>四、出金交易</h4><ul><li>交易说明 + 证明文件（采购合同、发票、其他证明材料）。</li></ul>\n<h4>五、审核要点</h4><p>核对交易对手、金额、币种与合同/发票一致性；关注拆分交易、整数大额、与经营规模不匹配的流水。</p>"}, "sop-ubo": {"name": "KYB 与 UBO 识别 SOP", "body": "<h4>一、UBO 判定标准</h4><ul><li>直接或间接持股 ≥25% 的自然人；</li><li>虽不足 25% 但通过协议、人事任免等拥有实际控制权；</li><li>均不适用时，以高级管理人（法定代表人/执行董事）作为 UBO 登记。</li></ul>\n<h4>二、采集字段</h4><p>姓名、出生日期、国籍、联系方式、常住地址、持股比例、是否董事/实控人标记。</p>\n<h4>三、核验要点</h4><ul><li>股权结构图与登记文件交叉验证，识别多层嵌套与代持迹象；</li><li>每位 UBO 均需完成制裁/PEP 筛查；</li><li>UBO 为公司注册代理人、秘书公司的，要求补充说明。</li></ul>"}, "sop-report": {"name": "误报处理与升级上报 SOP", "body": "<h4>一、误报处理</h4><ul><li>复核确认为误报 → 放行 + 记录比对要素差异 + 加入误报样本库；</li><li>误报样本每周由合规主管复盘，用于规则阈值调优。</li></ul>\n<h4>二、升级路径</h4><p>预审员 → 风控员 → 合规主管 → 首席合规官（MLRO）。发现可疑交易无法排除时，由合规主管评估是否提交可疑交易报告（STR/SAR）。</p>\n<h4>三、保密纪律</h4><p>严禁向客户透露筛查命中、上报等内部风控信息（防通风报信 / tipping-off）。</p>"}};
+var COURSE_DATA = {"c-aml": {"name": "反洗钱（AML）基础", "lessons": 6}, "c-sanc": {"name": "制裁名单体系", "lessons": 4}, "c-kyc": {"name": "KYC / KYB 与 UBO 识别", "lessons": 5}, "c-trade": {"name": "贸易背景真实性审核", "lessons": 4}};
+var QUIZ_ANS = [1, 1, 2, 1, 1];
+</script>
+<script>
+// 学习进度存储
+var LKEY = 'dd-learn';
+function lread(){ try { return JSON.parse(localStorage.getItem(LKEY) || '{}'); } catch(e){ return {}; } }
+function lwrite(d){ localStorage.setItem(LKEY, JSON.stringify(d)); refreshProgress(); }
+var LD = lread(); LD.sops = LD.sops || {}; LD.courses = LD.courses || {};
+
+document.getElementById('learn-role').textContent = DDRisk.info().name;
+
+// SOP 阅读
+document.querySelectorAll('.sop-read').forEach(function (b) {
+    b.addEventListener('click', function () {
+        var id = b.closest('.sop-card').getAttribute('data-sop');
+        var sop = SOP_DATA[id];
+        DDUI.modal({
+            title: sop.name,
+            body: '<div class="text-sm text-gray-600 leading-relaxed space-y-3 max-h-[60vh] overflow-y-auto pr-1" style="font-size:13px">' + sop.body + '</div>',
+            actions: [{ text: '标记已读完', type: 'primary', onClick: function (c) {
+                c(); LD.sops[id] = 1; lwrite(LD);
+                b.closest('.sop-card').querySelector('.sop-done').classList.remove('hidden');
+                b.textContent = '重新阅读';
+                DDUI.toast('已完成阅读', 'success');
+            } }]
+        });
+    });
+});
+// 恢复 SOP 已读状态
+Object.keys(LD.sops).forEach(function (id) {
+    var card = document.querySelector('.sop-card[data-sop="' + id + '"]');
+    if (card) { card.querySelector('.sop-done').classList.remove('hidden'); card.querySelector('.sop-read').textContent = '重新阅读'; }
+});
+
+// SOP 搜索
+document.getElementById('sop-search').addEventListener('input', function () {
+    var kw = this.value.trim().toLowerCase();
+    document.querySelectorAll('.sop-card').forEach(function (c) {
+        c.style.display = (!kw || c.textContent.toLowerCase().indexOf(kw) > -1) ? '' : 'none';
+    });
+});
+
+// 课程学习
+document.querySelectorAll('.course-go').forEach(function (b) {
+    b.addEventListener('click', function () {
+        var card = b.closest('.course-card');
+        var id = card.getAttribute('data-course');
+        var c = COURSE_DATA[id];
+        var done = LD.courses[id] || 0;
+        if (done >= c.lessons) { DDUI.toast('课程已学完', 'success'); return; }
+        done++;
+        LD.courses[id] = done; lwrite(LD);
+        paintCourse(card, done, c.lessons);
+        DDUI.toast('已完成第 ' + done + '/' + c.lessons + ' 课时', 'success');
+    });
+});
+function paintCourse(card, done, total) {
+    card.querySelector('.course-done-n').textContent = done;
+    card.querySelector('.course-bar').style.width = Math.round(done / total * 100) + '%';
+    if (done >= total) { var btn = card.querySelector('.course-go'); btn.textContent = '已完成 ✓'; btn.disabled = true; btn.classList.add('opacity-50'); }
+}
+document.querySelectorAll('.course-card').forEach(function (card) {
+    var id = card.getAttribute('data-course');
+    paintCourse(card, LD.courses[id] || 0, COURSE_DATA[id].lessons);
+});
+
+// 总体进度 = SOP 读完率 50% + 课程 30% + 测验 20%
+function refreshProgress() {
+    var sopTotal = Object.keys(SOP_DATA).length;
+    var sopDone = Object.keys(LD.sops).length;
+    var cTotal = 0, cDone = 0;
+    Object.keys(COURSE_DATA).forEach(function (k) { cTotal += COURSE_DATA[k].lessons; cDone += (LD.courses[k] || 0); });
+    var quizScore = LD.quizBest || 0;
+    var pct = Math.round(sopDone / sopTotal * 50 + (cTotal ? cDone / cTotal * 30 : 0) + (quizScore >= 80 ? 20 : quizScore / 100 * 20));
+    document.getElementById('learn-pct').textContent = pct + '%';
+    document.getElementById('learn-ring').style.strokeDashoffset = String(264 - 264 * pct / 100);
+    if (LD.quizBest != null) document.getElementById('quiz-best').textContent = LD.quizBest + ' 分' + (LD.quizBest >= 80 ? '（已通过）' : '（未通过）');
+}
+refreshProgress();
+
+// 测验
+document.getElementById('quiz-submit').addEventListener('click', function () {
+    var score = 0, unanswered = 0;
+    QUIZ_ANS.forEach(function (a, i) {
+        var sel = document.querySelector('input[name="q' + i + '"]:checked');
+        if (!sel) { unanswered++; return; }
+        if (+sel.value === a) score += 20;
+    });
+    if (unanswered) { DDUI.toast('还有 ' + unanswered + ' 题未作答', 'error'); return; }
+    if (LD.quizBest == null || score > LD.quizBest) { LD.quizBest = score; lwrite(LD); } else { refreshProgress(); }
+    DDUI.modal({
+        title: score >= 80 ? '测验通过 🎉' : '测验未通过',
+        body: '<p class="text-sm text-gray-600">本次得分：<b style="font-size:22px">' + score + '</b> 分' + (score >= 80 ? '，已达到转正标准（≥80 分）。' : '，未达到 80 分，请复习 SOP 后重考。') + '</p>',
+        actions: [{ text: '知道了', type: 'primary', onClick: function (c) { c(); } }]
+    });
+});
+</script>
+<script src="../assets/js/i18n.js"></script>
+</body>
+</html>

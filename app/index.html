@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="theme-color" content="#f5f5f7"/>
+<title>叮当支付 App</title>
+<link rel="stylesheet" href="../assets/css/apple.css" data-dd-apple="1"/>
+<link rel="stylesheet" href="app.css"/>
+</head>
+<body>
+<div class="stage">
+  <aside class="stage-side">
+    <a class="stage-brand" href="../home.html"><img alt="Dingdang Pay" src="../assets/img/logo-h.png" style="height:30px;width:auto"/></a>
+    <h1>叮当支付 App</h1>
+    <p>全球账户、即时付款、全场景收单，装进口袋。<br/>此为 H5 可交互原型，在手机上打开可全屏体验。</p>
+    <div class="stage-links">
+      <a href="../home.html">官网</a><a href="../dashboard.html">Web 客户端</a><a href="../admin/login.html">员工后台</a>
+    </div>
+  </aside>
+  <div class="phone">
+    <div class="statusbar"><span id="clock">9:41</span><span class="sb-r"><i class="sig"></i><i class="bat"></i></span></div>
+    <div id="view" class="view" aria-live="polite"></div>
+    <nav id="tabbar" class="tabbar" aria-label="主导航"></nav>
+    <div id="sheet-root"></div>
+  </div>
+</div>
+<script src="../assets/js/ui.js"></script>
+<script src="app.js"></script>
+<script src="../assets/js/i18n.js"></script>
+</body>
+</html>

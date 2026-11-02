@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>注册 - Dingdang Pay 叮当支付</title>
+<script src="assets/vendor/tailwindcss.js"></script>
+<script src="assets/vendor/iconify-icon.min.js"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FFD008',
+                        dark: '#382b1b',
+                        accent2: '#00B7EC'
+                    },
+                    borderRadius: { '8': '8px' }
+                }
+            }
+        }
+    </script>
+<link rel="stylesheet" href="assets/css/apple.css" data-dd-apple="1"/>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+<div class="max-w-md w-full">
+<div class="text-center mb-8">
+<a class="inline-flex items-center gap-2 mb-4" href="home.html"><img alt="Dingdang Pay" class="h-12 w-auto" src="assets/img/logo-h.png"/></a>
+<h2 class="text-2xl font-bold text-dark">开启全球支付之旅</h2>
+</div>
+<div class="bg-white p-8 rounded-8 shadow-xl border border-gray-100">
+<div class="flex gap-2 mb-8 p-1 bg-gray-100 rounded-8">
+<button class="flex-1 py-2 text-sm font-bold bg-white rounded-8 shadow-sm" id="tab-personal" onclick="switchRegTab('personal')" type="button">个人注册</button>
+<button class="flex-1 py-2 text-sm font-medium text-gray-500" id="tab-business" onclick="switchRegTab('business')" type="button">企业注册</button>
+</div>
+<form class="space-y-5" onsubmit="return doRegister(event)">
+<div id="company-field" style="display:none">
+<label class="block text-sm font-bold text-dark mb-2">企业名称</label>
+<input class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-8 focus:outline-none focus:border-accent2 transition-colors" id="reg-company" placeholder="与营业执照一致" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-bold text-dark mb-2">电子邮箱</label>
+<input class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-8 focus:outline-none focus:border-accent2 transition-colors" id="reg-email" placeholder="email@example.com" type="email"/>
+</div>
+<div>
+<label class="block text-sm font-bold text-dark mb-2">手机号码</label>
+<div class="flex gap-2">
+<select class="w-24 bg-gray-50 border border-gray-200 rounded-8 text-sm focus:outline-none" id="reg-cc">
+<option>+86</option>
+<option>+44</option>
+<option>+356</option>
+<option>+1</option>
+</select>
+<input class="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-8 focus:outline-none focus:border-accent2 transition-colors" id="reg-phone" placeholder="请输入手机号" type="tel"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-bold text-dark mb-2">验证码</label>
+<div class="flex gap-2">
+<input class="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-8 focus:outline-none focus:border-accent2 transition-colors" id="reg-code" placeholder="6位验证码" type="text"/>
+<button class="px-4 py-3 text-sm font-bold text-accent2 border border-accent2 rounded-8 hover:bg-accent2/5 disabled:opacity-40 disabled:cursor-not-allowed" id="reg-code-btn" onclick="sendRegCode()" type="button">获取验证码</button>
+</div>
+</div>
+<div>
+<label class="block text-sm font-bold text-dark mb-2">设置密码</label>
+<input class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-8 focus:outline-none focus:border-accent2 transition-colors" id="reg-password" placeholder="至少8位字符" type="password"/>
+</div>
+<div class="flex items-start gap-2 py-2">
+<input class="mt-1 accent-primary" id="terms" type="checkbox"/>
+<label class="text-xs text-gray-500 leading-relaxed" for="terms">
+                        我已阅读并同意 Dingdang Pay 的 <a class="text-accent2" href="terms.html">《用户协议》</a>、<a class="text-accent2" href="privacy.html">《隐私权政策》</a>及相关合规条款。
+                    </label>
+</div>
+<p class="text-xs text-red-500 hidden" id="reg-err"></p>
+<button class="w-full bg-primary text-dark font-bold py-4 rounded-8 hover:shadow-lg transition-all" id="reg-submit" type="submit">
+                    立即注册
+                </button>
+</form>
+<div class="mt-6 text-center text-sm text-gray-500">
+                已有账号？ <a class="text-accent2 font-bold hover:underline" href="login.html">去登录</a>
+</div>
+</div>
+</div>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/auth.js"></script>
+<script>
+var regType = 'personal';
+function switchRegTab(t) {
+    regType = t;
+    var on = 'flex-1 py-2 text-sm font-bold bg-white rounded-8 shadow-sm';
+    var off = 'flex-1 py-2 text-sm font-medium text-gray-500';
+    document.getElementById('tab-personal').className = t === 'personal' ? on : off;
+    document.getElementById('tab-business').className = t === 'business' ? on : off;
+    document.getElementById('company-field').style.display = t === 'business' ? 'block' : 'none';
+}
+function regErr(msg) {
+    var e = document.getElementById('reg-err');
+    e.textContent = msg || '';
+    e.classList.toggle('hidden', !msg);
+}
+function sendRegCode() {
+    var phone = document.getElementById('reg-phone').value.trim();
+    if (!/^1\d{10}$/.test(phone) && document.getElementById('reg-cc').value === '+86') {
+        regErr('请输入正确的手机号再获取验证码'); return;
+    }
+    if (!phone) { regErr('请先输入手机号'); return; }
+    regErr('');
+    var btn = document.getElementById('reg-code-btn');
+    var left = 60;
+    btn.disabled = true;
+    btn.textContent = left + 's 后重发';
+    DDUI.toast('验证码已发送（演示码：888888）', 'success');
+    var timer = setInterval(function () {
+        left--;
+        if (left <= 0) { clearInterval(timer); btn.disabled = false; btn.textContent = '获取验证码'; }
+        else btn.textContent = left + 's 后重发';
+    }, 1000);
+}
+function doRegister(e) {
+    e.preventDefault();
+    var email = document.getElementById('reg-email').value.trim();
+    var phone = document.getElementById('reg-phone').value.trim();
+    var code = document.getElementById('reg-code').value.trim();
+    var pwd = document.getElementById('reg-password').value;
+    var company = document.getElementById('reg-company').value.trim();
+    if (regType === 'business' && !company) return regErr('请填写企业名称'), false;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return regErr('请输入正确的电子邮箱'), false;
+    if (!phone) return regErr('请输入手机号码'), false;
+    if (!/^\d{6}$/.test(code)) return regErr('请输入 6 位数字验证码'), false;
+    if (pwd.length < 8) return regErr('密码至少 8 位字符'), false;
+    if (!document.getElementById('terms').checked) return regErr('请先阅读并勾选用户协议与隐私政策'), false;
+    regErr('');
+    var btn = document.getElementById('reg-submit');
+    DDUI.busy(btn, DDAuth.register(email, pwd).then(function () {
+        return DDAuth.login(email, pwd);
+    }), '注册成功，请完成实名认证').then(function () {
+        var demoQ = /[?&]demo=1\b/.test(location.search) ? '?demo=1' : '';
+        setTimeout(function () { location.href = (regType === 'business' ? 'kyb.html' : 'kyc.html') + demoQ; }, 500);
+    }).catch(function () { regErr('注册失败，请重试'); });
+    return false;
+}
+
+/* 演示模式：?demo=1 自动填入注册信息，点击「立即注册」即可进入开户向导 */
+if (/[?&]demo=1\b/.test(location.search)) {
+    document.getElementById('reg-email').value = 'xiaohan@dingdangpay.com';
+    document.getElementById('reg-cc').value = '+86';
+    document.getElementById('reg-phone').value = '13800138000';
+    document.getElementById('reg-code').value = '888888';
+    document.getElementById('reg-password').value = 'Dingdang@2026';
+    document.getElementById('terms').checked = true;
+    setTimeout(function () { DDUI.toast('演示数据已填入，点击「立即注册」进入开户向导', 'success'); }, 300);
+}
+</script>
+<script src="assets/js/i18n.js"></script>
+</body>
+</html>

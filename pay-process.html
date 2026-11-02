@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>支付处理 - Dingdang Pay</title>
+<script src="assets/vendor/tailwindcss.js"></script>
+<script src="assets/vendor/iconify-icon.min.js"></script>
+<style>
+        @font-face {
+            font-family: 'Inter';
+            src: url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f9fafb;
+            color: #382b1b;
+        }
+        .brand-bg { background-color: #FFD008; }
+        .brand-text { color: #382b1b; }
+        .btn-hover:hover { opacity: 0.9; }
+        .card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); }
+        .status-success { color: #10b981; }
+        .status-failed { color: #FF8106; }
+        .status-info { color: #00B7EC; }
+        .rounded-8 { border-radius: 8px; }
+    </style>
+<link rel="stylesheet" href="assets/css/apple.css" data-dd-apple="1"/>
+</head>
+<body class="flex flex-col min-h-screen">
+<!-- 顶部品牌栏 -->
+<header class="py-6 flex justify-center bg-white border-b border-gray-100">
+<div class="flex items-center"><img alt="Dingdang Pay" class="h-9 w-auto" src="assets/img/logo-h.png"/></div>
+</header>
+<main class="flex-grow flex flex-col items-center px-4 py-10">
+<!-- 容器宽度限制 -->
+<div class="w-full max-w-lg">
+<!-- 1. 成功状态视图 -->
+<div class="hidden animate-in fade-in duration-500" id="view-success">
+<div class="bg-white p-8 rounded-8 card-shadow text-center">
+<div class="flex justify-center mb-6">
+<div class="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center">
+<iconify-icon class="text-6xl text-emerald-500" icon="solar:check-circle-bold"></iconify-icon>
+</div>
+</div>
+<h1 class="text-2xl font-bold mb-2">支付成功！</h1>
+<p class="text-4xl font-extrabold my-6" id="success-amount">€1,280.00</p>
+<div class="space-y-4 text-left border-t border-gray-100 pt-6 mt-6">
+<div class="flex justify-between">
+<span class="text-gray-500">收款商户</span>
+<span class="font-medium">TechShop EU</span>
+</div>
+<div class="flex justify-between">
+<span class="text-gray-500">订单号</span>
+<span class="font-medium" id="order-id">ORD-20241220-001</span>
+</div>
+<div class="flex justify-between">
+<span class="text-gray-500">支付时间</span>
+<span class="font-medium">2026-06-26 19:46:14</span>
+</div>
+<div class="flex justify-between">
+<span class="text-gray-500">支付方式</span>
+<div class="flex items-center gap-2">
+<iconify-icon class="text-xl" icon="logos:visa"></iconify-icon>
+<span class="font-medium">•••• 3456</span>
+</div>
+</div>
+</div>
+<div class="mt-8 space-y-3">
+<button class="w-full brand-bg brand-text py-4 rounded-8 font-bold btn-hover transition-all">查看订单详情</button>
+<button class="w-full bg-white border border-gray-200 py-4 rounded-8 font-bold text-gray-700 hover:bg-gray-50 transition-all">返回商户</button>
+</div>
+</div>
+<!-- 信息卡片 -->
+<div class="mt-6 border-l-4 border-[#00B7EC] bg-blue-50 p-4 rounded-8 flex gap-3">
+<iconify-icon class="text-2xl status-info" icon="solar:info-circle-bold"></iconify-icon>
+<div>
+<p class="text-sm font-medium status-info">支付凭证已发送至您的邮箱</p>
+<p class="text-xs text-gray-500 mt-1">关注叮当支付公众号获取订单通知</p>
+</div>
+</div>
+</div>
+<!-- 2. 失败状态视图 -->
+<div class="hidden animate-in fade-in duration-500" id="view-failed">
+<div class="bg-white p-8 rounded-8 card-shadow text-center">
+<div class="flex justify-center mb-6">
+<div class="w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center">
+<iconify-icon class="text-6xl text-[#FF8106]" icon="solar:close-circle-bold"></iconify-icon>
+</div>
+</div>
+<h1 class="text-2xl font-bold mb-2">支付失败</h1>
+<p class="text-gray-600 mb-6">您的支付被银行拒绝，请尝试其他支付方式</p>
+<div class="bg-gray-50 p-4 rounded-8 mb-8 text-sm text-left">
+<div class="flex justify-between">
+<span class="text-gray-500">错误代码</span>
+<span class="font-mono font-medium text-red-500">DECLINED_002</span>
+</div>
+</div>
+<div class="space-y-3">
+<a class="block w-full brand-bg brand-text py-4 rounded-8 font-bold btn-hover transition-all text-center" href="pay-link.html">重试支付</a>
+<button class="w-full bg-white border border-gray-200 py-4 rounded-8 font-bold text-gray-700 hover:bg-gray-50 transition-all" onclick="switchView('init')">更换支付方式</button>
+</div>
+<button class="mt-6 text-sm text-gray-500 hover:underline">联系客服寻求帮助</button>
+</div>
+</div>
+<!-- 3. 发起新付款视图 (默认视图) -->
+<div class="animate-in fade-in duration-500" id="view-init">
+<div class="bg-white p-8 rounded-8 card-shadow">
+<h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+<iconify-icon class="brand-text text-2xl" icon="solar:card-send-bold"></iconify-icon>
+                        发起付款
+                    </h2>
+<form class="space-y-5" id="payment-form" onsubmit="handlePayment(event)">
+<!-- 收款商户 -->
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">收款商户</label>
+<div class="relative">
+<svg class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" style="width:1em;height:1em;display:inline-block;vertical-align:-0.125em;flex:none" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M3.778 3.655c-.181.36-.27.806-.448 1.696l-.598 2.99a3.06 3.06 0 1 0 6.043.904l.07-.69a3.167 3.167 0 1 0 6.307-.038l.073.728a3.06 3.06 0 1 0 6.043-.904l-.598-2.99c-.178-.89-.267-1.335-.448-1.696a3 3 0 0 0-1.888-1.548C17.944 2 17.49 2 16.582 2H7.418c-.908 0-1.362 0-1.752.107a3 3 0 0 0-1.888 1.548M18.269 13.5a4.53 4.53 0 0 0 2.231-.581V14c0 3.771 0 5.657-1.172 6.828c-.943.944-2.348 1.127-4.828 1.163V18.5c0-.935 0-1.402-.201-1.75a1.5 1.5 0 0 0-.549-.549C13.402 16 12.935 16 12 16s-1.402 0-1.75.201a1.5 1.5 0 0 0-.549.549c-.201.348-.201.815-.201 1.75v3.491c-2.48-.036-3.885-.22-4.828-1.163C3.5 19.657 3.5 17.771 3.5 14v-1.081a4.53 4.53 0 0 0 2.232.581a4.55 4.55 0 0 0 3.112-1.228A4.64 4.64 0 0 0 12 13.5a4.64 4.64 0 0 0 3.156-1.228a4.55 4.55 0 0 0 3.112 1.228"/></svg>
+<select class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-8 focus:outline-none focus:ring-2 focus:ring-[#FFD008] appearance-none">
+<option value="techshop">TechShop EU</option>
+<option value="foodco">FoodCo International</option>
+<option value="travelpro">TravelPro Global</option>
+<option value="cloudserv">Cloud Services Ltd</option>
+</select>
+</div>
+</div>
+<!-- 金额与币种 -->
+<div class="grid grid-cols-3 gap-3">
+<div class="col-span-2">
+<label class="block text-sm font-medium text-gray-700 mb-2">付款金额</label>
+<div class="relative">
+<input class="w-full pl-4 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-8 focus:outline-none focus:ring-2 focus:ring-[#FFD008]" id="input-amount" oninput="updateButtonText()" placeholder="0.00" required="" step="0.01" type="number"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">币种</label>
+<select class="w-full px-3 py-3 bg-gray-50 border border-gray-200 rounded-8 focus:outline-none focus:ring-2 focus:ring-[#FFD008]" id="input-currency" onchange="updateButtonText()">
+<option value="EUR">EUR</option>
+<option value="GBP">GBP</option>
+<option value="USD">USD</option>
+<option value="USDT">USDT</option>
+</select>
+</div>
+</div>
+<!-- 付款方式 -->
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">付款方式</label>
+<div class="space-y-2">
+<label class="flex items-center p-3 border border-gray-200 rounded-8 cursor-pointer hover:bg-yellow-50 transition-all group">
+<input checked="" class="w-4 h-4 accent-[#FFD008]" name="pay_method" type="radio" value="card"/>
+<div class="ml-3 flex items-center gap-2 flex-grow">
+<svg class="text-xl text-gray-500 group-hover:text-[#382b1b]" style="width:1em;height:1em;display:inline-block;vertical-align:-0.125em;flex:none" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><defs><mask id="SVGBcZ8Eejn"><g fill="none"><path fill="#fff" d="M14 4h-4C6.229 4 4.343 4 3.172 5.172c-.844.843-1.08 2.057-1.146 4.078h19.948c-.066-2.021-.302-3.235-1.146-4.078C19.657 4 17.771 4 14 4m-4 16h4c3.771 0 5.657 0 6.828-1.172S22 15.771 22 12q0-.662-.002-1.25H2.002Q1.999 11.338 2 12c0 3.771 0 5.657 1.172 6.828S6.229 20 10 20"/><path fill="#000" fill-rule="evenodd" d="M5.25 16a.75.75 0 0 1 .75-.75h4a.75.75 0 0 1 0 1.5H6a.75.75 0 0 1-.75-.75m6.5 0a.75.75 0 0 1 .75-.75H14a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75" clip-rule="evenodd"/></g></mask></defs><path fill="currentColor" d="M0 0h24v24H0z" mask="url(#SVGBcZ8Eejn)"/></svg>
+<span class="text-sm font-medium">Visa / Mastercard</span>
+</div>
+<div class="flex gap-1">
+<iconify-icon class="text-xs" icon="logos:visa"></iconify-icon>
+<iconify-icon class="text-xs" icon="logos:mastercard"></iconify-icon>
+</div>
+</label>
+<label class="flex items-center p-3 border border-gray-200 rounded-8 cursor-pointer hover:bg-yellow-50 transition-all group">
+<input class="w-4 h-4 accent-[#FFD008]" name="pay_method" type="radio" value="sepa"/>
+<div class="ml-3 flex items-center gap-2">
+<svg class="text-xl text-gray-500 group-hover:text-[#382b1b]" style="width:1em;height:1em;display:inline-block;vertical-align:-0.125em;flex:none" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" fill-rule="evenodd" d="M15 2h2c1.886 0 2.828 0 3.414.586S21 4.114 21 6v15.25h1a.75.75 0 0 1 0 1.5H2a.75.75 0 0 1 0-1.5h1V9c0-1.886 0-2.828.586-3.414S5.114 5 7 5h4c1.886 0 2.828 0 3.414.586S15 7.114 15 9v12.25h1.5V8.91c0-.865 0-1.659-.087-2.304c-.095-.711-.32-1.463-.938-2.08c-.618-.619-1.37-.844-2.08-.94c-.637-.085-1.418-.086-2.269-.086c.084-.387.225-.68.46-.914C12.172 2 13.114 2 15 2M5.25 8A.75.75 0 0 1 6 7.25h6a.75.75 0 0 1 0 1.5H6A.75.75 0 0 1 5.25 8m0 3a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5H6a.75.75 0 0 1-.75-.75m0 3a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5H6a.75.75 0 0 1-.75-.75M9 18.25a.75.75 0 0 1 .75.75v2.25h-1.5V19a.75.75 0 0 1 .75-.75" clip-rule="evenodd"/></svg>
+<span class="text-sm font-medium">SEPA 银行转账</span>
+</div>
+</label>
+<label class="flex items-center p-3 border border-gray-200 rounded-8 cursor-pointer hover:bg-yellow-50 transition-all group">
+<input class="w-4 h-4 accent-[#FFD008]" name="pay_method" type="radio" value="alipay"/>
+<div class="ml-3 flex items-center gap-2">
+<iconify-icon class="text-lg" icon="logos:alipay"></iconify-icon>
+<span class="text-sm font-medium">支付宝</span>
+</div>
+</label>
+</div>
+</div>
+<!-- 备注 -->
+<div>
+<label class="block text-sm font-medium text-gray-700 mb-2">备注 (选填)</label>
+<textarea class="w-full p-4 bg-gray-50 border border-gray-200 rounded-8 focus:outline-none focus:ring-2 focus:ring-[#FFD008] text-sm" placeholder="订单说明或留言..." rows="2"></textarea>
+</div>
+<button class="w-full brand-bg brand-text py-4 rounded-8 font-bold btn-hover transition-all mt-4 flex items-center justify-center gap-2 shadow-lg shadow-yellow-100" id="btn-submit" type="submit">
+                            立即支付 €0.00
+                        </button>
+</form>
+<div class="mt-6 flex items-center justify-center gap-2 text-xs text-gray-400">
+<svg class="text-emerald-500" style="width:1em;height:1em;display:inline-block;vertical-align:-0.125em;flex:none" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" fill-rule="evenodd" d="M3.378 5.082C3 5.62 3 7.22 3 10.417v1.574c0 5.638 4.239 8.375 6.899 9.536c.721.315 1.082.473 2.101.473c1.02 0 1.38-.158 2.101-.473C16.761 20.365 21 17.63 21 11.991v-1.574c0-3.198 0-4.797-.378-5.335c-.377-.537-1.88-1.052-4.887-2.081l-.573-.196C13.595 2.268 12.812 2 12 2s-1.595.268-3.162.805L8.265 3c-3.007 1.03-4.51 1.545-4.887 2.082M15.06 10.5a.75.75 0 0 0-1.12-.999l-3.011 3.374l-.87-.974a.75.75 0 0 0-1.118 1l1.428 1.6a.75.75 0 0 0 1.119 0z" clip-rule="evenodd"/></svg>
+<span>所有支付过程均受 256-bit SSL 加密保护</span>
+</div>
+</div>
+</div>
+<!-- 发起新交易入口 (在结果页底部可选显示) -->
+<div class="hidden mt-8 text-center" id="new-payment-trigger">
+<button class="text-sm font-medium brand-text hover:underline flex items-center justify-center gap-1 mx-auto" onclick="switchView('init')">
+<iconify-icon icon="solar:add-circle-bold"></iconify-icon>
+                    发起另一笔付款
+                </button>
+</div>
+</div>
+</main>
+<!-- 底部合规与安全 -->
+<footer class="bg-gray-900 text-gray-400 py-12 px-4 mt-auto">
+<div class="max-w-4xl mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10 text-xs leading-relaxed">
+<div>
+<h4 class="text-white font-bold mb-3 uppercase tracking-wider">监管信息</h4>
+<p class="mb-2">Dingdang Pay (Europe) Limited 由马耳他金融服务管理局 (MFSA) 授权并受其监管，注册编号为 C-123456。</p>
+<p>Dingdang Pay (UK) Limited 由英国金融行为监管局 (FCA) 授权，作为电子货币机构，FCA 参考编号为 900800。</p>
+</div>
+<div>
+<h4 class="text-white font-bold mb-3 uppercase tracking-wider">资金安全</h4>
+<p class="mb-2">您的资金存放在受监管的金融机构的独立隔离账户中，与 Dingdang Pay 的自有运营资金完全分离。</p>
+<div class="flex gap-4 mt-4">
+<iconify-icon class="text-3xl filter grayscale brightness-200" icon="logos:pci-dss-compliant"></iconify-icon>
+<iconify-icon class="text-3xl filter grayscale brightness-200" icon="logos:norton"></iconify-icon>
+</div>
+</div>
+</div>
+<div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
+<p>© 2026 Dingdang Pay. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="hover:text-white" href="terms.html">服务条款</a>
+<a class="hover:text-white" href="privacy.html">隐私政策</a>
+<a class="hover:text-white" href="#">反洗钱政策</a>
+</div>
+</div>
+</div>
+</footer>
+<!-- 处理中遮罩 -->
+<div class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center" id="loading-overlay">
+<div class="bg-white p-8 rounded-2xl flex flex-col items-center">
+<div class="w-12 h-12 border-4 border-gray-100 border-t-[#FFD008] rounded-full animate-spin"></div>
+<p class="mt-4 font-bold brand-text">处理您的请求中...</p>
+</div>
+</div>
+<script>
+        // 初始化页面状态
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            const status = params.get('status');
+            const amount = params.get('amount') || '0.00';
+            const currency = params.get('currency') || 'EUR';
+
+            if (status === 'success') {
+                showSuccess(amount, currency);
+            } else if (status === 'failed') {
+                showFailed();
+            } else {
+                switchView('init');
+                if(amount !== '0.00') {
+                    document.getElementById('input-amount').value = amount;
+                    document.getElementById('input-currency').value = currency;
+                    updateButtonText();
+                }
+            }
+        };
+
+        function switchView(viewId) {
+            document.getElementById('view-success').classList.add('hidden');
+            document.getElementById('view-failed').classList.add('hidden');
+            document.getElementById('view-init').classList.add('hidden');
+            document.getElementById('new-payment-trigger').classList.add('hidden');
+
+            const target = document.getElementById('view-' + viewId);
+            if (target) {
+                target.classList.remove('hidden');
+            }
+            
+            // 如果展示的是结果页，显示"发起新付款"触发器
+            if(viewId === 'success' || viewId === 'failed') {
+                document.getElementById('new-payment-trigger').classList.remove('hidden');
+            }
+        }
+
+        function showSuccess(amount, currency) {
+            const currencyMap = { 'EUR': '€', 'USD': '$', 'GBP': '£', 'USDT': '₮' };
+            const symbol = currencyMap[currency] || currency;
+            document.getElementById('success-amount').innerText = `${symbol}${parseFloat(amount).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            switchView('success');
+        }
+
+        function showFailed() {
+            switchView('failed');
+        }
+
+        function updateButtonText() {
+            const amount = document.getElementById('input-amount').value || '0.00';
+            const currency = document.getElementById('input-currency').value;
+            const btn = document.getElementById('btn-submit');
+            
+            const currencyMap = { 'EUR': '€', 'USD': '$', 'GBP': '£', 'USDT': '₮' };
+            const symbol = currencyMap[currency] || currency;
+
+            if (parseFloat(amount) > 0) {
+                btn.innerText = `立即支付 ${symbol}${parseFloat(amount).toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                btn.innerText = "请输入金额";
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        function handlePayment(e) {
+            e.preventDefault();
+            const amount = document.getElementById('input-amount').value;
+            if(!amount || parseFloat(amount) <= 0) return;
+
+            document.getElementById('loading-overlay').classList.remove('hidden');
+            
+            // 模拟支付处理延迟
+            setTimeout(() => {
+                document.getElementById('loading-overlay').classList.add('hidden');
+                // 模拟成功，实际生产中会跳转到 pay-link 处理结果
+                const currency = document.getElementById('input-currency').value;
+                showSuccess(amount, currency);
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 1500);
+        }
+    </script>
+<script src="assets/js/ui.js"></script>
+<script>
+/* wire:pay-process.html */
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('button').forEach(function (b) {
+        var t = b.textContent.trim();
+        if (b.dataset.wired) return;
+        if (t === '查看订单详情') {
+            b.dataset.wired = 1;
+            b.addEventListener('click', function () {
+                DDUI.modal({
+                    title: '订单详情', width: '460px',
+                    body: '<div class="ddui-kv"><span>订单号</span><b style="font-family:monospace">DD' + String(Date.now()).slice(-10) + '</b></div>' +
+                        '<div class="ddui-kv"><span>商户</span><b>TechShop EU</b></div>' +
+                        '<div class="ddui-kv"><span>金额</span><b>€128.00</b></div>' +
+                        '<div class="ddui-kv"><span>支付方式</span><b>Dingdang 钱包余额</b></div>' +
+                        '<div class="ddui-kv"><span>状态</span><b style="color:#16a34a">支付成功</b></div>' +
+                        '<div class="ddui-kv"><span>时间</span><b>' + new Date().toLocaleString('zh-CN') + '</b></div>',
+                    actions: [{ text: '关闭', type: 'primary' }]
+                });
+            });
+        }
+        if (t === '返回商户') { b.dataset.wired = 1; b.addEventListener('click', function () { location.href = 'home.html'; }); }
+        if (t === '联系客服寻求帮助') { b.dataset.wired = 1; b.addEventListener('click', function () { location.href = 'messages.html'; }); }
+    });
+});
+
+</script>
+<script src="assets/js/i18n.js"></script>
+</body>
+</html>

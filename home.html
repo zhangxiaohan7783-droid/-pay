@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dingdang Pay 叮当支付 - 全球跨境数字支付平台</title>
+<script src="assets/vendor/tailwindcss.js"></script>
+<script src="assets/vendor/iconify-icon.min.js"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FFD008',
+                        dark: '#382b1b',
+                        accent1: '#FF8106',
+                        accent2: '#00B7EC',
+                        accent3: '#B786D6',
+                        light: '#F8F9FA'
+                    },
+                    borderRadius: {
+                        '8': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #382b1b; }
+        .hero-gradient { background: linear-gradient(135deg, #F8F9FA 0%, #FFFFFF 100%); }
+        .nav-link:hover { color: #FFD008; }
+    </style>
+<link rel="stylesheet" href="assets/css/apple.css" data-dd-apple="1"/>
+</head>
+<body class="bg-white">
+<!-- dd-site-nav:start -->
+<nav class="dd-site-nav">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16 items-center">
+<a class="flex items-center" href="home.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="assets/img/logo-h.png"/></a>
+<div class="dd-site-menu hidden md:flex items-center gap-8" id="dd-site-menu"><a class="nav-link on" href="home.html">首页</a><a class="nav-link" href="product-accounts.html">全球账户</a><a class="nav-link" href="product-expense.html">费用管理</a><a class="nav-link" href="product-payments.html">全球即时付款</a><a class="nav-link" href="product-acquiring.html">全球收单</a><a class="nav-link" href="about.html">关于我们</a><a class="nav-link" href="help.html">帮助</a></div>
+<div class="flex items-center gap-3"><a class="hidden sm:inline text-sm font-medium text-dark hover:opacity-70" href="login.html">登录</a><a class="bg-primary text-dark px-5 py-2 rounded-full text-sm font-bold" href="register.html?demo=1">立即开户</a><button class="dd-burger w-10 h-10 items-center justify-center rounded-full hover:bg-gray-100" aria-label="菜单" aria-expanded="false" aria-controls="dd-site-menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div>
+</div>
+</div>
+</nav>
+<!-- dd-site-nav:end -->
+<!-- Hero Section -->
+<section class="hero-gradient pt-20 pb-32 overflow-hidden">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center">
+<div class="lg:w-1/2 text-center lg:text-left">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-bold mb-6">
+<iconify-icon icon="solar:verified-check-bold"></iconify-icon>
+                    成立于 2025 · 欧盟 / 英国牌照申请中
+                </div>
+<h1 class="text-5xl lg:text-6xl font-extrabold text-dark leading-tight mb-6">
+                    连接全球的<br/><span class="text-primary underline decoration-accent2 decoration-4 underline-offset-8">跨境数字支付</span>
+</h1>
+<p class="text-lg text-gray-600 mb-10 max-w-xl">
+                    叮当支付成立于 2025 年，通过对接 Sokin 持牌系统与开放 API，为企业提供多币种全球账户、即时付款与全场景收单服务。
+                </p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+<a class="bg-primary text-dark px-8 py-4 rounded-8 font-bold text-lg flex items-center justify-center gap-2 hover:scale-105 transition-transform" href="register.html?demo=1">
+                        开始体验 <iconify-icon icon="solar:arrow-right-up-bold"></iconify-icon>
+</a>
+<a class="border-2 border-accent2 text-accent2 px-8 py-4 rounded-8 font-bold text-lg hover:bg-accent2/5 transition-colors" href="compliance.html">
+                        合规与安全
+                    </a>
+</div>
+</div>
+<div class="lg:w-1/2 mt-16 lg:mt-0 relative">
+<div class="relative z-10 bg-white p-6 rounded-2xl shadow-2xl border border-gray-100 max-w-md mx-auto transform rotate-2">
+<img alt="Dingdang Pay 银行卡" class="w-full mb-4" src="assets/img/card-yellow.png"/>
+<div class="flex justify-between items-center">
+<div>
+<p class="text-xs text-gray-400">当前余额</p>
+<p class="text-2xl font-bold text-dark">€ 12,480.50</p>
+</div>
+<div class="bg-primary/20 p-2 rounded-lg">
+<svg class="text-primary text-2xl" style="width:1em;height:1em;display:inline-block;vertical-align:-0.125em;flex:none" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M14 4h-4C6.229 4 4.343 4 3.172 5.172c-.844.843-1.08 2.057-1.146 4.078h19.948c-.066-2.021-.302-3.235-1.146-4.078C19.657 4 17.771 4 14 4"/><path fill="currentColor" fill-rule="evenodd" d="M14 20h-4c-3.771 0-5.657 0-6.828-1.172S2 15.771 2 12q0-.662.002-1.25h19.996Q22 11.338 22 12c0 3.771 0 5.657-1.172 6.828S17.771 20 14 20m2.045-7.75c.433 0 .83 0 1.152.043c.356.048.731.16 1.04.47s.422.684.47 1.04c.043.323.043.72.043 1.152v.09c0 .433 0 .83-.043 1.152c-.048.356-.16.731-.47 1.04s-.684.422-1.04.47c-.323.043-.72.043-1.152.043h-.09c-.433 0-.83 0-1.152-.043c-.356-.048-.731-.16-1.04-.47s-.422-.684-.47-1.04c-.043-.323-.043-.72-.043-1.152v-.09c0-.433 0-.83.043-1.152c.048-.356.16-.731.47-1.04s.684-.422 1.04-.47c.323-.043.72-.043 1.152-.043zM5.25 13.5a.75.75 0 0 1 .75-.75h2a.75.75 0 0 1 0 1.5H6a.75.75 0 0 1-.75-.75m0 3a.75.75 0 0 1 .75-.75h4a.75.75 0 0 1 0 1.5H6a.75.75 0 0 1-.75-.75" clip-rule="evenodd"/><path fill="currentColor" d="m14.823 13.823l.003-.001l.01-.005a.7.7 0 0 1 .167-.037c.21-.028.504-.03.997-.03s.787.002.997.03a.7.7 0 0 1 .177.042l.003.001l.001.003l.005.01c.009.022.024.07.037.167c.028.21.03.504.03.997s-.002.787-.03.997a.7.7 0 0 1-.042.177l-.001.003l-.003.001l-.01.005a.7.7 0 0 1-.167.037c-.21.028-.504.03-.997.03s-.787-.002-.997-.03a.7.7 0 0 1-.177-.042l-.003-.001l-.001-.003l-.005-.01a.7.7 0 0 1-.037-.167c-.028-.21-.03-.504-.03-.997s.002-.787.03-.997a.7.7 0 0 1 .042-.177z"/></svg>
+</div>
+</div>
+</div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl -z-0"></div>
+</div>
+</div>
+</section>
+<!-- 品牌亮点 -->
+<section class="py-24 bg-white">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="p-8 rounded-8 border border-gray-100 hover:border-primary/30 transition-colors">
+<div class="w-14 h-14 bg-accent2/10 rounded-8 flex items-center justify-center mb-6">
+<iconify-icon class="text-accent2 text-3xl" icon="solar:globus-bold"></iconify-icon>
+</div>
+<h3 class="text-xl font-bold mb-4">全球多币种账户</h3>
+<p class="text-gray-500">支持 30+ 种主流货币，秒级生成英国及欧盟本地 IBAN 账户，像本地人一样收付款。</p>
+</div>
+<div class="p-8 rounded-8 border border-gray-100 hover:border-primary/30 transition-colors">
+<div class="w-14 h-14 bg-primary/10 rounded-8 flex items-center justify-center mb-6">
+<svg class="text-primary text-3xl" style="width:1em;height:1em;display:inline-block;vertical-align:-0.125em;flex:none" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M10.25 4a.75.75 0 0 0-1.303-.507l-5.5 6A.75.75 0 0 0 4 10.75h16a.75.75 0 0 0 0-1.5h-9.75zm3.5 16v-5.25H4a.75.75 0 0 1 0-1.5h16a.75.75 0 0 1 .553 1.257l-5.5 6A.75.75 0 0 1 13.75 20"/></svg>
+</div>
+<h3 class="text-xl font-bold mb-4">极速全球即时付款</h3>
+<p class="text-gray-500">连接 SEPA、FPS 及中国速汇通道，最快 5 分钟到账，费率透明且极具竞争力。</p>
+</div>
+<div class="p-8 rounded-8 border border-gray-100 hover:border-primary/30 transition-colors">
+<div class="w-14 h-14 bg-accent1/10 rounded-8 flex items-center justify-center mb-6">
+<svg class="text-accent1 text-3xl" style="width:1em;height:1em;display:inline-block;vertical-align:-0.125em;flex:none" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" fill-rule="evenodd" d="M3.378 5.082C3 5.62 3 7.22 3 10.417v1.574c0 5.638 4.239 8.375 6.899 9.536c.721.315 1.082.473 2.101.473c1.02 0 1.38-.158 2.101-.473C16.761 20.365 21 17.63 21 11.991v-1.574c0-3.198 0-4.797-.378-5.335c-.377-.537-1.88-1.052-4.887-2.081l-.573-.196C13.595 2.268 12.812 2 12 2s-1.595.268-3.162.805L8.265 3c-3.007 1.03-4.51 1.545-4.887 2.082M15.06 10.5a.75.75 0 0 0-1.12-.999l-3.011 3.374l-.87-.974a.75.75 0 0 0-1.118 1l1.428 1.6a.75.75 0 0 0 1.119 0z" clip-rule="evenodd"/></svg>
+</div>
+<h3 class="text-xl font-bold mb-4">合规优先</h3>
+<p class="text-gray-500">欧盟与英国支付牌照申请中，交易经 Sokin 等持牌合作机构处理，遵循 GDPR 数据保护。</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 收单解决方案 -->
+<section class="py-24 bg-light">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-16">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-bold mb-4">一站式商户收单</div>
+<h2 class="text-4xl font-extrabold text-dark mb-4">全场景收单解决方案</h2>
+<p class="text-gray-500 max-w-2xl mx-auto">无论您是游戏厂商、独立站卖家，还是需要触达中国消费者，Dingdang Pay 都能提供合规、稳定、高转化的收款通道。</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- 游戏收单 -->
+<div class="bg-white p-8 rounded-8 border border-gray-100 hover:border-accent1/40 hover:shadow-xl transition-all flex flex-col">
+<div class="w-14 h-14 bg-accent1/10 rounded-8 flex items-center justify-center mb-6">
+<svg class="text-accent1 text-3xl" style="width:1em;height:1em;display:inline-block;vertical-align:-0.125em;flex:none" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M7.5 5.5h9c3.24 0 5.35 2.44 5.49 5.53l.3 4.06c.16 2.04-1.4 3.66-3.43 3.66a3.5 3.5 0 0 1-2.7-1.29L15 16h-6l-1.16 1.46a3.5 3.5 0 0 1-2.7 1.29c-2.03 0-3.6-1.62-3.43-3.66l.3-4.06C2.15 7.94 4.26 5.5 7.5 5.5"/><path fill="#fff" d="M8.25 9v1.25H7v1.5h1.25V13h1.5v-1.25H11v-1.5H9.75V9z"/><circle cx="15.25" cy="10" r="1" fill="#fff"/><circle cx="17.25" cy="12" r="1" fill="#fff"/></svg>
+</div>
+<h3 class="text-xl font-bold mb-2">游戏收单</h3>
+<p class="text-gray-500 text-sm mb-5 flex-1">面向游戏厂商与发行商的全球收款通道，覆盖手游、端游、页游全品类。</p>
+<ul class="space-y-2 text-sm text-gray-600 mb-6">
+<li class="flex items-start gap-2"><svg class="text-accent1 mt-0.5 flex-none" style="width:1em;height:1em" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m-1.2 13.6-3.4-3.4 1.4-1.4 2 2 4.6-4.6 1.4 1.4z"/></svg>点卡 / 内购 / 订阅全支持</li>
+<li class="flex items-start gap-2"><svg class="text-accent1 mt-0.5 flex-none" style="width:1em;height:1em" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m-1.2 13.6-3.4-3.4 1.4-1.4 2 2 4.6-4.6 1.4 1.4z"/></svg>专属风控，拒付率保障</li>
+<li class="flex items-start gap-2"><svg class="text-accent1 mt-0.5 flex-none" style="width:1em;height:1em" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m-1.2 13.6-3.4-3.4 1.4-1.4 2 2 4.6-4.6 1.4 1.4z"/></svg>多币种结算，T+1 到账</li>
+</ul>
+<a class="text-accent1 font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all" href="product-acquiring.html#game">了解详情 <svg style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+</div>
+<!-- 独立站收单 -->
+<div class="bg-white p-8 rounded-8 border border-gray-100 hover:border-accent2/40 hover:shadow-xl transition-all flex flex-col">
+<div class="w-14 h-14 bg-accent2/10 rounded-8 flex items-center justify-center mb-6">
+<svg class="text-accent2 text-3xl" style="width:1em;height:1em;display:inline-block;vertical-align:-0.125em;flex:none" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M4.3 3h15.4l1.8 5.2A2.9 2.9 0 0 1 18.5 11a3 3 0 0 1-2.8-1.9A3 3 0 0 1 12.9 11a3 3 0 0 1-2.8-1.9A3 3 0 0 1 7.3 11a2.9 2.9 0 0 1-3-2.8z"/><path d="M5 12.7c.5.2 1 .3 1.5.3 1.5 0 2.8-.7 3.6-1.7A4.7 4.7 0 0 0 13.7 13c1.4 0 2.7-.6 3.5-1.6a4.7 4.7 0 0 0 3.3 1.4l-.5 7.2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1zM8.5 15h4v6h-4z"/></svg>
+</div>
+<h3 class="text-xl font-bold mb-2">独立站收单</h3>
+<p class="text-gray-500 text-sm mb-5 flex-1">为 Shopify、WooCommerce 等独立站卖家提供一站式全球收款。</p>
+<ul class="space-y-2 text-sm text-gray-600 mb-6">
+<li class="flex items-start gap-2"><svg class="text-accent2 mt-0.5 flex-none" style="width:1em;height:1em" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m-1.2 13.6-3.4-3.4 1.4-1.4 2 2 4.6-4.6 1.4 1.4z"/></svg>Visa / Mastercard / 本地支付</li>
+<li class="flex items-start gap-2"><svg class="text-accent2 mt-0.5 flex-none" style="width:1em;height:1em" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m-1.2 13.6-3.4-3.4 1.4-1.4 2 2 4.6-4.6 1.4 1.4z"/></svg>插件 5 分钟快速接入</li>
+<li class="flex items-start gap-2"><svg class="text-accent2 mt-0.5 flex-none" style="width:1em;height:1em" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m-1.2 13.6-3.4-3.4 1.4-1.4 2 2 4.6-4.6 1.4 1.4z"/></svg>高转化率收银台体验</li>
+</ul>
+<a class="text-accent2 font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all" href="product-acquiring.html#site">了解详情 <svg style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+</div>
+<!-- 微信收单 -->
+<div class="bg-white p-8 rounded-8 border border-gray-100 hover:border-[#07C160]/40 hover:shadow-xl transition-all flex flex-col">
+<div class="w-14 h-14 rounded-8 flex items-center justify-center mb-6" style="background:rgba(7,193,96,.1)">
+<svg style="width:1.2em;height:1.2em;display:inline-block;vertical-align:-0.125em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#07C160" d="M9 3.5C5.1 3.5 2 6.2 2 9.4c0 1.8 1 3.4 2.5 4.5L3.9 16l2.3-1.2c.9.3 1.8.4 2.8.4h.4A6 6 0 0 1 9 14.5c0-3.3 3.1-6 7-6 .3 0 .6 0 .9.1C16.3 5.5 13 3.5 9 3.5"/><path fill="#07C160" d="M15.5 9.5c-3.3 0-6 2.2-6 5s2.7 5 6 5c.8 0 1.6-.1 2.3-.4l2 1-.6-1.7c1.2-.9 2-2.3 2-3.9 0-2.8-2.7-5-5.7-5"/></svg>
+</div>
+<h3 class="text-xl font-bold mb-2">微信收单</h3>
+<p class="text-gray-500 text-sm mb-5 flex-1">直连微信支付官方通道，全场景触达 13 亿微信用户。</p>
+<ul class="space-y-2 text-sm text-gray-600 mb-6">
+<li class="flex items-start gap-2"><svg class="mt-0.5 flex-none" style="width:1em;height:1em;color:#07C160" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m-1.2 13.6-3.4-3.4 1.4-1.4 2 2 4.6-4.6 1.4 1.4z"/></svg>扫码 / 小程序 / 公众号支付</li>
+<li class="flex items-start gap-2"><svg class="mt-0.5 flex-none" style="width:1em;height:1em;color:#07C160" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m-1.2 13.6-3.4-3.4 1.4-1.4 2 2 4.6-4.6 1.4 1.4z"/></svg>跨境人民币结算秒到账</li>
+<li class="flex items-start gap-2"><svg class="mt-0.5 flex-none" style="width:1em;height:1em;color:#07C160" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m-1.2 13.6-3.4-3.4 1.4-1.4 2 2 4.6-4.6 1.4 1.4z"/></svg>线上线下全场景覆盖</li>
+</ul>
+<a class="font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all" style="color:#07C160" href="product-acquiring.html#wechat">了解详情 <svg style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+</div>
+<!-- 支付宝收单 -->
+<div class="bg-white p-8 rounded-8 border border-gray-100 hover:border-[#1677FF]/40 hover:shadow-xl transition-all flex flex-col">
+<div class="w-14 h-14 rounded-8 flex items-center justify-center mb-6" style="background:rgba(22,119,255,.1)">
+<svg style="width:1.3em;height:1.3em;display:inline-block;vertical-align:-0.125em" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><text x="12" y="17.5" text-anchor="middle" font-family="'PingFang SC','Microsoft YaHei',sans-serif" font-size="16" font-weight="700" fill="#1677FF">支</text></svg>
+</div>
+<h3 class="text-xl font-bold mb-2">支付宝收单</h3>
+<p class="text-gray-500 text-sm mb-5 flex-1">支付宝境内外收单，触达 10 亿+ 中国消费者。</p>
+<ul class="space-y-2 text-sm text-gray-600 mb-6">
+<li class="flex items-start gap-2"><svg class="mt-0.5 flex-none" style="width:1em;height:1em;color:#1677FF" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m-1.2 13.6-3.4-3.4 1.4-1.4 2 2 4.6-4.6 1.4 1.4z"/></svg>扫码 / 条码 / APP 支付</li>
+<li class="flex items-start gap-2"><svg class="mt-0.5 flex-none" style="width:1em;height:1em;color:#1677FF" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m-1.2 13.6-3.4-3.4 1.4-1.4 2 2 4.6-4.6 1.4 1.4z"/></svg>Alipay+ 覆盖东南亚钱包</li>
+<li class="flex items-start gap-2"><svg class="mt-0.5 flex-none" style="width:1em;height:1em;color:#1677FF" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m-1.2 13.6-3.4-3.4 1.4-1.4 2 2 4.6-4.6 1.4 1.4z"/></svg>跨境结算一站式完成</li>
+</ul>
+<a class="font-bold text-sm flex items-center gap-1 hover:gap-2 transition-all" style="color:#1677FF" href="product-acquiring.html#alipay">了解详情 <svg style="width:1em;height:1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+</div>
+</div>
+<!-- CTA -->
+<div class="mt-14 bg-dark rounded-8 p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+<div>
+<h3 class="text-2xl font-extrabold text-white mb-2">准备好开始收款了吗？</h3>
+<p class="text-gray-400">开通商户账户，一个后台管理所有收单通道，费率低至 0.8%。</p>
+</div>
+<a class="bg-primary text-dark px-8 py-4 rounded-8 font-bold text-lg whitespace-nowrap hover:scale-105 transition-transform" href="register.html?demo=1">免费开通商户账户</a>
+</div>
+</div>
+</section>
+<!-- 即时收付款覆盖地区 -->
+<section class="py-24 bg-white">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="text-center mb-14">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent2/10 text-accent2 text-sm font-bold mb-4">全球即时收付款网络</div>
+<h2 class="text-4xl font-extrabold text-dark mb-4">支持即时收付款的地区</h2>
+<p class="text-gray-500 max-w-2xl mx-auto">覆盖 40+ 国家和地区，本地通道直连，付款秒级到账，收款实时入账。</p>
+</div>
+<!-- 数据概览 -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-14">
+<div class="text-center">
+<p class="text-4xl font-extrabold text-primary">40+</p>
+<p class="text-gray-500 text-sm mt-1">国家 / 地区</p>
+</div>
+<div class="text-center">
+<p class="text-4xl font-extrabold text-primary">30+</p>
+<p class="text-gray-500 text-sm mt-1">结算币种</p>
+</div>
+<div class="text-center">
+<p class="text-4xl font-extrabold text-primary">5 分钟</p>
+<p class="text-gray-500 text-sm mt-1">最快到账</p>
+</div>
+<div class="text-center">
+<p class="text-4xl font-extrabold text-primary">7×24</p>
+<p class="text-gray-500 text-sm mt-1">全天候清算</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- 欧洲 -->
+<div class="p-8 rounded-8 border border-gray-100 hover:border-primary/30 transition-colors">
+<div class="flex items-center justify-between mb-5">
+<h3 class="text-lg font-bold">欧洲</h3>
+<span class="text-xs font-bold px-2.5 py-1 rounded-full bg-primary/10 text-primary">SEPA Instant / FPS · 秒级</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">GB</span>英国</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">DE</span>德国</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">FR</span>法国</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">IT</span>意大利</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">ES</span>西班牙</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">NL</span>荷兰</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">MT</span>马耳他</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm text-gray-400">+ 欧元区 19 国</span>
+</div>
+</div>
+<!-- 大中华区 -->
+<div class="p-8 rounded-8 border border-gray-100 hover:border-primary/30 transition-colors">
+<div class="flex items-center justify-between mb-5">
+<h3 class="text-lg font-bold">大中华区</h3>
+<span class="text-xs font-bold px-2.5 py-1 rounded-full bg-[#07C160]/10" style="color:#07C160">微信 / 支付宝 / 银联 · 秒级</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">CN</span>中国大陆</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">HK</span>中国香港</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">MO</span>中国澳门</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">TW</span>中国台湾</span>
+</div>
+</div>
+<!-- 东南亚及亚太 -->
+<div class="p-8 rounded-8 border border-gray-100 hover:border-primary/30 transition-colors">
+<div class="flex items-center justify-between mb-5">
+<h3 class="text-lg font-bold">东南亚及亚太</h3>
+<span class="text-xs font-bold px-2.5 py-1 rounded-full bg-accent2/10 text-accent2">本地钱包直连 · 秒级</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">SG</span>新加坡</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">MY</span>马来西亚</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">TH</span>泰国</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">ID</span>印度尼西亚</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">VN</span>越南</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">PH</span>菲律宾</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">JP</span>日本</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">KR</span>韩国</span>
+</div>
+</div>
+<!-- 美洲及其他 -->
+<div class="p-8 rounded-8 border border-gray-100 hover:border-primary/30 transition-colors">
+<div class="flex items-center justify-between mb-5">
+<h3 class="text-lg font-bold">美洲及中东</h3>
+<span class="text-xs font-bold px-2.5 py-1 rounded-full bg-accent1/10 text-accent1">ACH / 本地清算 · 当日达</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">US</span>美国</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">CA</span>加拿大</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">AU</span>澳大利亚</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">AE</span>阿联酋</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm"><span class="w-6 h-6 rounded-full bg-dark/5 text-[10px] font-bold flex items-center justify-center">SA</span>沙特阿拉伯</span>
+<span class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-light border border-gray-100 text-sm text-gray-400">持续拓展中</span>
+</div>
+</div>
+</div>
+<p class="text-center text-gray-400 text-sm mt-10">具体通道与到账时效以商户后台实时通道状态为准。</p>
+</div>
+</section>
+<!-- 底部 -->
+<!-- dd-site-footer:start -->
+<footer class="bg-dark text-white pt-16 pb-10">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-10 mb-12">
+<div class="col-span-2">
+<div class="flex items-center gap-2 mb-5"><img alt="Dingdang Pay" class="h-9 w-auto" src="assets/img/logo-h-rev.png"/></div>
+<p class="text-gray-400 text-sm leading-relaxed max-w-sm">叮当支付成立于 2025 年，是一家跨境支付科技公司。我们正通过对接 Sokin 系统与开放 API，为全球化企业构建全球收付款基础设施。</p>
+<p class="text-gray-400 text-sm mt-4">客服邮箱: support@dingdangpay.com</p>
+</div>
+<div><h4 class="font-semibold mb-5 text-primary text-sm">产品服务</h4><ul class="space-y-3 text-gray-400 text-sm">
+<li><a class="hover:text-white" href="product-accounts.html">全球账户</a></li>
+<li><a class="hover:text-white" href="product-expense.html">费用管理</a></li>
+<li><a class="hover:text-white" href="product-payments.html">全球即时付款</a></li>
+<li><a class="hover:text-white" href="product-acquiring.html">全球收单</a></li>
+<li><a class="hover:text-white" href="app/index.html">下载 App</a></li></ul></div>
+<div><h4 class="font-semibold mb-5 text-primary text-sm">关于叮当</h4><ul class="space-y-3 text-gray-400 text-sm">
+<li><a class="hover:text-white" href="about.html">关于我们</a></li>
+<li><a class="hover:text-white" href="compliance.html">监管牌照</a></li>
+<li><a class="hover:text-white" href="help.html">帮助中心</a></li>
+<li><a class="hover:text-white" href="register.html?demo=1">注册开户</a></li></ul></div>
+<div><h4 class="font-semibold mb-5 text-primary text-sm">法律条款</h4><ul class="space-y-3 text-gray-400 text-sm">
+<li><a class="hover:text-white" href="privacy.html">隐私协议</a></li>
+<li><a class="hover:text-white" href="terms.html">服务条款</a></li></ul></div>
+</div>
+<div class="pt-8 border-t border-white/10 text-xs text-gray-500 flex flex-col md:flex-row justify-between gap-4">
+<p>© 2026 Dingdang Pay. 支付牌照申请中，资金服务由 Sokin 等持牌合作机构提供。</p>
+<div class="flex gap-6"><span>系统对接: Sokin</span><span>开放 API</span></div>
+</div>
+</div>
+</footer>
+<!-- dd-site-footer:end -->
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/i18n.js"></script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>牌照管理 - 叮当支付内部运营后台</title>
+<script src="../assets/vendor/tailwindcss.js"></script>
+<script src="../assets/vendor/iconify-icon.min.js"></script>
+<script src="../assets/vendor/echarts.min.js"></script>
+<style>
+        body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #382b1b; background-color: #f5f4f0; }
+        .custom-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
+        .rounded-8 { border-radius: 8px; }
+</style>
+<link rel="stylesheet" href="../assets/css/apple.css" data-dd-apple="1"/>
+</head>
+<body class="bg-gray-50">
+<div class="flex min-h-screen">
+<style>
+.ad-sidenav-link{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;color:#9ca3af;font-size:14px;line-height:1.4;transition:background .15s,color .15s;text-decoration:none}
+.ad-sidenav-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.ad-sidenav-active,.ad-sidenav-active:hover{background:#FFD008;color:#382b1b;font-weight:600}
+.ad-sidenav-sec{padding:16px 12px 6px;font-size:11px;font-weight:600;color:#6b7280;letter-spacing:.05em}
+.ad-noscroll{scrollbar-width:none;-ms-overflow-style:none}
+.ad-noscroll::-webkit-scrollbar{display:none}
+</style>
+<aside class="w-64 flex-none hidden lg:flex flex-col" id="sidebar" style="background:#241d12"><div class="p-6 flex items-center space-x-3"><a class="flex items-center space-x-3" href="index.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="../assets/img/logo-h-rev.png"/></a></div><div class="flex-1 overflow-y-auto px-4 py-2 ad-noscroll"><nav class="space-y-1"><a class="ad-sidenav-link" href="index.html"><iconify-icon class="text-xl" icon="solar:widget-bold"></iconify-icon><span>运营总览</span></a><div class="ad-sidenav-sec">客户与开户</div><div class="ad-sidenav-sec">个人开户管理</div><a class="ad-sidenav-link" href="ob-personal.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>个人开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-personal-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>个人开户资料归档</span></a><a class="ad-sidenav-link" href="ob-personal-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-personal-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-personal-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>个人开户 Sokin</span></a><div class="ad-sidenav-sec">商业开户管理</div><a class="ad-sidenav-link" href="ob-business.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>商业开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-business-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>商业开户资料归档</span></a><a class="ad-sidenav-link" href="ob-business-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-business-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-business-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>商业开户 Sokin</span></a><a class="ad-sidenav-link" href="business.html"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon><span>商业客户管理</span></a><a class="ad-sidenav-link" href="personal.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>个人客户管理</span></a><div class="ad-sidenav-sec">风控与合规</div><a class="ad-sidenav-link" href="risk.html"><iconify-icon class="text-xl" icon="solar:shield-warning-bold"></iconify-icon><span>风控总览</span></a><a class="ad-sidenav-link" href="risk-review.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>审核工作台</span></a><a class="ad-sidenav-link" href="risk-cases.html"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon><span>案件管理</span></a><a class="ad-sidenav-link" href="risk-screening.html"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon><span>制裁筛查</span></a><a class="ad-sidenav-link" href="risk-learn.html"><iconify-icon class="text-xl" icon="solar:square-academic-cap-bold"></iconify-icon><span>学习中心</span></a><div class="ad-sidenav-sec">安全与服务</div><a class="ad-sidenav-link" href="cs.html"><iconify-icon class="text-xl" icon="solar:headphones-round-sound-bold"></iconify-icon><span>客服管理</span></a><div class="ad-sidenav-sec">团队与账务</div><a class="ad-sidenav-link" href="managers.html"><iconify-icon class="text-xl" icon="solar:user-speak-bold"></iconify-icon><span>客户经理管理</span></a><a class="ad-sidenav-link" href="staff.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>员工管理</span></a><a class="ad-sidenav-link" href="bills.html"><iconify-icon class="text-xl" icon="solar:bill-list-bold"></iconify-icon><span>账单管理</span></a><a class="ad-sidenav-link ad-sidenav-active" href="licenses.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>牌照管理</span></a></nav></div><div class="p-4" style="border-top:1px solid rgba(255,255,255,.08)"><div class="flex items-center space-x-3 p-2 rounded-lg" style="background:rgba(255,255,255,.05)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:#FFD008;color:#382b1b">涵</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold truncate text-white">运营-小涵</p><p class="text-xs text-gray-500 truncate">超级管理员</p></div><a href="login.html" class="text-gray-500 hover:text-red-400" title="退出登录"><iconify-icon icon="solar:logout-3-bold"></iconify-icon></a></div></div></aside>
+<main class="flex-1 flex flex-col min-w-0">
+<header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 flex-none">
+<div class="flex items-center">
+<button class="lg:hidden p-2 -ml-2 text-gray-500" onclick="toggleSidebar()">
+<iconify-icon class="text-2xl" icon="solar:hamburger-menu-bold"></iconify-icon>
+</button>
+<h1 class="text-lg font-bold ml-2">牌照管理</h1>
+</div>
+<div class="flex items-center space-x-4">
+<button class="p-2 text-gray-500 bg-gray-50 rounded-full hover:bg-gray-100">
+<iconify-icon class="text-xl" icon="solar:magnifer-linear"></iconify-icon>
+</button>
+<div class="flex items-center px-3 py-1 bg-gray-50 rounded-8 border border-gray-100">
+<iconify-icon class="mr-2" icon="twemoji:flag-china"></iconify-icon>
+<span class="text-sm">中文</span>
+<iconify-icon class="ml-2 text-xs text-gray-400" icon="solar:alt-arrow-down-linear"></iconify-icon>
+</div>
+<div class="relative">
+<button class="p-2 text-gray-500 bg-gray-50 rounded-full hover:bg-gray-100">
+<iconify-icon class="text-xl" icon="solar:bell-bold"></iconify-icon>
+</button>
+<span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+</div>
+<span class="text-xs text-gray-400 hidden md:block">后台环境 · 数据实时同步</span>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4"><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">持牌总数</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">6 张</p>
+<p class="text-xs text-gray-400 mt-2">覆盖 3 个司法辖区</p>
+</div><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">临期提醒</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:alarm-bold"></iconify-icon></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">1 张</p>
+<p class="text-xs text-gray-400 mt-2">90 天内到期</p>
+</div><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">年检待办</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">2 项</p>
+<p class="text-xs text-gray-400 mt-2">FCA 年度报告 8 月底</p>
+</div><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">合规评分</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:shield-check-bold"></iconify-icon></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">A 级</p>
+<p class="text-xs text-gray-400 mt-2">外审 2026-05 通过</p>
+</div></div><div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-start justify-between mb-4">
+<div class="w-12 h-12 bg-yellow-50 rounded-8 flex items-center justify-center"><iconify-icon class="text-2xl" icon="solar:verified-check-bold"></iconify-icon></div>
+<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">有效</span>
+</div>
+<h3 class="font-bold text-gray-900">英国 EMI 牌照</h3>
+<p class="text-xs text-gray-400 mt-1 mb-4">英国金融行为监管局 (FCA) · 编号 EMI-902134</p>
+<div class="space-y-2 text-sm border-t border-gray-50 pt-4">
+<div class="flex justify-between"><span class="text-gray-500">有效期至</span><b>2027-03-31</b></div>
+<div class="flex justify-between"><span class="text-gray-500">业务范围</span><b class="text-right">电子货币发行 / 支付服务</b></div>
+</div>
+<button class="w-full mt-4 py-2 border border-gray-200 rounded-8 text-xs font-bold text-gray-600 hover:bg-gray-50 lic-renew">查看详情</button>
+</div><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-start justify-between mb-4">
+<div class="w-12 h-12 bg-yellow-50 rounded-8 flex items-center justify-center"><iconify-icon class="text-2xl" icon="solar:verified-check-bold"></iconify-icon></div>
+<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-600">临期</span>
+</div>
+<h3 class="font-bold text-gray-900">马耳他 EMI 牌照</h3>
+<p class="text-xs text-gray-400 mt-1 mb-4">马耳他金融服务管理局 (MFSA) · 编号 EMI-MT-4471</p>
+<div class="space-y-2 text-sm border-t border-gray-50 pt-4">
+<div class="flex justify-between"><span class="text-gray-500">有效期至</span><b>2026-11-15</b></div>
+<div class="flex justify-between"><span class="text-gray-500">业务范围</span><b class="text-right">欧盟区支付服务</b></div>
+</div>
+<button class="w-full mt-4 py-2 border border-gray-200 rounded-8 text-xs font-bold text-gray-600 hover:bg-gray-50 lic-renew">立即续期</button>
+</div><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-start justify-between mb-4">
+<div class="w-12 h-12 bg-yellow-50 rounded-8 flex items-center justify-center"><iconify-icon class="text-2xl" icon="solar:verified-check-bold"></iconify-icon></div>
+<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">有效</span>
+</div>
+<h3 class="font-bold text-gray-900">香港 MSO 牌照</h3>
+<p class="text-xs text-gray-400 mt-1 mb-4">香港海关 · 编号 MSO-22-00314</p>
+<div class="space-y-2 text-sm border-t border-gray-50 pt-4">
+<div class="flex justify-between"><span class="text-gray-500">有效期至</span><b>2028-06-30</b></div>
+<div class="flex justify-between"><span class="text-gray-500">业务范围</span><b class="text-right">货币兑换 / 汇款</b></div>
+</div>
+<button class="w-full mt-4 py-2 border border-gray-200 rounded-8 text-xs font-bold text-gray-600 hover:bg-gray-50 lic-renew">查看详情</button>
+</div><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-start justify-between mb-4">
+<div class="w-12 h-12 bg-yellow-50 rounded-8 flex items-center justify-center"><iconify-icon class="text-2xl" icon="solar:verified-check-bold"></iconify-icon></div>
+<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">有效</span>
+</div>
+<h3 class="font-bold text-gray-900">新加坡 MPI 牌照</h3>
+<p class="text-xs text-gray-400 mt-1 mb-4">新加坡金融管理局 (MAS) · 编号 MPI-2024-0118</p>
+<div class="space-y-2 text-sm border-t border-gray-50 pt-4">
+<div class="flex justify-between"><span class="text-gray-500">有效期至</span><b>2029-01-20</b></div>
+<div class="flex justify-between"><span class="text-gray-500">业务范围</span><b class="text-right">跨境汇款 / 商户收单</b></div>
+</div>
+<button class="w-full mt-4 py-2 border border-gray-200 rounded-8 text-xs font-bold text-gray-600 hover:bg-gray-50 lic-renew">查看详情</button>
+</div><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-start justify-between mb-4">
+<div class="w-12 h-12 bg-yellow-50 rounded-8 flex items-center justify-center"><iconify-icon class="text-2xl" icon="solar:verified-check-bold"></iconify-icon></div>
+<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">有效</span>
+</div>
+<h3 class="font-bold text-gray-900">美国 MSB 注册</h3>
+<p class="text-xs text-gray-400 mt-1 mb-4">FinCEN · 编号 MSB-31000284</p>
+<div class="space-y-2 text-sm border-t border-gray-50 pt-4">
+<div class="flex justify-between"><span class="text-gray-500">有效期至</span><b>2027-12-31</b></div>
+<div class="flex justify-between"><span class="text-gray-500">业务范围</span><b class="text-right">货币服务业务</b></div>
+</div>
+<button class="w-full mt-4 py-2 border border-gray-200 rounded-8 text-xs font-bold text-gray-600 hover:bg-gray-50 lic-renew">查看详情</button>
+</div><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-start justify-between mb-4">
+<div class="w-12 h-12 bg-yellow-50 rounded-8 flex items-center justify-center"><iconify-icon class="text-2xl" icon="solar:verified-check-bold"></iconify-icon></div>
+<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-600">临期</span>
+</div>
+<h3 class="font-bold text-gray-900">迪拜 VARA 预备许可</h3>
+<p class="text-xs text-gray-400 mt-1 mb-4">迪拜虚拟资产监管局 · 编号 VARA-P-0092</p>
+<div class="space-y-2 text-sm border-t border-gray-50 pt-4">
+<div class="flex justify-between"><span class="text-gray-500">有效期至</span><b>2026-09-30</b></div>
+<div class="flex justify-between"><span class="text-gray-500">业务范围</span><b class="text-right">虚拟资产兑换（筹备）</b></div>
+</div>
+<button class="w-full mt-4 py-2 border border-gray-200 rounded-8 text-xs font-bold text-gray-600 hover:bg-gray-50 lic-renew">立即续期</button>
+</div></div>
+</div>
+</main>
+<div class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+</div>
+<script src="../assets/js/ui.js"></script>
+<script>
+function toggleSidebar(){var s=document.getElementById('sidebar'),b=document.getElementById('sidebar-backdrop');if(!s)return;s.classList.toggle('hidden');s.classList.toggle('flex');s.classList.toggle('fixed');s.classList.toggle('inset-y-0');s.classList.toggle('left-0');s.classList.toggle('z-50');if(b)b.classList.toggle('hidden');}
+</script>
+<script>
+
+var dKw = '', dSt = '';
+function ddApplyFilter() {
+    document.querySelectorAll('.data-tbody tr').forEach(function (tr) {
+        var ok = (!dKw || tr.textContent.toLowerCase().indexOf(dKw) > -1) && (!dSt || dSt.indexOf('全部') === 0 || tr.textContent.indexOf(dSt) > -1);
+        tr.style.display = ok ? '' : 'none';
+    });
+}
+document.querySelectorAll('.data-search').forEach(function (i) { i.addEventListener('input', function () { dKw = this.value.trim().toLowerCase(); ddApplyFilter(); }); });
+document.querySelectorAll('.data-filter').forEach(function (s) { s.addEventListener('change', function () { dSt = this.value; ddApplyFilter(); }); });
+
+document.querySelectorAll('.lic-renew').forEach(function (b) {
+    b.addEventListener('click', function () {
+        var card = b.closest('.bg-white');
+        var name = card.querySelector('h3').textContent;
+        if (b.textContent.trim() === '立即续期') {
+            DDUI.confirm('发起牌照续期', '确定为「' + name + '」发起续期流程？系统将生成材料清单并通知合规官。', function () {
+                b.textContent = '续期进行中';
+                b.disabled = true;
+                DDUI.toast('续期流程已发起，材料清单已发送至合规官邮箱', 'success');
+            }, '发起续期');
+        } else {
+            DDUI.modal({
+                title: name,
+                body: '<div class="ddui-kv"><span>监管年报</span><b style="color:#16a34a">已提交</b></div>' +
+                    '<div class="ddui-kv"><span>审计报告</span><b style="color:#16a34a">2026-05 外审通过</b></div>' +
+                    '<div class="ddui-kv"><span>下次现场检查</span><b>2027 Q1</b></div>',
+                actions: [{ text: '下载证照', onClick: function (c) { c(); DDUI.toast('证照扫描件已开始下载', 'success'); } }, { text: '关闭', type: 'primary' }]
+            });
+        }
+    });
+});
+
+</script>
+<script src="../assets/js/i18n.js"></script>
+</body>
+</html>

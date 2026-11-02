@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>全球即时付款 - Dingdang Pay 叮当支付</title>
+<script src="assets/vendor/tailwindcss.js"></script>
+<script>tailwind.config = { theme: { extend: { colors: { primary: '#FFD008', dark: '#382b1b', accent1: '#FF8106', accent2: '#00B7EC' }, borderRadius: { '8': '8px' } } } }</script>
+<link rel="stylesheet" href="assets/css/apple.css" data-dd-apple="1"/>
+<style>
+.pd-eyebrow{font-size:13px;font-weight:600;letter-spacing:.14em;color:#86868b;text-transform:uppercase}
+.pd-h1{font-size:clamp(36px,5.4vw,60px);line-height:1.08;font-weight:800;letter-spacing:-.02em;color:#1d1d1f}
+.pd-h2{font-size:clamp(28px,3.6vw,40px);line-height:1.15;font-weight:800;letter-spacing:-.015em;color:#1d1d1f}
+.pd-sub{font-size:18px;line-height:1.6;color:#6e6e73}
+.pd-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:48px;padding:0 26px;border-radius:999px;font-weight:700;font-size:15px;transition:transform .2s var(--dd-ease),box-shadow .2s,background .2s}
+.pd-btn:active{transform:scale(.97)}
+.pd-btn.pri{background:#FFD008;color:#382b1b;box-shadow:0 6px 18px rgba(255,208,8,.35)}
+.pd-btn.pri:hover{box-shadow:0 10px 26px rgba(255,208,8,.45)}
+.pd-btn.ghost{background:rgba(0,0,0,.05);color:#1d1d1f}
+.pd-btn.ghost:hover{background:rgba(0,0,0,.08)}
+.pd-card{background:#fff;border-radius:22px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 28px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.04)}
+.pd-feat{padding:28px;border-radius:22px;background:#f5f5f7;transition:transform .3s var(--dd-ease),background .3s}
+.pd-feat:hover{transform:translateY(-3px);background:#efeff2}
+.pd-ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.pd-stat b{display:block;font-size:34px;font-weight:800;letter-spacing:-.02em;color:#1d1d1f}
+.pd-stat span{font-size:14px;color:#6e6e73}
+.pd-step{position:relative;padding-top:56px}
+.pd-step i{position:absolute;top:0;left:0;width:40px;height:40px;border-radius:50%;background:#382b1b;color:#FFD008;font-style:normal;font-weight:800;display:flex;align-items:center;justify-content:center}
+.pd-table{width:100%;border-collapse:separate;border-spacing:0}
+.pd-table td{padding:18px 24px;border-bottom:1px solid rgba(0,0,0,.06);font-size:15px}
+.pd-table tr:last-child td{border-bottom:0}
+.pd-table td:last-child{text-align:right;font-weight:700;color:#1d1d1f}
+.pd-faq details{border-bottom:1px solid rgba(0,0,0,.08);padding:20px 4px}
+.pd-faq summary{list-style:none;cursor:pointer;font-weight:700;font-size:17px;color:#1d1d1f;display:flex;justify-content:space-between;gap:16px}
+.pd-faq summary::-webkit-details-marker{display:none}
+.pd-faq summary::after{content:"+";font-size:24px;line-height:1;color:#86868b;transition:transform .25s var(--dd-ease)}
+.pd-faq details[open] summary::after{transform:rotate(45deg)}
+.pd-faq p{margin-top:12px;color:#6e6e73;line-height:1.7;font-size:15px}
+.pd-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:#fff;border:1px solid rgba(0,0,0,.08);font-size:13px;font-weight:600;color:#1d1d1f}
+.pd-tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.pd-tabs a{padding:9px 18px;border-radius:999px;background:#f5f5f7;font-weight:600;font-size:14px;color:#1d1d1f;transition:background .2s}
+.pd-tabs a:hover{background:#e8e8ed}
+.pd-mock-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(0,0,0,.06)}
+.pd-mock-row:last-child{border-bottom:0}
+.pd-flag{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex:none}
+.pd-tl li{position:relative;padding-left:30px;padding-bottom:18px}
+.pd-tl li::before{content:"";position:absolute;left:8px;top:22px;bottom:0;width:2px;background:#e8e8ed}
+.pd-tl li:last-child::before{display:none}
+.pd-tl li span{position:absolute;left:0;top:3px;width:18px;height:18px;border-radius:50%;background:#34c759;box-shadow:0 0 0 4px rgba(52,199,89,.15)}
+.pd-tl li.now span{background:#FFD008;box-shadow:0 0 0 4px rgba(255,208,8,.25)}
+.pd-tl li.todo span{background:#d2d2d7;box-shadow:none}
+.pd-anchor{scroll-margin-top:84px}
+.pd-in{opacity:0;transform:translateY(18px);transition:opacity .7s var(--dd-ease),transform .7s var(--dd-ease)}
+.pd-in.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.pd-in{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body class="bg-white">
+<!-- dd-site-nav:start -->
+<nav class="dd-site-nav">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16 items-center">
+<a class="flex items-center" href="home.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="assets/img/logo-h.png"/></a>
+<div class="dd-site-menu hidden md:flex items-center gap-8" id="dd-site-menu"><a class="nav-link" href="home.html">首页</a><a class="nav-link" href="product-accounts.html">全球账户</a><a class="nav-link" href="product-expense.html">费用管理</a><a class="nav-link on" href="product-payments.html">全球即时付款</a><a class="nav-link" href="product-acquiring.html">全球收单</a><a class="nav-link" href="about.html">关于我们</a><a class="nav-link" href="help.html">帮助</a></div>
+<div class="flex items-center gap-3"><a class="hidden sm:inline text-sm font-medium text-dark hover:opacity-70" href="login.html">登录</a><a class="bg-primary text-dark px-5 py-2 rounded-full text-sm font-bold" href="register.html?demo=1">立即开户</a><button class="dd-burger w-10 h-10 items-center justify-center rounded-full hover:bg-gray-100" aria-label="菜单" aria-expanded="false" aria-controls="dd-site-menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div>
+</div>
+</div>
+</nav>
+<!-- dd-site-nav:end -->
+<main>
+<section class="pt-16 md:pt-24 pb-20" style="background:linear-gradient(180deg,#f5f5f7 0%,#fff 100%)">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-14 items-center">
+<div class="text-center lg:text-left"><p class="pd-eyebrow mb-5">全球即时付款</p><h1 class="pd-h1 mb-6">全球付款<br/>最快 5 分钟到账</h1><p class="pd-sub max-w-xl mx-auto lg:mx-0 mb-8">覆盖 40+ 国家和地区的本地清算网络，7×24 实时付款给供应商、员工与合作伙伴，汇率与费用提前可见。</p><div class="flex flex-wrap gap-3 justify-center lg:justify-start mb-8"><a class="pd-btn pri" href="register.html?demo=1">免费开户<svg class="" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a><a class="pd-btn ghost" href="login.html">登录账户</a></div><div class="flex flex-wrap gap-2 justify-center lg:justify-start"><span class="pd-chip"><svg class="" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>SEPA Instant</span><span class="pd-chip"><svg class="" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>UK FPS</span><span class="pd-chip"><svg class="" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>中国速汇</span><span class="pd-chip"><svg class="" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>SWIFT</span></div></div>
+<div class="pd-in"><div class="pd-card p-6 max-w-md mx-auto" style="transform:rotate(-1.2deg)"><div class="flex items-center justify-between mb-5"><p class="font-bold" style="color:#1d1d1f">付款详情</p><span class="text-xs font-bold px-3 py-1 rounded-full" style="background:rgba(52,199,89,.12);color:#1f9a43">4 分 41 秒到账</span></div><div class="grid grid-cols-2 gap-3 mb-6"><div class="rounded-2xl p-4" style="background:#f5f5f7"><p class="text-xs" style="color:#86868b">你支付</p><p class="text-xl font-extrabold mt-1" style="color:#1d1d1f">€ 10,000.00</p></div><div class="rounded-2xl p-4" style="background:rgba(255,208,8,.16)"><p class="text-xs" style="color:#8a6d00">对方收到</p><p class="text-xl font-extrabold mt-1" style="color:#382b1b">¥ 78,412.00</p></div></div><ul class="pd-tl"><li class=""><span></span><div class="flex justify-between text-sm"><b style="color:#1d1d1f">付款已提交</b><em class="not-italic" style="color:#86868b">14:02:11</em></div></li><li class=""><span></span><div class="flex justify-between text-sm"><b style="color:#1d1d1f">合规审核通过</b><em class="not-italic" style="color:#86868b">14:02:15</em></div></li><li class=""><span></span><div class="flex justify-between text-sm"><b style="color:#1d1d1f">通道清算中</b><em class="not-italic" style="color:#86868b">14:03:40</em></div></li><li class="now"><span></span><div class="flex justify-between text-sm"><b style="color:#1d1d1f">已到账</b><em class="not-italic" style="color:#86868b">14:06:52</em></div></li></ul><div class="flex justify-between text-xs pt-4 mt-1" style="border-top:1px solid rgba(0,0,0,.06);color:#86868b"><span>汇率 1 EUR = 7.8412 CNY</span><span>手续费 €1.50</span></div></div></div>
+</div>
+</section>
+<section class="max-w-6xl mx-auto px-4 mb-24"><div class="pd-card pd-in grid grid-cols-2 md:grid-cols-4 gap-8 p-8 md:p-10"><div class="pd-stat text-center"><b>40+</b><span>国家和地区</span></div><div class="pd-stat text-center"><b>5 分钟</b><span>最快到账</span></div><div class="pd-stat text-center"><b>7×24</b><span>全天候付款</span></div><div class="pd-stat text-center"><b>€0.5</b><span>单笔起</span></div></div></section>
+<section class="max-w-6xl mx-auto px-4 mb-24"><div class="text-center max-w-2xl mx-auto mb-14 pd-in"><p class="pd-eyebrow mb-3">核心能力</p><h2 class="pd-h2">付款，就该又快又清楚</h2><p class="pd-sub mt-4">从单笔到批量，从发起到审批，全流程可追踪。</p></div><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"><div class="pd-feat pd-in"><div class="pd-ico" style="background:rgba(255,208,8,.16);color:#b38f00"><svg class="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3L5 13h6l-1 8 8-10h-6z"/></svg></div><h3 class="text-lg font-bold mb-2" style="color:#1d1d1f">本地即时清算</h3><p class="text-sm leading-relaxed" style="color:#6e6e73">直连 SEPA Instant、英国 FPS 等本地网络，绝大多数付款几分钟内到账。</p></div><div class="pd-feat pd-in"><div class="pd-ico" style="background:rgba(0,183,236,.12);color:#0089b3"><svg class="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/></svg></div><h3 class="text-lg font-bold mb-2" style="color:#1d1d1f">付款到中国</h3><p class="text-sm leading-relaxed" style="color:#6e6e73">支持人民币到银行卡、微信、支付宝，适合供应商货款与个人款项。</p></div><div class="pd-feat pd-in"><div class="pd-ico" style="background:rgba(255,129,6,.12);color:#d16500"><svg class="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6v18h12V7z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></svg></div><h3 class="text-lg font-bold mb-2" style="color:#1d1d1f">批量付款</h3><p class="text-sm leading-relaxed" style="color:#6e6e73">上传 Excel 一次付款最多 1,000 笔，自动校验收款信息。</p></div><div class="pd-feat pd-in"><div class="pd-ico" style="background:rgba(52,199,89,.12);color:#1f9a43"><svg class="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h3 class="text-lg font-bold mb-2" style="color:#1d1d1f">汇率锁定</h3><p class="text-sm leading-relaxed" style="color:#6e6e73">下单即锁定汇率，到账金额确定，不受市场波动影响。</p></div><div class="pd-feat pd-in"><div class="pd-ico" style="background:rgba(88,86,214,.12);color:#4240b8"><svg class="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></div><h3 class="text-lg font-bold mb-2" style="color:#1d1d1f">多级审批</h3><p class="text-sm leading-relaxed" style="color:#6e6e73">按金额设置审批规则，大额付款需双人复核。</p></div><div class="pd-feat pd-in"><div class="pd-ico" style="background:rgba(255,45,85,.10);color:#d1123a"><svg class="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h3 class="text-lg font-bold mb-2" style="color:#1d1d1f">实时追踪与回单</h3><p class="text-sm leading-relaxed" style="color:#6e6e73">每一步状态实时推送，到账后自动生成电子回单。</p></div></div></section>
+<section class="max-w-6xl mx-auto px-4 mb-24"><div class="text-center max-w-2xl mx-auto mb-14 pd-in"><p class="pd-eyebrow mb-3">覆盖网络</p><h2 class="pd-h2">通往 40+ 国家和地区</h2><p class="pd-sub mt-4">以下为典型到账时间，节假日与合规审核可能影响时效。</p></div><div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5"><div class="pd-card pd-in p-6 flex flex-col"><p class="text-lg font-bold mb-1" style="color:#1d1d1f">欧洲</p><p class="text-sm flex-1 mb-4" style="color:#6e6e73">欧元区 20 国、英国、瑞士、北欧</p><div class="flex justify-between items-end text-xs"><span style="color:#86868b">SEPA Instant · FPS</span><b class="text-base" style="color:#1f9a43">5 分钟</b></div></div><div class="pd-card pd-in p-6 flex flex-col"><p class="text-lg font-bold mb-1" style="color:#1d1d1f">大中华区</p><p class="text-sm flex-1 mb-4" style="color:#6e6e73">中国内地、中国香港、中国澳门</p><div class="flex justify-between items-end text-xs"><span style="color:#86868b">银行卡 · 微信 · 支付宝</span><b class="text-base" style="color:#1f9a43">10 分钟</b></div></div><div class="pd-card pd-in p-6 flex flex-col"><p class="text-lg font-bold mb-1" style="color:#1d1d1f">东南亚</p><p class="text-sm flex-1 mb-4" style="color:#6e6e73">新加坡、马来西亚、泰国、越南、菲律宾</p><div class="flex justify-between items-end text-xs"><span style="color:#86868b">本地清算</span><b class="text-base" style="color:#1f9a43">30 分钟</b></div></div><div class="pd-card pd-in p-6 flex flex-col"><p class="text-lg font-bold mb-1" style="color:#1d1d1f">美洲及中东</p><p class="text-sm flex-1 mb-4" style="color:#6e6e73">美国、加拿大、墨西哥、阿联酋</p><div class="flex justify-between items-end text-xs"><span style="color:#86868b">ACH · SWIFT</span><b class="text-base" style="color:#1f9a43">当日</b></div></div></div></section>
+<section class="py-24 mb-24" style="background:#f5f5f7"><div class="max-w-6xl mx-auto px-4"><div class="text-center max-w-2xl mx-auto mb-14 pd-in"><p class="pd-eyebrow mb-3">如何开始</p><h2 class="pd-h2">四步完成一笔国际付款</h2></div><div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10"><div class="pd-step pd-in"><i>1</i><h4 class="font-bold text-lg mb-2" style="color:#1d1d1f">添加收款人</h4><p class="text-sm leading-relaxed" style="color:#6e6e73">填写银行账户、微信或支付宝信息，系统自动校验。</p></div><div class="pd-step pd-in"><i>2</i><h4 class="font-bold text-lg mb-2" style="color:#1d1d1f">输入金额</h4><p class="text-sm leading-relaxed" style="color:#6e6e73">实时显示汇率、手续费与预计到账时间。</p></div><div class="pd-step pd-in"><i>3</i><h4 class="font-bold text-lg mb-2" style="color:#1d1d1f">确认付款</h4><p class="text-sm leading-relaxed" style="color:#6e6e73">支付密码或审批流确认，资金立即发出。</p></div><div class="pd-step pd-in"><i>4</i><h4 class="font-bold text-lg mb-2" style="color:#1d1d1f">到账通知</h4><p class="text-sm leading-relaxed" style="color:#6e6e73">到账后通知双方，并可下载电子回单。</p></div></div></div></section>
+<section class="max-w-3xl mx-auto px-4 mb-24"><div class="text-center max-w-2xl mx-auto mb-14 pd-in"><p class="pd-eyebrow mb-3">透明费率</p><h2 class="pd-h2">全球即时付款费率</h2></div><div class="pd-card pd-in overflow-hidden"><table class="pd-table"><tr><td style="color:#6e6e73">欧元 SEPA 付款</td><td>€0.5 / 笔</td></tr><tr><td style="color:#6e6e73">英镑 FPS 付款</td><td>£0.5 / 笔</td></tr><tr><td style="color:#6e6e73">人民币付款（银行卡/微信/支付宝）</td><td>0.3% 起</td></tr><tr><td style="color:#6e6e73">SWIFT 国际电汇</td><td>€15 / 笔</td></tr><tr><td style="color:#6e6e73">批量付款</td><td>同单笔费率</td></tr></table></div><p class="text-xs text-center mt-4" style="color:#86868b">跨币种付款按实时汇率换算，点差在付款前完整展示。</p></section>
+<section class="max-w-3xl mx-auto px-4 mb-24"><div class="text-center max-w-2xl mx-auto mb-14 pd-in"><p class="pd-eyebrow mb-3">FAQ</p><h2 class="pd-h2">常见问题</h2></div><div class="pd-faq pd-in"><details><summary>付款真的能 5 分钟到账吗？</summary><p>通过 SEPA Instant、FPS 等即时网络发出的付款通常 5 分钟内到账；首次付款或大额付款可能需要额外合规审核。</p></details><details><summary>可以给中国供应商付款吗？</summary><p>可以，支持付款到中国内地银行卡及微信、支付宝账户，需提供真实贸易背景。</p></details><details><summary>付款失败怎么办？</summary><p>若收款信息有误或被退回，资金会原路退回你的账户，通常 1–3 个工作日。</p></details><details><summary>单笔付款有限额吗？</summary><p>默认单笔上限 €100,000，企业客户完成增强认证后可申请提高额度。</p></details></div><p class="text-center mt-8 text-sm" style="color:#6e6e73">还有其他问题？ <a class="font-bold" style="color:#0071e3" href="help.html">访问帮助中心</a></p></section>
+<section class="max-w-6xl mx-auto px-4 mb-24"><div class="pd-in rounded-[28px] text-white p-10 md:p-14 flex flex-col md:flex-row items-center justify-between gap-6" style="background:radial-gradient(120% 140% at 0% 0%,#5a4527 0%,#382b1b 55%,#21180e 100%)"><div class="text-center md:text-left"><h3 class="text-2xl md:text-3xl font-extrabold mb-2">让每一笔付款都准时到达</h3><p style="color:rgba(255,255,255,.65)">开户后即可向 40+ 国家和地区发起即时付款。</p></div><div class="flex gap-3 flex-none"><a class="pd-btn pri" href="register.html?demo=1">立即开户</a><a class="pd-btn" style="background:rgba(255,255,255,.12);color:#fff" href="login.html">登录</a></div></div></section>
+</main>
+<!-- dd-site-footer:start -->
+<footer class="bg-dark text-white pt-16 pb-10">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-10 mb-12">
+<div class="col-span-2">
+<div class="flex items-center gap-2 mb-5"><img alt="Dingdang Pay" class="h-9 w-auto" src="assets/img/logo-h-rev.png"/></div>
+<p class="text-gray-400 text-sm leading-relaxed max-w-sm">叮当支付成立于 2025 年，是一家跨境支付科技公司。我们正通过对接 Sokin 系统与开放 API，为全球化企业构建全球收付款基础设施。</p>
+<p class="text-gray-400 text-sm mt-4">客服邮箱: support@dingdangpay.com</p>
+</div>
+<div><h4 class="font-semibold mb-5 text-primary text-sm">产品服务</h4><ul class="space-y-3 text-gray-400 text-sm">
+<li><a class="hover:text-white" href="product-accounts.html">全球账户</a></li>
+<li><a class="hover:text-white" href="product-expense.html">费用管理</a></li>
+<li><a class="hover:text-white" href="product-payments.html">全球即时付款</a></li>
+<li><a class="hover:text-white" href="product-acquiring.html">全球收单</a></li>
+<li><a class="hover:text-white" href="app/index.html">下载 App</a></li></ul></div>
+<div><h4 class="font-semibold mb-5 text-primary text-sm">关于叮当</h4><ul class="space-y-3 text-gray-400 text-sm">
+<li><a class="hover:text-white" href="about.html">关于我们</a></li>
+<li><a class="hover:text-white" href="compliance.html">监管牌照</a></li>
+<li><a class="hover:text-white" href="help.html">帮助中心</a></li>
+<li><a class="hover:text-white" href="register.html?demo=1">注册开户</a></li></ul></div>
+<div><h4 class="font-semibold mb-5 text-primary text-sm">法律条款</h4><ul class="space-y-3 text-gray-400 text-sm">
+<li><a class="hover:text-white" href="privacy.html">隐私协议</a></li>
+<li><a class="hover:text-white" href="terms.html">服务条款</a></li></ul></div>
+</div>
+<div class="pt-8 border-t border-white/10 text-xs text-gray-500 flex flex-col md:flex-row justify-between gap-4">
+<p>© 2026 Dingdang Pay. 支付牌照申请中，资金服务由 Sokin 等持牌合作机构提供。</p>
+<div class="flex gap-6"><span>系统对接: Sokin</span><span>开放 API</span></div>
+</div>
+</div>
+</footer>
+<!-- dd-site-footer:end -->
+<script src="assets/js/ui.js"></script>
+<script>
+(function(){var els=document.querySelectorAll('.pd-in');if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('on')});return;}
+var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('on');io.unobserve(x.target);}})},{threshold:.12});
+els.forEach(function(e){io.observe(e)});})();
+</script>
+<script src="assets/js/i18n.js"></script>
+</body>
+</html>

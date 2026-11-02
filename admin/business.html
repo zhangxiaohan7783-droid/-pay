@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>商业客户管理 - 叮当支付内部运营后台</title>
+<script src="../assets/vendor/tailwindcss.js"></script>
+<script src="../assets/vendor/iconify-icon.min.js"></script>
+<script src="../assets/vendor/echarts.min.js"></script>
+<style>
+        body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #382b1b; background-color: #f5f4f0; }
+        .custom-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
+        .rounded-8 { border-radius: 8px; }
+</style>
+<link rel="stylesheet" href="../assets/css/apple.css" data-dd-apple="1"/>
+</head>
+<body class="bg-gray-50">
+<div class="flex min-h-screen">
+<style>
+.ad-sidenav-link{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;color:#9ca3af;font-size:14px;line-height:1.4;transition:background .15s,color .15s;text-decoration:none}
+.ad-sidenav-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.ad-sidenav-active,.ad-sidenav-active:hover{background:#FFD008;color:#382b1b;font-weight:600}
+.ad-sidenav-sec{padding:16px 12px 6px;font-size:11px;font-weight:600;color:#6b7280;letter-spacing:.05em}
+.ad-noscroll{scrollbar-width:none;-ms-overflow-style:none}
+.ad-noscroll::-webkit-scrollbar{display:none}
+</style>
+<aside class="w-64 flex-none hidden lg:flex flex-col" id="sidebar" style="background:#241d12"><div class="p-6 flex items-center space-x-3"><a class="flex items-center space-x-3" href="index.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="../assets/img/logo-h-rev.png"/></a></div><div class="flex-1 overflow-y-auto px-4 py-2 ad-noscroll"><nav class="space-y-1"><a class="ad-sidenav-link" href="index.html"><iconify-icon class="text-xl" icon="solar:widget-bold"></iconify-icon><span>运营总览</span></a><div class="ad-sidenav-sec">客户与开户</div><div class="ad-sidenav-sec">个人开户管理</div><a class="ad-sidenav-link" href="ob-personal.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>个人开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-personal-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>个人开户资料归档</span></a><a class="ad-sidenav-link" href="ob-personal-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-personal-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-personal-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>个人开户 Sokin</span></a><div class="ad-sidenav-sec">商业开户管理</div><a class="ad-sidenav-link" href="ob-business.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>商业开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-business-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>商业开户资料归档</span></a><a class="ad-sidenav-link" href="ob-business-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-business-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-business-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>商业开户 Sokin</span></a><a class="ad-sidenav-link ad-sidenav-active" href="business.html"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon><span>商业客户管理</span></a><a class="ad-sidenav-link" href="personal.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>个人客户管理</span></a><div class="ad-sidenav-sec">风控与合规</div><a class="ad-sidenav-link" href="risk.html"><iconify-icon class="text-xl" icon="solar:shield-warning-bold"></iconify-icon><span>风控总览</span></a><a class="ad-sidenav-link" href="risk-review.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>审核工作台</span></a><a class="ad-sidenav-link" href="risk-cases.html"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon><span>案件管理</span></a><a class="ad-sidenav-link" href="risk-screening.html"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon><span>制裁筛查</span></a><a class="ad-sidenav-link" href="risk-learn.html"><iconify-icon class="text-xl" icon="solar:square-academic-cap-bold"></iconify-icon><span>学习中心</span></a><div class="ad-sidenav-sec">安全与服务</div><a class="ad-sidenav-link" href="cs.html"><iconify-icon class="text-xl" icon="solar:headphones-round-sound-bold"></iconify-icon><span>客服管理</span></a><div class="ad-sidenav-sec">团队与账务</div><a class="ad-sidenav-link" href="managers.html"><iconify-icon class="text-xl" icon="solar:user-speak-bold"></iconify-icon><span>客户经理管理</span></a><a class="ad-sidenav-link" href="staff.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>员工管理</span></a><a class="ad-sidenav-link" href="bills.html"><iconify-icon class="text-xl" icon="solar:bill-list-bold"></iconify-icon><span>账单管理</span></a><a class="ad-sidenav-link" href="licenses.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>牌照管理</span></a></nav></div><div class="p-4" style="border-top:1px solid rgba(255,255,255,.08)"><div class="flex items-center space-x-3 p-2 rounded-lg" style="background:rgba(255,255,255,.05)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:#FFD008;color:#382b1b">涵</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold truncate text-white">运营-小涵</p><p class="text-xs text-gray-500 truncate">超级管理员</p></div><a href="login.html" class="text-gray-500 hover:text-red-400" title="退出登录"><iconify-icon icon="solar:logout-3-bold"></iconify-icon></a></div></div></aside>
+<main class="flex-1 flex flex-col min-w-0">
+<header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 flex-none">
+<div class="flex items-center">
+<button class="lg:hidden p-2 -ml-2 text-gray-500" onclick="toggleSidebar()">
+<iconify-icon class="text-2xl" icon="solar:hamburger-menu-bold"></iconify-icon>
+</button>
+<h1 class="text-lg font-bold ml-2">商业客户管理</h1>
+</div>
+<div class="flex items-center space-x-4">
+<button class="p-2 text-gray-500 bg-gray-50 rounded-full hover:bg-gray-100">
+<iconify-icon class="text-xl" icon="solar:magnifer-linear"></iconify-icon>
+</button>
+<div class="flex items-center px-3 py-1 bg-gray-50 rounded-8 border border-gray-100">
+<iconify-icon class="mr-2" icon="twemoji:flag-china"></iconify-icon>
+<span class="text-sm">中文</span>
+<iconify-icon class="ml-2 text-xs text-gray-400" icon="solar:alt-arrow-down-linear"></iconify-icon>
+</div>
+<div class="relative">
+<button class="p-2 text-gray-500 bg-gray-50 rounded-full hover:bg-gray-100">
+<iconify-icon class="text-xl" icon="solar:bell-bold"></iconify-icon>
+</button>
+<span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+</div>
+<span class="text-xs text-gray-400 hidden md:block">后台环境 · 数据实时同步</span>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4"><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">商业客户总数</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">1,286 家</p>
+<p class="text-xs text-gray-400 mt-2">本月新增 96</p>
+</div><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">KA 大客户</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:crown-bold"></iconify-icon></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">42 家</p>
+<p class="text-xs text-gray-400 mt-2">贡献 58% 交易额</p>
+</div><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">正常营业</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:shop-bold"></iconify-icon></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">1,204 家</p>
+<p class="text-xs text-gray-400 mt-2">93.6%</p>
+</div><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">冻结/限制</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:lock-bold"></iconify-icon></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">37 家</p>
+<p class="text-xs text-gray-400 mt-2">风控冻结 31 / 合规 6</p>
+</div></div><div class="bg-white rounded-8 custom-shadow p-4 flex flex-col md:flex-row gap-3">
+<div class="flex-1 flex items-center bg-gray-50 rounded-8 px-4 py-2.5">
+<iconify-icon class="text-gray-400 mr-2" icon="solar:magnifer-linear"></iconify-icon>
+<input class="bg-transparent flex-1 outline-none text-sm data-search" placeholder="搜索商户号 / 企业名称"/>
+</div>
+<select class="bg-gray-50 rounded-8 px-4 py-2.5 text-sm text-gray-600 outline-none data-filter"><option>全部状态</option><option>正常</option><option>冻结</option><option>限制交易</option></select>
+</div><div class="bg-white rounded-8 custom-shadow overflow-hidden"><div class="overflow-x-auto">
+<table class="w-full min-w-[860px]"><thead class="bg-gray-50/80"><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">商户号</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">企业名称</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">行业</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">近30天交易额</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">等级</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">状态</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">操作</th></thead><tbody class="data-tbody"><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="font-mono text-xs">M-100234</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><b>TechShop EU GmbH</b></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">跨境电商</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">€486,200</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-600">KA</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">正常</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-view">详情</button><button class="text-xs font-bold text-red-400 hover:underline ml-2 act-freeze">冻结</button></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="font-mono text-xs">M-100891</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><b>杭州云栖网络科技有限公司</b></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">SaaS 服务</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">¥1,204,000</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-600">KA</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">正常</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-view">详情</button><button class="text-xs font-bold text-red-400 hover:underline ml-2 act-freeze">冻结</button></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="font-mono text-xs">M-101033</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><b>Fashion Hub S.L.</b></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">服装零售</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">€96,400</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-600">普通</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">正常</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-view">详情</button><button class="text-xs font-bold text-red-400 hover:underline ml-2 act-freeze">冻结</button></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="font-mono text-xs">M-101207</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><b>Game Keys Store</b></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">游戏点卡</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">€212,800</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-600">重点监控</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-600">限制交易</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-view">详情</button><button class="text-xs font-bold text-green-600 hover:underline ml-2 act-unfreeze">解冻</button></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="font-mono text-xs">M-101455</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><b>深圳前海鲜食餐饮管理</b></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">餐饮连锁</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">¥368,500</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-600">普通</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">正常</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-view">详情</button><button class="text-xs font-bold text-red-400 hover:underline ml-2 act-freeze">冻结</button></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="font-mono text-xs">M-101902</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><b>Luxury Watch Club</b></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">奢侈品</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">€88,900</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-600">普通</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-500">冻结</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-view">详情</button><button class="text-xs font-bold text-green-600 hover:underline ml-2 act-unfreeze">解冻</button></td></tr></tbody></table></div></div>
+</div>
+</main>
+<div class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+</div>
+<script src="../assets/js/ui.js"></script>
+<script>
+function toggleSidebar(){var s=document.getElementById('sidebar'),b=document.getElementById('sidebar-backdrop');if(!s)return;s.classList.toggle('hidden');s.classList.toggle('flex');s.classList.toggle('fixed');s.classList.toggle('inset-y-0');s.classList.toggle('left-0');s.classList.toggle('z-50');if(b)b.classList.toggle('hidden');}
+</script>
+<script>
+
+var dKw = '', dSt = '';
+function ddApplyFilter() {
+    document.querySelectorAll('.data-tbody tr').forEach(function (tr) {
+        var ok = (!dKw || tr.textContent.toLowerCase().indexOf(dKw) > -1) && (!dSt || dSt.indexOf('全部') === 0 || tr.textContent.indexOf(dSt) > -1);
+        tr.style.display = ok ? '' : 'none';
+    });
+}
+document.querySelectorAll('.data-search').forEach(function (i) { i.addEventListener('input', function () { dKw = this.value.trim().toLowerCase(); ddApplyFilter(); }); });
+document.querySelectorAll('.data-filter').forEach(function (s) { s.addEventListener('change', function () { dSt = this.value; ddApplyFilter(); }); });
+
+document.querySelectorAll('.data-tbody tr').forEach(function (tr) {
+    var tds = tr.querySelectorAll('td');
+    var name = tds[1].textContent.trim();
+    tr.querySelector('.act-view').addEventListener('click', function () {
+        DDUI.modal({
+            title: name,
+            body: '<div class="ddui-kv"><span>商户号</span><b>' + tds[0].textContent.trim() + '</b></div>' +
+                '<div class="ddui-kv"><span>行业</span><b>' + tds[2].textContent.trim() + '</b></div>' +
+                '<div class="ddui-kv"><span>近30天交易额</span><b>' + tds[3].textContent.trim() + '</b></div>' +
+                '<div class="ddui-kv"><span>结算周期</span><b>T+1</b></div>' +
+                '<div class="ddui-kv"><span>KYB 状态</span><b style="color:#16a34a">已通过</b></div>' +
+                '<div class="ddui-kv"><span>客户经理</span><b>赵经理</b></div>',
+            actions: [{ text: '查看交易', onClick: function (c) { c(); DDUI.toast('交易明细查询（演示）'); } }, { text: '关闭', type: 'primary' }]
+        });
+    });
+    var fz = tr.querySelector('.act-freeze');
+    if (fz) fz.addEventListener('click', function () {
+        DDUI.confirm('冻结商户', '冻结后「' + name + '」将停止收款与提现，确定冻结吗？', function () {
+            tds[5].innerHTML = '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-500">冻结</span>';
+            fz.textContent = '解冻'; fz.className = 'text-xs font-bold text-green-600 hover:underline ml-2 act-unfreeze';
+            DDUI.toast('商户已冻结', 'success');
+        }, '冻结');
+    });
+    var uf = tr.querySelector('.act-unfreeze');
+    if (uf) uf.addEventListener('click', function () {
+        DDUI.confirm('解冻商户', '确认恢复「' + name + '」的全部交易能力？', function () {
+            tds[5].innerHTML = '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">正常</span>';
+            uf.textContent = '冻结'; uf.className = 'text-xs font-bold text-red-400 hover:underline ml-2 act-freeze';
+            DDUI.toast('商户已解冻', 'success');
+        }, '解冻');
+    });
+});
+
+</script>
+<script src="../assets/js/i18n.js"></script>
+</body>
+</html>

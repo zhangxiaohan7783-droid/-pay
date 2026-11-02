@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>风控总览 - 叮当支付内部运营后台</title>
+<script src="../assets/vendor/tailwindcss.js"></script>
+<script src="../assets/vendor/iconify-icon.min.js"></script>
+<script src="../assets/vendor/echarts.min.js"></script>
+<style>
+        body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #382b1b; background-color: #f5f4f0; }
+        .custom-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
+        .rounded-8 { border-radius: 8px; }
+</style>
+<link rel="stylesheet" href="../assets/css/apple.css" data-dd-apple="1"/>
+</head>
+<body class="bg-gray-50">
+<div class="flex min-h-screen">
+<style>
+.ad-sidenav-link{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;color:#9ca3af;font-size:14px;line-height:1.4;transition:background .15s,color .15s;text-decoration:none}
+.ad-sidenav-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.ad-sidenav-active,.ad-sidenav-active:hover{background:#FFD008;color:#382b1b;font-weight:600}
+.ad-sidenav-sec{padding:16px 12px 6px;font-size:11px;font-weight:600;color:#6b7280;letter-spacing:.05em}
+.ad-noscroll{scrollbar-width:none;-ms-overflow-style:none}
+.ad-noscroll::-webkit-scrollbar{display:none}
+</style>
+<aside class="w-64 flex-none hidden lg:flex flex-col" id="sidebar" style="background:#241d12"><div class="p-6 flex items-center space-x-3"><a class="flex items-center space-x-3" href="index.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="../assets/img/logo-h-rev.png"/></a></div><div class="flex-1 overflow-y-auto px-4 py-2 ad-noscroll"><nav class="space-y-1"><a class="ad-sidenav-link" href="index.html"><iconify-icon class="text-xl" icon="solar:widget-bold"></iconify-icon><span>运营总览</span></a><div class="ad-sidenav-sec">客户与开户</div><div class="ad-sidenav-sec">个人开户管理</div><a class="ad-sidenav-link" href="ob-personal.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>个人开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-personal-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>个人开户资料归档</span></a><a class="ad-sidenav-link" href="ob-personal-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-personal-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-personal-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>个人开户 Sokin</span></a><div class="ad-sidenav-sec">商业开户管理</div><a class="ad-sidenav-link" href="ob-business.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>商业开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-business-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>商业开户资料归档</span></a><a class="ad-sidenav-link" href="ob-business-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-business-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-business-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>商业开户 Sokin</span></a><a class="ad-sidenav-link" href="business.html"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon><span>商业客户管理</span></a><a class="ad-sidenav-link" href="personal.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>个人客户管理</span></a><div class="ad-sidenav-sec">风控与合规</div><a class="ad-sidenav-link ad-sidenav-active" href="risk.html"><iconify-icon class="text-xl" icon="solar:shield-warning-bold"></iconify-icon><span>风控总览</span></a><a class="ad-sidenav-link" href="risk-review.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>审核工作台</span></a><a class="ad-sidenav-link" href="risk-cases.html"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon><span>案件管理</span></a><a class="ad-sidenav-link" href="risk-screening.html"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon><span>制裁筛查</span></a><a class="ad-sidenav-link" href="risk-learn.html"><iconify-icon class="text-xl" icon="solar:square-academic-cap-bold"></iconify-icon><span>学习中心</span></a><div class="ad-sidenav-sec">安全与服务</div><a class="ad-sidenav-link" href="cs.html"><iconify-icon class="text-xl" icon="solar:headphones-round-sound-bold"></iconify-icon><span>客服管理</span></a><div class="ad-sidenav-sec">团队与账务</div><a class="ad-sidenav-link" href="managers.html"><iconify-icon class="text-xl" icon="solar:user-speak-bold"></iconify-icon><span>客户经理管理</span></a><a class="ad-sidenav-link" href="staff.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>员工管理</span></a><a class="ad-sidenav-link" href="bills.html"><iconify-icon class="text-xl" icon="solar:bill-list-bold"></iconify-icon><span>账单管理</span></a><a class="ad-sidenav-link" href="licenses.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>牌照管理</span></a></nav></div><div class="p-4" style="border-top:1px solid rgba(255,255,255,.08)"><div class="flex items-center space-x-3 p-2 rounded-lg" style="background:rgba(255,255,255,.05)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:#FFD008;color:#382b1b">涵</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold truncate text-white">运营-小涵</p><p class="text-xs text-gray-500 truncate">超级管理员</p></div><a href="login.html" class="text-gray-500 hover:text-red-400" title="退出登录"><iconify-icon icon="solar:logout-3-bold"></iconify-icon></a></div></div></aside>
+<main class="flex-1 flex flex-col min-w-0">
+<header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 flex-none">
+<div class="flex items-center">
+<button class="lg:hidden p-2 -ml-2 text-gray-500" onclick="toggleSidebar()">
+<iconify-icon class="text-2xl" icon="solar:hamburger-menu-bold"></iconify-icon>
+</button>
+<h1 class="text-lg font-bold ml-2">风控总览</h1>
+</div>
+<div class="flex items-center space-x-4">
+<div id="dd-role-slot"></div>
+<button class="p-2 text-gray-500 bg-gray-50 rounded-full hover:bg-gray-100">
+<iconify-icon class="text-xl" icon="solar:magnifer-linear"></iconify-icon>
+</button>
+<div class="flex items-center px-3 py-1 bg-gray-50 rounded-8 border border-gray-100">
+<iconify-icon class="mr-2" icon="twemoji:flag-china"></iconify-icon>
+<span class="text-sm">中文</span>
+<iconify-icon class="ml-2 text-xs text-gray-400" icon="solar:alt-arrow-down-linear"></iconify-icon>
+</div>
+<div class="relative">
+<button class="p-2 text-gray-500 bg-gray-50 rounded-full hover:bg-gray-100">
+<iconify-icon class="text-xl" icon="solar:bell-bold"></iconify-icon>
+</button>
+<span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+</div>
+<span class="text-xs text-gray-400 hidden md:block">后台环境 · 数据实时同步</span>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4"><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">今日拦截</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:shield-warning-bold"></iconify-icon></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">14 次</p>
+<p class="text-xs text-gray-400 mt-2">高危 2 次</p>
+</div><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">生效规则</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">23 条</p>
+<p class="text-xs text-gray-400 mt-2">本月新增 3</p>
+</div><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">黑名单</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:forbidden-circle-bold"></iconify-icon></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">486 条</p>
+<p class="text-xs text-gray-400 mt-2">设备/卡号/IP</p>
+</div><div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">误报率</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:graph-down-bold"></iconify-icon></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">0.8%</p>
+<p class="text-xs text-gray-400 mt-2">近 30 天</p>
+</div></div><div class="bg-white rounded-8 custom-shadow p-6"><div class="flex items-center justify-between mb-4"><h3 class="font-bold text-gray-900">风控规则</h3><button class="px-4 py-1.5 rounded-8 text-xs font-bold" style="background:#FFD008;color:#382b1b" id="add-rule" data-risk-need="rule_manage">新增规则</button></div><div class="overflow-x-auto"><table class="w-full min-w-[720px]"><thead class="bg-gray-50/80"><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">规则</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">触发条件</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">状态</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">操作</th></thead><tbody class="data-tbody"><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50"><b>大额交易二次确认</b></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">单笔 > €10,000 需 2FA + 短信</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">已启用</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-rule-edit" data-risk-need="rule_manage">编辑</button><button class="text-xs font-bold text-red-400 hover:underline ml-2 act-rule-off" data-risk-need="rule_manage">停用</button></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50"><b>异地登录拦截</b></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">非常用国家/设备登录直接拦截</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">已启用</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-rule-edit" data-risk-need="rule_manage">编辑</button><button class="text-xs font-bold text-red-400 hover:underline ml-2 act-rule-off" data-risk-need="rule_manage">停用</button></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50"><b>高频小额试探</b></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">10 分钟内 > 5 笔 < €2 交易冻结 24h</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">已启用</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-rule-edit" data-risk-need="rule_manage">编辑</button><button class="text-xs font-bold text-red-400 hover:underline ml-2 act-rule-off" data-risk-need="rule_manage">停用</button></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50"><b>夜间大额汇款</b></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">02:00-05:00 单笔 > ¥50,000 人工复核</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">已停用</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-rule-edit" data-risk-need="rule_manage">编辑</button><button class="text-xs font-bold text-green-600 hover:underline ml-2 act-rule-on">启用</button></td></tr></tbody></table></div></div><div class="bg-white rounded-8 custom-shadow overflow-hidden"><div class="overflow-x-auto">
+<table class="w-full min-w-[860px]"><thead class="bg-gray-50/80"><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">拦截时间</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">对象</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">命中规则</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">风险等级</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">处置</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">操作</th></thead><tbody class="data-tbody"><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50">08-10 02:14</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">U-8818304 (Pierre Dubois)</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">大额交易二次确认</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-500">高</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-500">已冻结</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-risk-view" data-risk-need="review_recheck">复核</button></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50">08-10 01:52</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">设备 3f:9a:··:21</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">异地登录拦截</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-600">中</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-600">已拦截</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-risk-view" data-risk-need="review_recheck">复核</button></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50">08-09 23:40</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">M-101207 (Game Keys Store)</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">高频小额试探</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-500">高</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-600">已限制</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-risk-view" data-risk-need="review_recheck">复核</button></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50">08-09 18:26</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">IP 185.220.··.··</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">代理IP登录</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-600">低</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">已放行</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-risk-view" data-risk-need="review_recheck">复核</button></td></tr></tbody></table></div></div>
+</div>
+</main>
+<div class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+</div>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/risk.js"></script>
+<script>
+DDRisk.renderSwitcher(document.getElementById('dd-role-slot'));
+window.addEventListener('DOMContentLoaded', function(){ DDRisk.guard(); });
+function toggleSidebar(){var s=document.getElementById('sidebar'),b=document.getElementById('sidebar-backdrop');if(!s)return;s.classList.toggle('hidden');s.classList.toggle('flex');s.classList.toggle('fixed');s.classList.toggle('inset-y-0');s.classList.toggle('left-0');s.classList.toggle('z-50');if(b)b.classList.toggle('hidden');}
+</script>
+<script>
+
+var dKw = '', dSt = '';
+function ddApplyFilter() {
+    document.querySelectorAll('.data-tbody tr').forEach(function (tr) {
+        var ok = (!dKw || tr.textContent.toLowerCase().indexOf(dKw) > -1) && (!dSt || dSt.indexOf('全部') === 0 || tr.textContent.indexOf(dSt) > -1);
+        tr.style.display = ok ? '' : 'none';
+    });
+}
+document.querySelectorAll('.data-search').forEach(function (i) { i.addEventListener('input', function () { dKw = this.value.trim().toLowerCase(); ddApplyFilter(); }); });
+document.querySelectorAll('.data-filter').forEach(function (s) { s.addEventListener('change', function () { dSt = this.value; ddApplyFilter(); }); });
+
+document.querySelectorAll('.act-rule-edit').forEach(function (b) {
+    b.addEventListener('click', function () {
+        var name = b.closest('tr').querySelector('b').textContent;
+        DDUI.modal({
+            title: '编辑规则 · ' + name,
+            body: '<div class="ddui-field"><label class="ddui-label">触发阈值</label><input class="ddui-input" value="€10,000"/></div>' +
+                '<div class="ddui-field"><label class="ddui-label">处置动作</label><select class="ddui-select"><option>二次验证</option><option>拦截并冻结</option><option>人工复核</option><option>仅记录</option></select></div>',
+            actions: [{ text: '取消' }, { text: '保存', type: 'primary', onClick: function (close) { close(); DDUI.toast('规则已更新，即时生效', 'success'); } }]
+        });
+    });
+});
+document.querySelectorAll('.act-rule-off, .act-rule-on').forEach(function (b) {
+    b.addEventListener('click', function () {
+        var tr = b.closest('tr');
+        var cell = tr.querySelectorAll('td')[2];
+        var off = b.classList.contains('act-rule-off');
+        DDUI.confirm(off ? '停用规则' : '启用规则', '确认' + (off ? '停用' : '启用') + '该风控规则？', function () {
+            cell.innerHTML = off ? '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">已停用</span>' : '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">已启用</span>';
+            b.textContent = off ? '启用' : '停用';
+            b.classList.toggle('act-rule-off'); b.classList.toggle('act-rule-on');
+            b.className = 'text-xs font-bold hover:underline ml-2 ' + (off ? 'text-green-600 act-rule-on' : 'text-red-400 act-rule-off');
+            DDUI.toast('规则状态已更新', 'success');
+        }, '确定');
+    });
+});
+var addRule = document.getElementById('add-rule');
+if (addRule) addRule.addEventListener('click', function () {
+    DDUI.modal({
+        title: '新增风控规则',
+        body: '<div class="ddui-field"><label class="ddui-label">规则名称</label><input class="ddui-input" id="nr-name" placeholder="如：新设备大额提现"/></div>' +
+            '<div class="ddui-field"><label class="ddui-label">触发条件</label><input class="ddui-input" placeholder="如：新设备 且 单笔 > ¥20,000"/></div>' +
+            '<div class="ddui-field"><label class="ddui-label">处置动作</label><select class="ddui-select"><option>二次验证</option><option>拦截并冻结</option><option>人工复核</option></select></div>',
+        actions: [{ text: '取消' }, { text: '创建并启用', type: 'primary', onClick: function (close, body) {
+            var n = body.querySelector('#nr-name').value.trim();
+            if (!n) { DDUI.toast('请填写规则名称', 'error'); return; }
+            close(); DDUI.toast('规则「' + n + '」已创建并启用', 'success');
+        } }]
+    });
+});
+document.querySelectorAll('.act-risk-view').forEach(function (b) {
+    b.addEventListener('click', function () {
+        var tds = b.closest('tr').querySelectorAll('td');
+        DDUI.modal({
+            title: '拦截复核',
+            body: '<div class="ddui-kv"><span>对象</span><b>' + tds[1].textContent.trim() + '</b></div>' +
+                '<div class="ddui-kv"><span>命中规则</span><b>' + tds[2].textContent.trim() + '</b></div>' +
+                '<div class="ddui-kv"><span>风险等级</span><b>' + tds[3].textContent.trim() + '</b></div>' +
+                '<div class="ddui-kv"><span>设备指纹</span><b style="font-family:monospace;font-size:11px">fp_8f72ca91be04</b></div>',
+            actions: [{ text: '确认误报放行', onClick: function (c) { c(); DDUI.toast('已放行并加入误报样本库', 'success'); } },
+                      { text: '维持处置', type: 'danger', onClick: function (c) { c(); DDUI.toast('已确认风险，维持处置'); } }]
+        });
+    });
+});
+
+</script>
+<script src="../assets/js/i18n.js"></script>
+</body>
+</html>

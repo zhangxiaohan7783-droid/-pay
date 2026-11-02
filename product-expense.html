@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>费用管理 - Dingdang Pay 叮当支付</title>
+<script src="assets/vendor/tailwindcss.js"></script>
+<script>tailwind.config = { theme: { extend: { colors: { primary: '#FFD008', dark: '#382b1b', accent1: '#FF8106', accent2: '#00B7EC' }, borderRadius: { '8': '8px' } } } }</script>
+<link rel="stylesheet" href="assets/css/apple.css" data-dd-apple="1"/>
+<style>
+.pd-eyebrow{font-size:13px;font-weight:600;letter-spacing:.14em;color:#86868b;text-transform:uppercase}
+.pd-h1{font-size:clamp(36px,5.4vw,60px);line-height:1.08;font-weight:800;letter-spacing:-.02em;color:#1d1d1f}
+.pd-h2{font-size:clamp(28px,3.6vw,40px);line-height:1.15;font-weight:800;letter-spacing:-.015em;color:#1d1d1f}
+.pd-sub{font-size:18px;line-height:1.6;color:#6e6e73}
+.pd-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:48px;padding:0 26px;border-radius:999px;font-weight:700;font-size:15px;transition:transform .2s var(--dd-ease),box-shadow .2s,background .2s}
+.pd-btn:active{transform:scale(.97)}
+.pd-btn.pri{background:#FFD008;color:#382b1b;box-shadow:0 6px 18px rgba(255,208,8,.35)}
+.pd-btn.pri:hover{box-shadow:0 10px 26px rgba(255,208,8,.45)}
+.pd-btn.ghost{background:rgba(0,0,0,.05);color:#1d1d1f}
+.pd-btn.ghost:hover{background:rgba(0,0,0,.08)}
+.pd-card{background:#fff;border-radius:22px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 28px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.04)}
+.pd-feat{padding:28px;border-radius:22px;background:#f5f5f7;transition:transform .3s var(--dd-ease),background .3s}
+.pd-feat:hover{transform:translateY(-3px);background:#efeff2}
+.pd-ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.pd-stat b{display:block;font-size:34px;font-weight:800;letter-spacing:-.02em;color:#1d1d1f}
+.pd-stat span{font-size:14px;color:#6e6e73}
+.pd-table{width:100%;border-collapse:separate;border-spacing:0}
+.pd-table td{padding:18px 24px;border-bottom:1px solid rgba(0,0,0,.06);font-size:15px}
+.pd-table tr:last-child td{border-bottom:0}
+.pd-table td:last-child{text-align:right;font-weight:700;color:#1d1d1f}
+.pd-faq details{border-bottom:1px solid rgba(0,0,0,.08);padding:20px 4px}
+.pd-faq summary{list-style:none;cursor:pointer;font-weight:700;font-size:17px;color:#1d1d1f;display:flex;justify-content:space-between;gap:16px}
+.pd-faq summary::-webkit-details-marker{display:none}
+.pd-faq summary::after{content:"+";font-size:24px;line-height:1;color:#86868b;transition:transform .25s var(--dd-ease)}
+.pd-faq details[open] summary::after{transform:rotate(45deg)}
+.pd-faq p{margin-top:12px;color:#6e6e73;line-height:1.7;font-size:15px}
+.pd-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:#fff;border:1px solid rgba(0,0,0,.08);font-size:13px;font-weight:600;color:#1d1d1f}
+.pd-mock-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(0,0,0,.06)}
+.pd-mock-row:last-child{border-bottom:0}
+.pd-flag{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex:none}
+.pd-anchor{scroll-margin-top:84px}
+.pd-in{opacity:0;transform:translateY(18px);transition:opacity .7s var(--dd-ease),transform .7s var(--dd-ease)}
+.pd-in.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.pd-in{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body class="bg-white">
+<!-- dd-site-nav:start -->
+<nav class="dd-site-nav">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16 items-center">
+<a class="flex items-center" href="home.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="assets/img/logo-h.png"/></a>
+<div class="dd-site-menu hidden md:flex items-center gap-8" id="dd-site-menu"><a class="nav-link" href="home.html">首页</a><a class="nav-link" href="product-accounts.html">全球账户</a><a class="nav-link on" href="product-expense.html">费用管理</a><a class="nav-link" href="product-payments.html">全球即时付款</a><a class="nav-link" href="product-acquiring.html">全球收单</a><a class="nav-link" href="about.html">关于我们</a><a class="nav-link" href="help.html">帮助</a></div>
+<div class="flex items-center gap-3"><a class="hidden sm:inline text-sm font-medium text-dark hover:opacity-70" href="login.html">登录</a><a class="bg-primary text-dark px-5 py-2 rounded-full text-sm font-bold" href="register.html?demo=1">立即开户</a><button class="dd-burger w-10 h-10 items-center justify-center rounded-full hover:bg-gray-100" aria-label="菜单" aria-expanded="false" aria-controls="dd-site-menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div>
+</div>
+</div>
+</nav>
+<!-- dd-site-nav:end -->
+<main>
+<!-- Hero -->
+<section class="pt-16 md:pt-24 pb-20" style="background:linear-gradient(180deg,#f5f5f7 0%,#fff 100%)">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-14 items-center">
+<div class="text-center lg:text-left"><p class="pd-eyebrow mb-5">费用管理</p><h1 class="pd-h1 mb-6">子账户分账<br/>无限虚拟卡</h1><p class="pd-sub max-w-xl mx-auto lg:mx-0 mb-8">按业务、店铺、团队开立子账户独立核算，随时随地开通虚拟卡支付广告、订阅与采购，支持绑定 Apple Pay / Google Pay 线上线下大额消费，每一笔花销都有归属。</p><div class="flex flex-wrap gap-3 justify-center lg:justify-start mb-8"><a class="pd-btn pri" href="register.html?demo=1">免费开通<svg class="" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a><a class="pd-btn ghost" href="login.html">登录账户</a></div><div class="flex flex-wrap gap-2 justify-center lg:justify-start"><span class="pd-chip"><svg class="" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>100 个子账户</span><span class="pd-chip"><svg class="" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>内部转账 0 手续费</span><span class="pd-chip"><svg class="" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>支持 Apple Pay</span><span class="pd-chip"><svg class="" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>大额支付</span></div></div>
+<div class="pd-in"><div class="max-w-md mx-auto" style="transform:rotate(1.2deg)"><img src="assets/img/card-yellow.png" alt="叮当支付虚拟卡" class="w-full rounded-3xl" style="box-shadow:0 20px 50px rgba(0,0,0,.18)"/><div class="pd-card p-5 -mt-8 mx-4 relative"><div class="pd-mock-row"><div class="flex items-center gap-3 min-w-0"><div class="pd-flag" style="background:#382b1b">€</div><div class="min-w-0"><p class="font-bold text-sm" style="color:#1d1d1f">欧洲电商事业部</p><p class="text-xs truncate" style="color:#86868b">SA-0001 · 已绑 2 张卡</p></div></div><p class="font-bold text-sm whitespace-nowrap" style="color:#1d1d1f">€ 12,480.50</p></div><div class="pd-mock-row"><div class="flex items-center gap-3 min-w-0"><div class="pd-flag" style="background:#00B7EC">$</div><div class="min-w-0"><p class="font-bold text-sm" style="color:#1d1d1f">游戏收单结算户</p><p class="text-xs truncate" style="color:#86868b">SA-0002 · 已绑 1 张卡</p></div></div><p class="font-bold text-sm whitespace-nowrap" style="color:#1d1d1f">$ 8,210.00</p></div><div class="pd-mock-row"><div class="flex items-center gap-3 min-w-0"><div class="pd-flag" style="background:#FF8106">€</div><div class="min-w-0"><p class="font-bold text-sm" style="color:#1d1d1f">广告投放专用户</p><p class="text-xs truncate" style="color:#86868b">SA-0003 · 月限额 €10,000</p></div></div><p class="font-bold text-sm whitespace-nowrap" style="color:#1d1d1f">€ 3,150.75</p></div></div></div></div>
+</div>
+</section>
+<!-- Stats -->
+<section class="max-w-6xl mx-auto px-4 mb-24"><div class="pd-card pd-in grid grid-cols-2 md:grid-cols-4 gap-8 p-8 md:p-10"><div class="pd-stat text-center"><b>100 个</b><span>子账户上限</span></div><div class="pd-stat text-center"><b>不限量</b><span>虚拟卡开通</span></div><div class="pd-stat text-center"><b>0 费</b><span>账户间转账</span></div><div class="pd-stat text-center"><b>秒级</b><span>开卡与调账</span></div></div></section>
+<!-- 子账户 -->
+<section class="max-w-6xl mx-auto px-4 mb-24 pd-anchor" id="subs"><div class="text-center max-w-2xl mx-auto mb-14 pd-in"><p class="pd-eyebrow mb-3">子账户</p><h2 class="pd-h2">一个主账户，最多 100 个子账户</h2><p class="pd-sub mt-4">按业务线、店铺或项目独立核算，资金在主账户与子账户之间实时划转。</p></div><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"><div class="pd-feat pd-in"><div class="pd-ico" style="background:rgba(255,208,8,.16);color:#b38f00"><svg class="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="2"/><rect x="3" y="14" width="8" height="6" rx="2"/><rect x="13" y="14" width="8" height="6" rx="2"/></svg></div><h3 class="text-lg font-bold mb-2" style="color:#1d1d1f">分业务独立核算</h3><p class="text-sm leading-relaxed" style="color:#6e6e73">每个子账户独立余额与流水，按事业部、店铺、项目维度对账，成本归属一目了然。</p></div><div class="pd-feat pd-in"><div class="pd-ico" style="background:rgba(0,183,236,.12);color:#0089b3"><svg class="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h13l-3-3M17 17H4l3 3"/></svg></div><h3 class="text-lg font-bold mb-2" style="color:#1d1d1f">内部转账实时到账</h3><p class="text-sm leading-relaxed" style="color:#6e6e73">主账户与子账户、子账户之间自由互转，实时到账、零手续费，资金调度不等待。</p></div><div class="pd-feat pd-in"><div class="pd-ico" style="background:rgba(255,129,6,.12);color:#d16500"><svg class="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c1-3.5 3.5-5 6.5-5s5.5 1.5 6.5 5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 15c2 .6 3.2 2.2 3.5 5"/></svg></div><h3 class="text-lg font-bold mb-2" style="color:#1d1d1f">关联团队成员</h3><p class="text-sm leading-relaxed" style="color:#6e6e73">为子账户指定负责人，财务、运营各管各的账，权限边界清晰。</p></div><div class="pd-feat pd-in"><div class="pd-ico" style="background:rgba(52,199,89,.12);color:#1f9a43"><svg class="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></div><h3 class="text-lg font-bold mb-2" style="color:#1d1d1f">共享实名资质</h3><p class="text-sm leading-relaxed" style="color:#6e6e73">子账户共享主账户的实名与合规资质，无需重复认证，即开即用。</p></div><div class="pd-feat pd-in"><div class="pd-ico" style="background:rgba(183,134,214,.14);color:#8b5fb8"><svg class="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></div><h3 class="text-lg font-bold mb-2" style="color:#1d1d1f">独立流水与对账</h3><p class="text-sm leading-relaxed" style="color:#6e6e73">每个子账户的交易记录可单独筛选与导出，月末对账、审计留痕更轻松。</p></div><div class="pd-feat pd-in"><div class="pd-ico" style="background:rgba(0,183,236,.12);color:#0089b3"><svg class="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20M6 15h4"/></svg></div><h3 class="text-lg font-bold mb-2" style="color:#1d1d1f">绑定虚拟卡</h3><p class="text-sm leading-relaxed" style="color:#6e6e73">虚拟卡需绑定子账户使用，只能消费对应子账户余额，支出天然隔离。</p></div></div></section>
+<!-- 虚拟卡 -->
+<section class="py-24 mb-24" style="background:#f5f5f7"><div class="max-w-6xl mx-auto px-4 pd-anchor" id="cards"><div class="text-center max-w-2xl mx-auto mb-14 pd-in"><p class="pd-eyebrow mb-3">无限虚拟卡</p><h2 class="pd-h2">要多少张，就开多少张</h2><p class="pd-sub mt-4">广告投放、SaaS 订阅、电商采购、差旅消费——一卡一场景，额度可控、随时冻结。</p></div><div class="grid md:grid-cols-2 gap-5"><div class="pd-card pd-in p-8"><img src="assets/img/card-yellow.png" alt="线上付款卡" class="w-full rounded-2xl mb-6" style="box-shadow:0 12px 30px rgba(0,0,0,.12)"/><h3 class="text-xl font-bold mb-2" style="color:#1d1d1f">线上付款卡</h3><p class="text-sm leading-relaxed mb-5" style="color:#6e6e73">仅支持线上消费：广告投放、SaaS 订阅、电商采购等场景，即开即用，适合为每个投放账户或供应商单独开卡。</p><div class="flex flex-wrap gap-2"><span class="pd-chip">即开即用</span><span class="pd-chip">月限额自定义</span><span class="pd-chip">一键冻结</span></div></div><div class="pd-card pd-in p-8"><img src="assets/img/card-black.png" alt="线下消费卡" class="w-full rounded-2xl mb-6" style="box-shadow:0 12px 30px rgba(0,0,0,.12)"/><h3 class="text-xl font-bold mb-2" style="color:#1d1d1f">线下消费卡</h3><p class="text-sm leading-relaxed mb-5" style="color:#6e6e73">除线上消费外，可绑定 Apple Pay / Google Pay，在手机钱包中线下刷卡消费，适合差旅与门店采购。</p><div class="flex flex-wrap gap-2"><span class="pd-chip">Apple Pay</span><span class="pd-chip">Google Pay</span><span class="pd-chip">线下刷卡</span></div></div></div><div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-5"><div class="pd-feat pd-in"><h4 class="font-bold mb-2" style="color:#1d1d1f">不限数量</h4><p class="text-sm leading-relaxed" style="color:#6e6e73">按需开卡，一卡一用途，支出隔离不串账。</p></div><div class="pd-feat pd-in"><h4 class="font-bold mb-2" style="color:#1d1d1f">额度管控</h4><p class="text-sm leading-relaxed" style="color:#6e6e73">每张卡独立月限额，超支自动拦截。</p></div><div class="pd-feat pd-in"><h4 class="font-bold mb-2" style="color:#1d1d1f">随时冻结</h4><p class="text-sm leading-relaxed" style="color:#6e6e73">发现异常一秒冻结，解冻同样即时生效。</p></div><div class="pd-feat pd-in"><h4 class="font-bold mb-2" style="color:#1d1d1f">人员关联</h4><p class="text-sm leading-relaxed" style="color:#6e6e73">卡片关联团队成员，谁花的钱清清楚楚。</p></div></div></div></section>
+<!-- 大额支付 -->
+<section class="max-w-6xl mx-auto px-4 mb-24 pd-anchor" id="large"><div class="text-center max-w-2xl mx-auto mb-14 pd-in"><p class="pd-eyebrow mb-3">大额支付</p><h2 class="pd-h2">大额消费，也能一卡搞定</h2><p class="pd-sub mt-4">供应商货款、批量采购、展会订货、团队差旅——高额度 + 实时风控，线上线下一卡通付。</p></div><div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"><div class="pd-feat pd-in"><div class="pd-ico" style="background:rgba(255,208,8,.16);color:#b38f00"><svg class="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6 15h4"/></svg></div><h3 class="text-lg font-bold mb-2" style="color:#1d1d1f">高额度支持</h3><p class="text-sm leading-relaxed" style="color:#6e6e73">单卡支持大额消费，月限额按需自定义，供应商货款、批量采购不再拆单。</p></div><div class="pd-feat pd-in"><div class="pd-ico" style="background:rgba(0,183,236,.12);color:#0089b3"><svg class="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4.5"/></svg></div><h3 class="text-lg font-bold mb-2" style="color:#1d1d1f">实时风控 + 3DS</h3><p class="text-sm leading-relaxed" style="color:#6e6e73">大额线上交易自动触发 3DS 验证，异常消费实时拦截并推送提醒，资金安全有保障。</p></div><div class="pd-feat pd-in"><div class="pd-ico" style="background:rgba(255,129,6,.12);color:#d16500"><svg class="" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div><h3 class="text-lg font-bold mb-2" style="color:#1d1d1f">线上线下同卡</h3><p class="text-sm leading-relaxed" style="color:#6e6e73">线上网页 / App 大额支付，线下门店手机拍卡大额消费，同一张卡、同一个子账户结算。</p></div></div></section>
+<!-- 场景 -->
+<section class="max-w-6xl mx-auto px-4 mb-24"><div class="text-center max-w-2xl mx-auto mb-14 pd-in"><p class="pd-eyebrow mb-3">适用场景</p><h2 class="pd-h2">团队花钱，从此井井有条</h2></div><div class="grid md:grid-cols-3 gap-5"><div class="pd-card pd-in p-8"><p class="text-sm font-bold mb-3" style="color:#b38f00">01</p><h4 class="text-xl font-bold mb-3" style="color:#1d1d1f">广告投放团队</h4><p class="text-sm leading-relaxed" style="color:#6e6e73">每个广告账户绑定独立虚拟卡，限额隔离防超支，封卡不影响其他投放。</p></div><div class="pd-card pd-in p-8"><p class="text-sm font-bold mb-3" style="color:#b38f00">02</p><h4 class="text-xl font-bold mb-3" style="color:#1d1d1f">多店铺电商</h4><p class="text-sm leading-relaxed" style="color:#6e6e73">按店铺开子账户核算采购与物流支出，内部转账统一调拨资金。</p></div><div class="pd-card pd-in p-8"><p class="text-sm font-bold mb-3" style="color:#b38f00">03</p><h4 class="text-xl font-bold mb-3" style="color:#1d1d1f">企业与团队</h4><p class="text-sm leading-relaxed" style="color:#6e6e73">为员工发放关联虚拟卡，差旅、订阅、采购支出全部在线留痕。</p></div></div></section>
+<!-- 费率 -->
+<section class="max-w-3xl mx-auto px-4 mb-24"><div class="text-center max-w-2xl mx-auto mb-14 pd-in"><p class="pd-eyebrow mb-3">透明费率</p><h2 class="pd-h2">费用管理费率</h2></div><div class="pd-card pd-in overflow-hidden"><table class="pd-table"><tr><td style="color:#6e6e73">子账户开立</td><td>免费</td></tr><tr><td style="color:#6e6e73">内部转账（主↔子 / 子↔子）</td><td>免费 · 实时到账</td></tr><tr><td style="color:#6e6e73">虚拟卡开卡</td><td>免费</td></tr><tr><td style="color:#6e6e73">虚拟卡月费</td><td>€0</td></tr><tr><td style="color:#6e6e73">消费手续费</td><td>0 费率，按子账户币种结算</td></tr><tr><td style="color:#6e6e73">绑定 Apple Pay / Google Pay</td><td>免费</td></tr><tr><td style="color:#6e6e73">大额支付月限额调整</td><td>免费 · 实时生效</td></tr></table></div><p class="text-xs text-center mt-4" style="color:#86868b">具体费率以开户后控制台展示为准，企业客户可申请阶梯优惠。</p></section>
+<!-- FAQ -->
+<section class="max-w-3xl mx-auto px-4 mb-24"><div class="text-center max-w-2xl mx-auto mb-14 pd-in"><p class="pd-eyebrow mb-3">FAQ</p><h2 class="pd-h2">常见问题</h2></div><div class="pd-faq pd-in"><details><summary>子账户需要单独实名认证吗？</summary><p>不需要。子账户共享主账户的实名与合规资质，开立后即可使用，无需重复提交资料。</p></details><details><summary>虚拟卡可以开多少张？</summary><p>不限量。你可以为每个投放账户、供应商或员工单独开卡，所有卡片统一在控制台管理。</p></details><details><summary>虚拟卡的钱从哪里扣？</summary><p>每张虚拟卡需绑定一个子账户，只能消费该子账户的余额。主账户资金需先通过内部转账划入对应子账户。</p></details><details><summary>如何把虚拟卡绑定到 Apple Pay / Google Pay？</summary><p>在控制台「卡片」页面选择线下消费卡，点击「添加到 Apple 钱包」或「添加到 Google 钱包」，按手机提示完成验证即可，绑定免费、即时生效。</p></details><details><summary>大额支付有限额吗？</summary><p>单卡默认支持大额消费，月限额可按需在控制台自定义调整，实时生效。大额线上交易会触发 3DS 验证，保障资金安全。</p></details><details><summary>卡片丢失了怎么办？</summary><p>在控制台一键冻结即可，冻结即时生效；确认安全后可随时解冻，或直接注销重新开卡。</p></details></div><p class="text-center mt-8 text-sm" style="color:#6e6e73">还有其他问题？ <a class="font-bold" style="color:#0071e3" href="help.html">访问帮助中心</a></p></section>
+<!-- CTA -->
+<section class="max-w-6xl mx-auto px-4 mb-24"><div class="pd-in rounded-[28px] text-white p-10 md:p-14 flex flex-col md:flex-row items-center justify-between gap-6" style="background:radial-gradient(120% 140% at 0% 0%,#5a4527 0%,#382b1b 55%,#21180e 100%)"><div class="text-center md:text-left"><h3 class="text-2xl md:text-3xl font-extrabold mb-2">让每一笔花销都有归属</h3><p style="color:rgba(255,255,255,.65)">免费开户，即刻开立子账户、开通虚拟卡。</p></div><div class="flex gap-3 flex-none"><a class="pd-btn pri" href="register.html?demo=1">立即开户</a><a class="pd-btn" style="background:rgba(255,255,255,.12);color:#fff" href="login.html">登录</a></div></div></section>
+</main>
+<!-- dd-site-footer:start -->
+<footer class="bg-dark text-white pt-16 pb-10">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-10 mb-12">
+<div class="col-span-2">
+<div class="flex items-center gap-2 mb-5"><img alt="Dingdang Pay" class="h-9 w-auto" src="assets/img/logo-h-rev.png"/></div>
+<p class="text-gray-400 text-sm leading-relaxed max-w-sm">叮当支付成立于 2025 年，是一家跨境支付科技公司。我们正通过对接 Sokin 系统与开放 API，为全球化企业构建全球收付款基础设施。</p>
+<p class="text-gray-400 text-sm mt-4">客服邮箱: support@dingdangpay.com</p>
+</div>
+<div><h4 class="font-semibold mb-5 text-primary text-sm">产品服务</h4><ul class="space-y-3 text-gray-400 text-sm">
+<li><a class="hover:text-white" href="product-accounts.html">全球账户</a></li>
+<li><a class="hover:text-white" href="product-expense.html">费用管理</a></li>
+<li><a class="hover:text-white" href="product-payments.html">全球即时付款</a></li>
+<li><a class="hover:text-white" href="product-acquiring.html">全球收单</a></li>
+<li><a class="hover:text-white" href="app/index.html">下载 App</a></li></ul></div>
+<div><h4 class="font-semibold mb-5 text-primary text-sm">关于叮当</h4><ul class="space-y-3 text-gray-400 text-sm">
+<li><a class="hover:text-white" href="about.html">关于我们</a></li>
+<li><a class="hover:text-white" href="compliance.html">监管牌照</a></li>
+<li><a class="hover:text-white" href="help.html">帮助中心</a></li>
+<li><a class="hover:text-white" href="register.html?demo=1">注册开户</a></li></ul></div>
+<div><h4 class="font-semibold mb-5 text-primary text-sm">法律条款</h4><ul class="space-y-3 text-gray-400 text-sm">
+<li><a class="hover:text-white" href="privacy.html">隐私协议</a></li>
+<li><a class="hover:text-white" href="terms.html">服务条款</a></li></ul></div>
+</div>
+<div class="pt-8 border-t border-white/10 text-xs text-gray-500 flex flex-col md:flex-row justify-between gap-4">
+<p>© 2026 Dingdang Pay. 支付牌照申请中，资金服务由 Sokin 等持牌合作机构提供。</p>
+<div class="flex gap-6"><span>系统对接: Sokin</span><span>开放 API</span></div>
+</div>
+</div>
+</footer>
+<!-- dd-site-footer:end -->
+<script src="assets/js/ui.js"></script>
+<script>
+(function(){var els=document.querySelectorAll('.pd-in');if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('on')});return;}
+var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('on');io.unobserve(x.target);}})},{threshold:.12});
+els.forEach(function(e){io.observe(e)});})();
+</script>
+<script src="assets/js/i18n.js"></script>
+</body>
+</html>

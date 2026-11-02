@@ -1,0 +1,14 @@
+.DS_Store
+Thumbs.db
+*.log
+node_modules/
+dist/
+build/
+.env*
+*.psd
+*.sketch
+*.fig
+_probe/
+.playwright-cli/
+_dbg.html
+_test_*.html
