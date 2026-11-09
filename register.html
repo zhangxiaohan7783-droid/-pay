@@ -30,7 +30,20 @@
 <h2 class="text-2xl font-bold text-dark">开启全球支付之旅</h2>
 </div>
 <div class="bg-white p-8 rounded-8 shadow-xl border border-gray-100">
-<div class="flex gap-2 mb-8 p-1 bg-gray-100 rounded-8">
+<div class="mb-6">
+<p class="text-sm font-bold text-dark mb-3">选择开户通道</p>
+<div class="grid grid-cols-2 gap-3" id="channel-cards">
+<button class="text-left p-4 rounded-8 border-2 transition-all chan-card" data-ch="sokin" onclick="setChannel('sokin')" type="button">
+<div class="flex items-center gap-2 mb-1"><iconify-icon class="text-lg text-accent2" icon="solar:global-bold"></iconify-icon><span class="font-bold text-dark text-sm">Sokin 开户版</span></div>
+<p class="text-xs text-gray-400 leading-relaxed">全球收付款账户<br/>支持个人 / 企业</p>
+</button>
+<button class="text-left p-4 rounded-8 border-2 transition-all chan-card" data-ch="xgd" onclick="setChannel('xgd')" type="button">
+<div class="flex items-center gap-2 mb-1"><iconify-icon class="text-lg text-accent1" icon="solar:buildings-bold"></iconify-icon><span class="font-bold text-dark text-sm">XGD 开户版</span></div>
+<p class="text-xs text-gray-400 leading-relaxed">XGD Europe 卢森堡持牌<br/>仅企业客户</p>
+</button>
+</div>
+</div>
+<div class="flex gap-2 mb-8 p-1 bg-gray-100 rounded-8" id="reg-tabs">
 <button class="flex-1 py-2 text-sm font-bold bg-white rounded-8 shadow-sm" id="tab-personal" onclick="switchRegTab('personal')" type="button">个人注册</button>
 <button class="flex-1 py-2 text-sm font-medium text-gray-500" id="tab-business" onclick="switchRegTab('business')" type="button">企业注册</button>
 </div>
@@ -86,7 +99,22 @@
 <script src="assets/js/auth.js"></script>
 <script>
 var regType = 'personal';
+/* 开户通道：sokin / xgd；默认读后台设置 dd-ob-channel */
+var regChannel = 'sokin';
+try { regChannel = localStorage.getItem('dd-ob-channel') === 'xgd' ? 'xgd' : 'sokin'; } catch (e) {}
+function setChannel(ch) {
+    regChannel = ch;
+    document.querySelectorAll('.chan-card').forEach(function (c) {
+        var on = c.dataset.ch === ch;
+        c.style.borderColor = on ? '#FFD008' : '#f3f4f6';
+        c.style.background = on ? '#FFFBEA' : '#fff';
+    });
+    if (ch === 'xgd') switchRegTab('business');
+    document.getElementById('tab-personal').style.display = ch === 'xgd' ? 'none' : '';
+    document.getElementById('reg-submit').textContent = ch === 'xgd' ? '立即注册（XGD 开户通道）' : '立即注册';
+}
 function switchRegTab(t) {
+    if (regChannel === 'xgd') t = 'business';
     regType = t;
     var on = 'flex-1 py-2 text-sm font-bold bg-white rounded-8 shadow-sm';
     var off = 'flex-1 py-2 text-sm font-medium text-gray-500';
@@ -136,7 +164,8 @@ function doRegister(e) {
         return DDAuth.login(email, pwd);
     }), '注册成功，请完成实名认证').then(function () {
         var demoQ = /[?&]demo=1\b/.test(location.search) ? '?demo=1' : '';
-        setTimeout(function () { location.href = (regType === 'business' ? 'kyb.html' : 'kyc.html') + demoQ; }, 500);
+        var target = regChannel === 'xgd' ? 'xgd.html' : (regType === 'business' ? 'kyb.html' : 'kyc.html');
+        setTimeout(function () { location.href = target + demoQ; }, 500);
     }).catch(function () { regErr('注册失败，请重试'); });
     return false;
 }
@@ -144,6 +173,7 @@ function doRegister(e) {
 /* 演示模式：?demo=1 自动填入注册信息，点击「立即注册」即可进入开户向导 */
 if (/[?&]demo=1\b/.test(location.search)) {
     document.getElementById('reg-email').value = 'xiaohan@dingdangpay.com';
+    document.getElementById('reg-company').value = 'Flash Commerce S.r.l.';
     document.getElementById('reg-cc').value = '+86';
     document.getElementById('reg-phone').value = '13800138000';
     document.getElementById('reg-code').value = '888888';
@@ -151,6 +181,7 @@ if (/[?&]demo=1\b/.test(location.search)) {
     document.getElementById('terms').checked = true;
     setTimeout(function () { DDUI.toast('演示数据已填入，点击「立即注册」进入开户向导', 'success'); }, 300);
 }
+setChannel(regChannel);
 </script>
 <script src="assets/js/i18n.js"></script>
 </body>
