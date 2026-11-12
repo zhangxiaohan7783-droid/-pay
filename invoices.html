@@ -80,6 +80,10 @@
 <iconify-icon class="text-lg" icon="solar:add-circle-bold"></iconify-icon>
                         创建发票
                     </button>
+<button class="bg-[#382b1b] hover:bg-[#4a3a25] text-white px-5 py-2.5 rounded-[8px] font-bold text-sm flex items-center gap-2 transition-all shadow-sm" onclick="txBillModal()">
+<iconify-icon class="text-lg" icon="solar:bill-list-bold"></iconify-icon>
+                        从流水开票
+                    </button>
 <button class="border-2 border-[#00B7EC] text-[#00B7EC] hover:bg-[#00B7EC]/5 px-5 py-2.5 rounded-[8px] font-bold text-sm flex items-center gap-2 transition-all">
 <iconify-icon class="text-lg" icon="solar:import-bold"></iconify-icon>
                         导入发票
@@ -858,6 +862,140 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     });
+});
+
+</script>
+<script>
+/* wire:invoices 从流水开票 + 关联入账 */
+var INV_TX = [
+    { id: 'TXN-20261110-001', source: '线上收单 - TechShop EU', amount: 2680.00, ccy: '€', date: '2026-11-10', type: '收单收入' },
+    { id: 'TXN-20261110-002', source: '线下收单 - 米兰旗舰店 POS', amount: 945.50, ccy: '€', date: '2026-11-10', type: '收单收入' },
+    { id: 'TXN-20261109-001', source: '收款链接 - FashionHub', amount: 4200.00, ccy: '€', date: '2026-11-09', type: '收单收入' },
+    { id: 'TXN-20261108-001', source: '加密收单 - USDT 收款', amount: 3180.00, ccy: '€', date: '2026-11-08', type: '加密收入' },
+    { id: 'TXN-20261107-002', source: 'PayAll 汇款手续费', amount: 620.00, ccy: '€', date: '2026-11-07', type: '服务费' },
+    { id: 'TXN-20261106-001', source: '线上收单 - GameVault Ltd', amount: 7850.00, ccy: '€', date: '2026-11-06', type: '收单收入' },
+    { id: 'TXN-20261105-003', source: 'USDT 兑换手续费', amount: 385.00, ccy: '€', date: '2026-11-05', type: '服务费' }
+];
+var INV_KEY = 'dd-inv-state-v1';
+function invState() { try { return JSON.parse(localStorage.getItem(INV_KEY) || '{"billed":{},"linked":{}}'); } catch (e) { return { billed: {}, linked: {} }; } }
+function invSave(s) { try { localStorage.setItem(INV_KEY, JSON.stringify(s)); } catch (e) {} }
+function invNextNo() { return 'INV-2026-' + String(Math.floor(Math.random() * 900) + 100); }
+function invM(t) { return t.ccy + t.amount.toLocaleString('en-US', { minimumFractionDigits: 2 }); }
+
+function invRowHtml(invNo, t, linked) {
+    return '<tr class="hover:bg-gray-50 transition-colors group">' +
+        '<td class="px-6 py-4 text-sm font-bold">' + invNo + '</td>' +
+        '<td class="px-6 py-4"><div class="text-sm font-medium">' + t.source + '</div></td>' +
+        '<td class="px-6 py-4 text-sm font-bold text-right">' + invM(t) + '</td>' +
+        '<td class="px-6 py-4 text-xs">' + t.type + '</td>' +
+        '<td class="px-6 py-4 text-sm text-gray-500">' + t.date + '</td>' +
+        '<td class="px-6 py-4"><span class="inline-flex items-center gap-1 text-xs text-[#00B7EC] font-medium"><iconify-icon icon="solar:check-circle-bold"></iconify-icon> ' + (linked ? '已关联 ' + t.id : '已关联') + '</span></td>' +
+        '<td class="px-6 py-4"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-700">已开票</span></td>' +
+        '<td class="px-6 py-4 text-center"><div class="flex items-center justify-center gap-3">' +
+        '<button class="text-[#00B7EC] hover:underline text-xs font-bold" onclick="invView(\'' + invNo + '\',\'' + t.source + '\',\'' + invM(t) + '\',\'' + t.id + '\')">查看</button>' +
+        '<button class="text-gray-400 hover:text-[#382b1b]" onclick="DDUI.toast(\'发票 PDF 已开始下载\',\'success\')"><iconify-icon icon="solar:download-bold"></iconify-icon></button>' +
+        '</div></td></tr>';
+}
+function invView(no, src, amt, txId) {
+    DDUI.modal({ title: '发票详情 · ' + no, body:
+        '<div class="ddui-kv"><span>发票号</span><b>' + no + '</b></div>' +
+        '<div class="ddui-kv"><span>客户/来源</span><b>' + src + '</b></div>' +
+        '<div class="ddui-kv"><span>金额</span><b>' + amt + '</b></div>' +
+        '<div class="ddui-kv"><span>关联流水</span><b>' + txId + '</b></div>' +
+        '<div class="ddui-kv"><span>状态</span><b>已开票 · 已关联入账</b></div>',
+        actions: [{ text: '下载 PDF', onClick: function (c) { c(); DDUI.toast('发票 PDF 已开始下载', 'success'); } }, { text: '关闭', type: 'primary' }] });
+}
+
+/* 从流水开票：勾选未开票流水，一键批量开票并自动关联 */
+function txBillModal() {
+    var st = invState();
+    var list = INV_TX.filter(function (t) { return !st.billed[t.id]; });
+    if (!list.length) { DDUI.toast('所有入账流水均已开票', 'success'); return; }
+    var body = '<p class="text-xs text-gray-400 mb-3">以下入账流水尚未开票，勾选后一键批量开票，发票将自动关联对应流水：</p>' +
+        '<div class="space-y-2 max-h-72 overflow-y-auto">' +
+        list.map(function (t) {
+            return '<label class="flex items-center gap-3 p-3 border border-gray-100 rounded-8 hover:border-[#FFD008]/50 cursor-pointer">' +
+                '<input type="checkbox" class="w-4 h-4 accent-[#FFD008]" data-tx="' + t.id + '" checked/>' +
+                '<div class="flex-1 min-w-0"><p class="text-sm font-bold truncate">' + t.source + '</p>' +
+                '<p class="text-xs text-gray-400 font-mono">' + t.id + ' · ' + t.date + '</p></div>' +
+                '<span class="text-sm font-bold flex-none">' + invM(t) + '</span></label>';
+        }).join('') + '</div>';
+    DDUI.modal({ title: '从流水开发票', body: body,
+        actions: [{ text: '取消' }, { text: '一键开票', type: 'primary', onClick: function (close, el) {
+            var ids = [];
+            el.querySelectorAll('input[data-tx]:checked').forEach(function (cb) { ids.push(cb.dataset.tx); });
+            if (!ids.length) { DDUI.toast('请至少勾选一笔流水', 'error'); return; }
+            var st2 = invState();
+            var tbody = document.getElementById('invoiceTableBody');
+            ids.forEach(function (id) {
+                var t = INV_TX.filter(function (x) { return x.id === id; })[0];
+                var no = invNextNo();
+                st2.billed[id] = no;
+                tbody.insertAdjacentHTML('afterbegin', invRowHtml(no, t, true));
+            });
+            invSave(st2);
+            close();
+            invRefreshStats();
+            DDUI.toast('已为 ' + ids.length + ' 笔流水开票并自动关联入账', 'success');
+        } }] });
+}
+
+/* 手工关联：为「未关联」发票行追加关联按钮 */
+function invWireLinkButtons() {
+    document.querySelectorAll('#invoiceTableBody tr').forEach(function (tr) {
+        if (tr.dataset.linkWired) return;
+        var linkCell = tr.querySelectorAll('td')[5];
+        if (!linkCell || linkCell.textContent.indexOf('未关联') === -1) return;
+        tr.dataset.linkWired = 1;
+        var ops = tr.querySelectorAll('td')[7];
+        if (!ops) return;
+        var box = ops.querySelector('.flex') || ops;
+        var b = document.createElement('button');
+        b.className = 'text-green-600 hover:underline text-xs font-bold';
+        b.textContent = '关联入账';
+        b.addEventListener('click', function () { invLinkModal(tr); });
+        box.appendChild(b);
+    });
+}
+function invLinkModal(tr) {
+    var st = invState();
+    var invNo = tr.querySelector('td').textContent.trim();
+    var amtTxt = tr.querySelectorAll('td')[2].textContent.trim();
+    var opts = INV_TX.map(function (t) {
+        var used = st.billed[t.id] ? '（已开票 ' + st.billed[t.id] + '）' : '';
+        return '<option value="' + t.id + '">' + t.id + ' · ' + t.source + ' · ' + invM(t) + used + '</option>';
+    }).join('');
+    DDUI.modal({ title: '关联入账流水 · ' + invNo, body:
+        '<div class="ddui-field"><label class="ddui-label">发票金额</label><input class="ddui-input" value="' + amtTxt + '" readonly/></div>' +
+        '<div class="ddui-field"><label class="ddui-label">选择要关联的入账流水</label><select class="ddui-select" id="inv-link-tx"><option value="">— 请选择流水 —</option>' + opts + '</select></div>' +
+        '<p class="text-xs text-gray-400">关联后账实相符，便于合规审计与退税核对。</p>',
+        actions: [{ text: '取消' }, { text: '确认关联', type: 'primary', onClick: function (close, el) {
+            var txId = el.querySelector('#inv-link-tx').value;
+            if (!txId) { DDUI.toast('请选择流水', 'error'); return; }
+            var st2 = invState(); st2.linked[invNo] = txId; invSave(st2);
+            tr.querySelectorAll('td')[5].innerHTML = '<span class="inline-flex items-center gap-1 text-xs text-[#00B7EC] font-medium"><iconify-icon icon="solar:check-circle-bold"></iconify-icon> 已关联 ' + txId + '</span>';
+            close();
+            DDUI.toast('发票 ' + invNo + ' 已关联流水 ' + txId, 'success');
+        } }] });
+}
+
+/* 统计刷新（占位：卡片数字为演示数据，行数据实时持久化） */
+function invRefreshStats() {}
+document.addEventListener('DOMContentLoaded', function () {
+    var st = invState();
+    var tbody = document.getElementById('invoiceTableBody');
+    Object.keys(st.billed).forEach(function (txId) {
+        var t = INV_TX.filter(function (x) { return x.id === txId; })[0];
+        if (t) tbody.insertAdjacentHTML('afterbegin', invRowHtml(st.billed[txId], t, true));
+    });
+    /* 恢复手工关联标记 */
+    document.querySelectorAll('#invoiceTableBody tr').forEach(function (tr) {
+        var invNo = tr.querySelector('td').textContent.trim();
+        if (st.linked[invNo]) {
+            tr.querySelectorAll('td')[5].innerHTML = '<span class="inline-flex items-center gap-1 text-xs text-[#00B7EC] font-medium"><iconify-icon icon="solar:check-circle-bold"></iconify-icon> 已关联 ' + st.linked[invNo] + '</span>';
+        }
+    });
+    invWireLinkButtons();
 });
 
 </script>

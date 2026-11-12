@@ -36,7 +36,9 @@
     lang: '<path d="M4 5h9M8.5 3v2M6 5c.5 3 2.5 6 6 7.5M11 5c-.8 4-3.4 7-7 8.5"/><path d="m13 21 4-10 4 10M14.5 17.5h5"/>',
     face: '<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M9 9v1.5M15 9v1.5M12 9v4h-1M9.5 16a4 4 0 0 0 5 0"/>',
     qr: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 18v3h-3"/>',
-    refresh: '<path d="M20 11a8 8 0 0 0-14.9-3M4 4v4h4M4 13a8 8 0 0 0 14.9 3M20 20v-4h-4"/>'
+    refresh: '<path d="M20 11a8 8 0 0 0-14.9-3M4 4v4h4M4 13a8 8 0 0 0 14.9 3M20 20v-4h-4"/>',
+    bill: '<path d="M6 2h12a1 1 0 0 1 1 1v19l-3-2-3 2-3-2-3 2V3a1 1 0 0 1 1-1z"/><path d="M9 7h6M9 11h6M9 15h4"/>',
+    calc: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 6h6"/><path d="M9 11h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M9 19h.01M12 19h.01M15 19h.01"/>'
   };
   function ic(n, cls) { return '<svg class="i ' + (cls || '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + (P[n] || '') + '</svg>'; }
   var CHEV = '<svg class="chev" viewBox="0 0 8 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m1.5 1.5 5 5-5 5"/></svg>';
@@ -175,7 +177,9 @@
       '<div class="quick"><button data-go="send"><span class="qi">' + ic('send') + '</span>付款</button><button data-go="receive"><span class="qi">' + ic('down') + '</span>收款</button><button data-go="exchange"><span class="qi">' + ic('swap') + '</span>换汇</button><button data-go="paylink"><span class="qi">' + ic('link') + '</span>收款链接</button></div></div>' +
       '<div class="sec-h" style="padding:0 20px 8px"><h3>我的账户</h3><a href="#/accounts">全部</a></div>' +
       '<div class="accs" style="margin-bottom:22px">' + S.accounts.map(function (a, i) { return '<button class="card acc" data-go="account/' + i + '" style="text-align:left"><div class="flag" style="background:' + a.c + '">' + a.cur.slice(0, 3) + '</div><small>' + a.name + '</small><b>' + mask((SYM[a.cur] || '') + fmt(a.bal)) + '</b></button>'; }).join('') + '<button class="card acc add" id="h-add">' + ic('plus') + '新增币种</button></div>' +
+      riskBanner() +
       '<div class="promo"><span class="pi">' + ic('globe') + '</span><span style="flex:1"><b>速汇中国 · 微信到账</b><small>欧元直达微信/银行卡，最快 5 分钟</small></span><button class="pill" style="background:#FFD008;color:#382b1b" data-go="send">去付款</button></div>' +
+      '<div class="sec" style="margin-bottom:22px"><div class="sec-h"><h3>财税待办</h3><a href="#/tax">全部</a></div>' + taxTodoCard() + '</div>' +
       '<div class="sec"><div class="sec-h"><h3>最近交易</h3><a href="#/tx">查看全部</a></div><div id="h-tx">' + skel(3) + '</div></div>',
       mount: function () {
         $('#h-eye').onclick = function () { S.hide = !S.hide; save(); render(); };
@@ -206,7 +210,9 @@
       '<div class="cap">管理</div><div class="list">' +
       '<button class="row" data-go="cards"><span class="ri" style="background:#5856D6">' + ic('card') + '</span><span class="rt"><b>银行卡</b></span>' + CHEV + '</button>' +
       '<button class="row" data-go="tx"><span class="ri" style="background:#FF9500">' + ic('doc') + '</span><span class="rt"><b>交易记录</b></span>' + CHEV + '</button>' +
-      '<button class="row" data-go="exchange"><span class="ri" style="background:#AF52DE">' + ic('swap') + '</span><span class="rt"><b>货币兑换</b></span>' + CHEV + '</button></div>',
+      '<button class="row" data-go="exchange"><span class="ri" style="background:#AF52DE">' + ic('swap') + '</span><span class="rt"><b>货币兑换</b></span>' + CHEV + '</button>' +
+      '<button class="row" data-go="tax"><span class="ri" style="background:#00B7EC">' + ic('doc') + '</span><span class="rt"><b>税务申报</b></span>' + CHEV + '</button>' +
+      '<button class="row" data-go="invoices"><span class="ri" style="background:#FF8106">' + ic('bill') + '</span><span class="rt"><b>营收发票</b></span>' + CHEV + '</button></div>',
       mount: function () { $('#a-add').onclick = addCurrency; } };
   };
 
@@ -471,7 +477,7 @@
   R.me = function () {
     function row(go, col, icon, t, v) { return '<button class="row" data-go="' + go + '"><span class="ri" style="background:' + col + '">' + ic(icon) + '</span><span class="rt"><b>' + t + '</b></span>' + (v ? '<span class="rv" style="font-size:15px">' + v + '</span>' : '') + CHEV + '</button>'; }
     return { html: '<div class="large-ttl"><h1>我的</h1></div><div class="card me"><span class="av">F</span><span style="flex:1"><b>Flash Commerce srl</b><small>demo@dingdangpay.com</small><br/><span class="pill ok" style="margin-top:6px">' + ic('shield').replace('class="i ', 'style="width:12px;height:12px" class="i ') + 'KYB 已认证</span></span></div>' +
-      '<div class="list" style="margin-bottom:22px">' + row('recipients', '#007AFF', 'users', '收款人') + row('cards', '#5856D6', 'card', '银行卡') + row('tx', '#FF9500', 'doc', '交易记录') + '</div>' +
+      '<div class="list" style="margin-bottom:22px">' + row('recipients', '#007AFF', 'users', '收款人') + row('cards', '#5856D6', 'card', '虚拟卡') + row('tx', '#FF9500', 'doc', '交易记录') + row('tax', '#00B7EC', 'calc', '税务申报') + row('invoices', '#FF8106', 'bill', '营收发票') + row('risk', '#FF3B30', 'shield', '风控中心') + '</div>' +
       '<div class="list" style="margin-bottom:22px">' + row('security', '#34C759', 'shield', '安全中心') + row('settings', '#8E8E93', 'gear', '通用设置') + row('help', '#FF2D55', 'help', '帮助与客服') + '</div>' +
       '<div class="list"><button class="row" id="me-out"><span class="ri" style="background:#FF3B30">' + ic('logout') + '</span><span class="rt"><b style="color:var(--dd-red)">退出登录</b></span></button></div><p class="foot-note" style="text-align:center;margin-top:18px">叮当支付 v3.2.0 · MFSA & FCA 持牌</p>',
       mount: function () { $('#me-out').onclick = function () { DDUI.confirm('退出登录', '退出后需重新验证身份才能使用。', function () { S.authed = false; save(); hist = []; go('welcome'); }, '退出'); }; } };
@@ -502,11 +508,40 @@
       } };
   };
 
+  /* 虚拟卡：与 Web 端共享 DDCards / DDSubs 数据 */
+  function cardAvail(c, subs) {
+    var R2 = { EUR: 1, GBP: 1.17, USD: 0.92, USDT: 0.92 };
+    var sub = subs.filter(function (x) { return x.id === c.sub; })[0];
+    var bal = sub ? sub.bal * (R2[sub.cur] || 1) : 0;
+    return c.frozen ? 0 : Math.min(c.limit, bal);
+  }
   R.cards = function () {
-    return { html: nav('银行卡', '<button id="cd-add">添加</button>') + '<div id="cd"></div>',
+    return { html: nav('虚拟卡', '<button id="cd-add">开卡</button>') + '<div id="cd"></div>',
       mount: function () {
-        stateBox($('#cd'), 'empty', { title: '还没有绑定银行卡', text: '绑定实体卡或虚拟卡后，可用于充值和线下消费', action: '申请虚拟卡', onAction: function () { toast('虚拟卡申请已提交，预计 1 分钟内开通', 'success'); } });
-        $('#cd-add').onclick = function () { toast('请在 Web 客户端完成实体卡申请', 'info'); };
+        function draw() {
+          var el = $('#cd'); if (!el) return;
+          var cards = window.DDCards ? DDCards.load() : [];
+          var subs = window.DDSubs ? DDSubs.load() : [];
+          if (!cards.length) { stateBox(el, 'empty', { title: '还没有虚拟卡', text: '开通虚拟卡后可用于线上消费与广告投放', action: '立即开卡', onAction: function () { toast('请在 Web 客户端提交开卡申请', 'info'); } }); return; }
+          var total = cards.reduce(function (a, c) { return a + cardAvail(c, subs); }, 0);
+          el.innerHTML = '<div class="card" style="margin:8px 16px 14px;padding:18px"><small style="color:var(--dd-ink-2)">卡可用余额合计（EUR）</small><div style="font-size:30px;font-weight:800;letter-spacing:-.02em;margin-top:4px">' + mask('€' + fmt(total)) + '</div><small style="color:var(--dd-ink-2)">' + cards.length + ' 张卡 · ' + cards.filter(function (c) { return c.frozen; }).length + ' 张冻结</small></div>' +
+            '<div class="list">' + cards.map(function (c) {
+              var sub = subs.filter(function (x) { return x.id === c.sub; })[0];
+              return '<div class="row"><span class="ri" style="background:' + (c.frozen ? '#8E8E93' : '#5856D6') + '">' + ic('card') + '</span><span class="rt"><b>·· ' + String(c.no || '').slice(-4) + (c.frozen ? ' <span class="pill fail" style="margin-left:6px">已冻结</span>' : '') + '</b><small>' + esc(sub ? sub.name : c.sub) + ' · 月限额 €' + fmt(c.limit, 0) + ' · 可用 €' + fmt(cardAvail(c, subs)) + '</small></span><button class="pill ' + (c.frozen ? '' : 'fail') + '" data-frz="' + esc(c.no) + '">' + (c.frozen ? '解冻' : '冻结') + '</button></div>';
+            }).join('') + '</div>';
+          el.querySelectorAll('[data-frz]').forEach(function (b) {
+            b.onclick = function () {
+              var c = DDCards.load().filter(function (x) { return x.no === b.dataset.frz; })[0];
+              if (!c) return;
+              DDUI.confirm(c.frozen ? '解冻卡片' : '冻结卡片', c.frozen ? '解冻后卡片立即可用于消费。' : '冻结期间卡片无法消费，可随时解冻。', function () {
+                var l = DDCards.load(); l.forEach(function (x) { if (x.no === c.no) x.frozen = !x.frozen; });
+                DDCards.save(l); toast(c.frozen ? '卡片已解冻' : '卡片已冻结', 'success'); draw();
+              }, c.frozen ? '解冻' : '冻结');
+            };
+          });
+        }
+        $('#cd-add').onclick = function () { toast('请在 Web 客户端提交开卡申请', 'info'); };
+        draw();
       } };
   };
 
@@ -516,6 +551,159 @@
       mount: function (v) {
         v.querySelectorAll('[data-q]').forEach(function (b) { b.onclick = function () { sheet({ title: b.textContent, body: '<p style="padding:0 20px;font-size:15px;line-height:1.7;color:var(--dd-ink-2)">SEPA Instant 与速汇中国通常 5 分钟内到账；SWIFT 国际电汇 1–3 个工作日。如超时未到账，可在交易详情中发起查询。</p>', actions: '<button class="btn tint" data-close>知道了</button>' }); }; });
         $('#hp-chat').onclick = function () { DDUI.busy(this, 900).then(function () { toast('客服 Lucia 已接入，请描述您的问题', 'success'); }); };
+      } };
+  };
+
+  /* ================= 财税 / 开票 / 风控（对齐 Web 端，共享 localStorage） ================= */
+  function taxLed() {
+    var d = null;
+    try { d = JSON.parse(localStorage.getItem('dd-tax-ledger-v2') || 'null'); } catch (e) {}
+    if (!d && window.DDTaxData) { d = DDTaxData.ledSeed(); try { localStorage.setItem('dd-tax-ledger-v2', JSON.stringify(d)); } catch (e) {} }
+    return d || {};
+  }
+  function taxOv() { try { return JSON.parse(localStorage.getItem('dd-tax-overview-v1') || '{}'); } catch (e) { return {}; } }
+  function ledBal(entries) { return (entries || []).reduce(function (a, x) { return a + (x['in'] || 0) - (x.out || 0); }, 0); }
+  function taxSummary() {
+    var ov = taxOv(), due = 0, back = 0;
+    Object.keys(ov).forEach(function (k) {
+      var v = ov[k] || {};
+      if ((v.vatNet || 0) > 0) due += v.vatNet; else back += -(v.vatNet || 0);
+      if ((v.citDue || 0) > 0) due += v.citDue;
+    });
+    return { due: due, back: back };
+  }
+  function riskBanner() {
+    var todo = 0;
+    try { if (window.DDRiskTx) todo = DDRiskTx.stats().todo; } catch (e) {}
+    if (!todo) return '';
+    return '<button class="card" data-go="risk" style="margin:0 16px 14px;padding:14px 16px;display:flex;align-items:center;gap:12px;text-align:left;background:rgba(255,59,48,.06);box-shadow:none">' +
+      '<span class="ri" style="background:#FF3B30;flex:none">' + ic('shield') + '</span>' +
+      '<span style="flex:1"><b style="font-size:14px">' + todo + ' 笔交易被风控拦截</b><small style="display:block;color:var(--dd-ink-2);font-size:12px">需您确认或补充材料，点击查看</small></span>' + CHEV + '</button>';
+  }
+  function taxTodoCard() {
+    var DL = (window.DDTaxData && DDTaxData.deadlines) || [];
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+    var soon = DL.map(function (x) { return { n: DDTaxData.names[x.code], d: x.d, days: Math.round((new Date(x.d + 'T00:00:00') - today) / 86400000) }; })
+      .filter(function (x) { return x.days >= 0; }).sort(function (a, b) { return a.days - b.days; })[0];
+    var sm = taxSummary();
+    return '<button class="card" data-go="tax" style="margin:0 16px;padding:14px 16px;display:flex;align-items:center;gap:12px;text-align:left">' +
+      '<span class="ri" style="background:#00B7EC;flex:none">' + ic('calc') + '</span>' +
+      '<span style="flex:1"><b style="font-size:14px">' + (soon ? soon.n + ' VAT ' + soon.days + ' 天后截止' : '本期申报已完成') + '</b><small style="display:block;color:var(--dd-ink-2);font-size:12px">应缴 €' + fmt(sm.due, 0) + ' · 应退 €' + fmt(sm.back, 0) + '</small></span>' + CHEV + '</button>';
+  }
+
+  /* 税务申报：税务局账户余额 + 申报截止 + 应缴/应退 */
+  R.tax = function (arg) {
+    var led = taxLed(), ov = taxOv(), sm = taxSummary();
+    var names = (window.DDTaxData && DDTaxData.names) || {};
+    var DL = (window.DDTaxData && DDTaxData.deadlines) || [];
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+    if (arg) {
+      /* 国家详情：台账 */
+      var entries = led[arg] || [];
+      return { html: nav((names[arg] || arg) + ' · 税务局账户') +
+        '<div class="amount-box" style="padding-top:8px"><span class="cur">账户余额（预缴 + 留抵 − 缴款）</span><div style="font-size:40px;font-weight:800;margin-top:10px;letter-spacing:-.02em;color:' + (ledBal(entries) >= 0 ? 'var(--dd-green)' : 'var(--dd-red)') + '">' + (ledBal(entries) >= 0 ? '' : '−') + '€' + fmt(Math.abs(ledBal(entries))) + '</div></div>' +
+        '<div class="cap">台账明细</div><div class="list plain" style="margin-bottom:22px">' +
+        (entries.length ? entries.map(function (x) {
+          return '<div class="row"><span class="rt"><b style="font-weight:500">' + esc(x.item) + '</b><small>' + x.date + '</small></span><span class="rv ' + ((x['in'] || 0) > 0 ? 'pos' : 'neg') + '">' + ((x['in'] || 0) > 0 ? '+' : '−') + '€' + fmt(x['in'] || x.out) + '</span></div>';
+        }).join('') : '<div style="padding:24px;text-align:center;color:var(--dd-ink-2);font-size:14px">暂无台账记录</div>') + '</div>',
+        mount: function () {} };
+    }
+    return { html: nav('税务申报') +
+      '<div class="kpis" style="grid-template-columns:1fr 1fr"><div class="card kpi"><small>本期应缴</small><b style="color:' + (sm.due > 0 ? 'var(--dd-red)' : 'var(--dd-ink)') + '">€' + fmt(sm.due, 0) + '</b><em style="color:var(--dd-ink-2)">VAT + 企业所得税</em></div><div class="card kpi"><small>本期应退</small><b style="color:var(--dd-green)">€' + fmt(sm.back, 0) + '</b><em style="color:var(--dd-ink-2)">留抵 / 多缴</em></div></div>' +
+      '<div class="cap">申报截止</div><div class="list plain" style="margin-bottom:22px">' + DL.map(function (x) {
+        var days = Math.round((new Date(x.d + 'T00:00:00') - today) / 86400000);
+        return '<div class="row"><span class="rt"><b style="font-weight:500">' + (names[x.code] || x.code) + ' VAT</b><small>' + x.d + '</small></span><span class="rv">' + (days < 0 ? '<span class="pill ok">已过期</span>' : days <= 7 ? '<span class="pill fail">' + days + ' 天后</span>' : '<span class="pill wait">' + days + ' 天后</span>') + '</span></div>';
+      }).join('') + '</div>' +
+      '<div class="cap">税务局账户余额</div><div class="list" style="margin-bottom:22px">' + Object.keys(names).map(function (k) {
+        var b = ledBal(led[k]);
+        var o = ov[k] || {};
+        var sub = (o.vatNet ? 'VAT ' + (o.vatNet > 0 ? '应缴 €' + fmt(o.vatNet, 0) : '应退 €' + fmt(-o.vatNet, 0)) : '本期 VAT 未测算');
+        return '<button class="row" data-go="tax/' + k + '"><span class="av" style="background:#00B7EC1f;color:#00B7EC;font-size:11px">' + k + '</span><span class="rt"><b>' + names[k] + '</b><small>' + sub + '</small></span><span class="rv ' + (b >= 0 ? 'pos' : 'neg') + '">' + (b >= 0 ? '' : '−') + '€' + fmt(Math.abs(b), 0) + '</span>' + CHEV + '</button>';
+      }).join('') + '</div>' +
+      '<p class="foot-note" style="text-align:center">完整申报表填写与导出请使用 Web 客户端</p>' };
+  };
+
+  /* 营收发票：与 Web 端共享 INV_TX 口径 + dd-inv-state-v1 */
+  var APP_INV_TX = [
+    { id: 'TXN-20261110-001', source: '线上收单 - TechShop EU', amount: 2680.00, date: '2026-11-10', type: '收单收入' },
+    { id: 'TXN-20261110-002', source: '线下收单 - 米兰旗舰店 POS', amount: 945.50, date: '2026-11-10', type: '收单收入' },
+    { id: 'TXN-20261109-001', source: '收款链接 - FashionHub', amount: 4200.00, date: '2026-11-09', type: '收单收入' },
+    { id: 'TXN-20261108-001', source: '加密收单 - USDT 收款', amount: 3180.00, date: '2026-11-08', type: '加密收入' },
+    { id: 'TXN-20261107-002', source: 'PayAll 汇款手续费', amount: 620.00, date: '2026-11-07', type: '服务费' },
+    { id: 'TXN-20261106-001', source: '线上收单 - GameVault Ltd', amount: 7850.00, date: '2026-11-06', type: '收单收入' },
+    { id: 'TXN-20261105-003', source: 'USDT 兑换手续费', amount: 385.00, date: '2026-11-05', type: '服务费' }
+  ];
+  function invSt() { try { return JSON.parse(localStorage.getItem('dd-inv-state-v1') || '{"billed":{},"linked":{}}'); } catch (e) { return { billed: {}, linked: {} }; } }
+  R.invoices = function () {
+    return { html: nav('营收发票') +
+      '<div style="padding:0 16px 14px"><label style="display:flex;align-items:center;gap:8px;background:rgba(118,118,128,.12);border-radius:10px;padding:0 10px;height:38px;color:#8e8e93">' + ic('search') + '<input id="iv-q" placeholder="搜索流水号 / 来源" style="flex:1;border:0;background:transparent;outline:0;font-size:16px;box-shadow:none;padding:0"/></label></div>' +
+      '<div id="iv-list"></div>',
+      mount: function () {
+        var q = '';
+        function draw() {
+          var el = $('#iv-list'); if (!el) return;
+          var st = invSt();
+          var list = APP_INV_TX.filter(function (t) { return !q || (t.id + t.source).toLowerCase().indexOf(q) >= 0; });
+          var pending = APP_INV_TX.filter(function (t) { return !st.billed[t.id]; }).length;
+          if (!list.length) { stateBox(el, 'search', {}); return; }
+          el.innerHTML = '<div class="cap">共 ' + list.length + ' 笔入账流水 · ' + pending + ' 笔待开票</div><div class="list">' + list.map(function (t) {
+            var no = st.billed[t.id];
+            return '<div class="row"><span class="rt"><b>' + esc(t.source) + '</b><small class="font-mono">' + t.id + ' · ' + t.date + '</small></span><span class="rv neg">€' + fmt(t.amount) + '<br/>' + (no ? '<span class="pill ok">' + no + '</span>' : '<button class="pill" style="background:#FFD008;color:#382b1b" data-bill="' + t.id + '">开票</button>') + '</span></div>';
+          }).join('') + '</div>';
+          el.querySelectorAll('[data-bill]').forEach(function (b) {
+            b.onclick = function () {
+              var t = APP_INV_TX.filter(function (x) { return x.id === b.dataset.bill; })[0];
+              DDUI.confirm('开具发票', '为「' + t.source + '」€' + fmt(t.amount) + ' 开具营收发票？', function () {
+                var s2 = invSt();
+                s2.billed[t.id] = 'INV-2026-' + String(Math.floor(Math.random() * 900) + 100);
+                try { localStorage.setItem('dd-inv-state-v1', JSON.stringify(s2)); } catch (e) {}
+                toast('发票已开具', 'success'); draw();
+              }, '开票');
+            };
+          });
+        }
+        $('#iv-q').addEventListener('input', function () { q = this.value.trim().toLowerCase(); draw(); });
+        draw();
+      } };
+  };
+
+  /* 风控中心：与 Web 端共享 DDRiskTx */
+  R.risk = function (arg) {
+    if (!window.DDRiskTx) return { html: nav('风控中心') + '<div id="rk"></div>', mount: function () { stateBox($('#rk'), 'error', { title: '模块未加载', text: '请刷新重试' }); } };
+    if (arg) {
+      var t = DDRiskTx.find(arg);
+      if (!t) return R.notfound();
+      var sm = DDRiskTx.STATUS[t.status], lm = DDRiskTx.levelMeta(t.level);
+      var docs = DDRiskTx.docs()[t.id] || [];
+      var rows = [['交易类型', t.type], ['交易时间', t.ts], ['金额', DDRiskTx.fmt(t)], ['风险等级', lm.label + ' · ' + t.score + ' 分'], ['命中规则', t.rules.join('、')], ['设备 / IP', t.device + ' · ' + t.ip]];
+      return { html: nav('风控详情') +
+        '<div class="card" style="margin:12px 16px;padding:16px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><b style="font-size:16px">' + esc(t.cp) + '</b><span class="pill ' + (t.status === 'released' ? 'ok' : t.status === 'rejected' ? 'fail' : 'wait') + '">' + sm.label + '</span></div><p style="font-size:13px;color:var(--dd-ink-2);line-height:1.6">' + esc(t.note || '系统风控规则命中，请按提示操作。') + '</p></div>' +
+        '<div class="list plain" style="margin-bottom:14px">' + rows.map(function (r) { return '<div class="row"><span class="rt"><b style="font-weight:400;color:var(--dd-ink-2)">' + r[0] + '</b></span><span class="rv" style="color:var(--dd-ink);text-align:right;max-width:60%">' + r[1] + '</span></div>'; }).join('') + '</div>' +
+        (t.need && t.need.length ? '<div class="cap">需补充材料</div><div class="list plain" style="margin-bottom:14px">' + t.need.map(function (n) { return '<div class="row"><span class="rt"><b style="font-weight:500">' + n + '</b></span></div>'; }).join('') + '</div>' : '') +
+        (docs.length ? '<div class="cap">已上传材料</div><div class="list plain" style="margin-bottom:14px">' + docs.map(function (d) { return '<div class="row"><span class="rt"><b style="font-weight:500">' + esc(d.name) + '</b><small>' + d.ts + '</small></span></div>'; }).join('') + '</div>' : '') +
+        '<div style="padding:8px 16px;display:grid;gap:10px">' +
+        (t.status === 'pending_confirm' ? '<button class="btn pri" id="rk-ok">是本人操作，放行</button><button class="btn danger" id="rk-no">非本人操作，取消交易</button>' : '') +
+        (t.status === 'pending_docs' ? '<button class="btn pri" id="rk-doc">上传材料并提交审核</button>' : '') +
+        '<div class="cap" style="margin:8px 0 0">处理进度</div></div>' +
+        '<div class="list plain">' + t.timeline.map(function (x) { return '<div class="row"><span class="rt"><b style="font-weight:500">' + x.s + '</b><small>' + x.t + '</small></span></div>'; }).join('') + '</div>',
+        mount: function () {
+          var ok = $('#rk-ok'), no = $('#rk-no'), dc = $('#rk-doc');
+          if (ok) ok.onclick = function () { DDUI.confirm('确认放行', '确认该交易为本人操作？放行后立即执行。', function () { DDRiskTx.act(t.id, 'release'); toast('交易已放行', 'success'); render(); }, '放行'); };
+          if (no) no.onclick = function () { DDUI.confirm('取消交易', '资金将原路退回，且该收款方 7 天内无法再次收款。', function () { DDRiskTx.act(t.id, 'reject'); toast('已取消，资金原路退回', 'success'); render(); }, '取消交易'); };
+          if (dc) dc.onclick = function () { DDRiskTx.addDoc(t.id, 'APP上传-材料.pdf'); DDRiskTx.act(t.id, 'docs'); toast('材料已提交，转人工审核', 'success'); render(); };
+        } };
+    }
+    var st = DDRiskTx.stats();
+    return { html: nav('风控中心') +
+      '<div class="kpis" style="grid-template-columns:1fr 1fr 1fr"><div class="card kpi"><small>待处理</small><b style="color:var(--dd-red)">' + st.todo + '</b></div><div class="card kpi"><small>审核中</small><b>' + st.reviewing + '</b></div><div class="card kpi"><small>全部</small><b>' + st.total + '</b></div></div>' +
+      '<div class="cap">被拦截的交易</div><div id="rk-list"></div>',
+      mount: function () {
+        var el = $('#rk-list');
+        var list = DDRiskTx.load();
+        el.innerHTML = '<div class="list">' + list.map(function (t) {
+          var sm = DDRiskTx.STATUS[t.status];
+          return '<button class="row" data-go="risk/' + t.id + '"><span class="ri" style="background:' + (t.level === 'high' ? '#FF3B30' : t.level === 'mid' ? '#FF9500' : '#8E8E93') + '">' + ic('shield') + '</span><span class="rt"><b>' + esc(t.cp) + '</b><small>' + t.type + ' · ' + t.ts.slice(5) + '</small></span><span class="rv neg">' + DDRiskTx.fmt(t) + '<br/><span class="pill ' + (t.status === 'released' ? 'ok' : t.status === 'rejected' ? 'fail' : 'wait') + '">' + sm.label + '</span></span></button>';
+        }).join('') + '</div>';
       } };
   };
 

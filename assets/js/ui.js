@@ -206,12 +206,24 @@
    * 设计系统 v2：自动加载 apple.css + 状态组件 + 反馈 + 过渡
    * ===================================================================== */
   (function loadCss() {
-    if (document.querySelector('link[data-dd-apple]')) return;
     var me = document.currentScript || document.querySelector('script[src*="assets/js/ui.js"]');
     var base = me ? me.getAttribute('src').replace(/js\/ui\.js.*$/, '') : 'assets/';
-    var l = document.createElement('link');
-    l.rel = 'stylesheet'; l.href = base + 'css/apple.css'; l.setAttribute('data-dd-apple', '1');
-    document.head.appendChild(l);
+    if (!document.querySelector('link[data-dd-apple]')) {
+      var l = document.createElement('link');
+      l.rel = 'stylesheet'; l.href = base + 'css/apple.css'; l.setAttribute('data-dd-apple', '1');
+      document.head.appendChild(l);
+    }
+    if (!document.querySelector('link[data-dd-polish]')) {
+      var p = document.createElement('link');
+      p.rel = 'stylesheet'; p.href = base + 'css/polish.css'; p.setAttribute('data-dd-polish', '1');
+      document.head.appendChild(p);
+    }
+    /* 通用列表增强（搜索/分页/查看全部/行详情），页面无 <main> 时自动跳过 */
+    if (!document.querySelector('script[data-dd-tk]')) {
+      var s = document.createElement('script');
+      s.src = base + 'js/table-kit.js'; s.defer = true; s.setAttribute('data-dd-tk', '1');
+      document.head.appendChild(s);
+    }
   })();
 
   var SVG = {
