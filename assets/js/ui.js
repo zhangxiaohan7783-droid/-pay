@@ -224,6 +224,12 @@
       s.src = base + 'js/table-kit.js'; s.defer = true; s.setAttribute('data-dd-tk', '1');
       document.head.appendChild(s);
     }
+    /* 全站顶栏右上角统一（主体/消息/语言/账户状态） */
+    if (!document.querySelector('script[data-dd-top]')) {
+      var t = document.createElement('script');
+      t.src = base + 'js/topbar.js'; t.defer = true; t.setAttribute('data-dd-top', '1');
+      document.head.appendChild(t);
+    }
   })();
 
   var SVG = {
