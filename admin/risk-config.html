@@ -49,6 +49,14 @@ body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #3
 <button class="mt-5 px-5 py-2 rounded-8 text-sm font-bold" style="background:#FFD008;color:#382b1b" id="cfg-save">保存全部配置</button></div>
 </div>
 </div>
+<!-- 风控规则管理 -->
+<div class="bg-white rounded-8 custom-shadow overflow-hidden mt-6">
+<div class="p-6 border-b border-gray-100 flex justify-between items-center flex-wrap gap-3">
+<h3 class="font-bold text-gray-900">风控规则管理</h3>
+<button class="px-4 py-2 rounded-8 text-xs font-bold" style="background:#FFD008;color:#382b1b" id="rule-new">新增规则</button>
+</div>
+<div class="overflow-x-auto"><table class="w-full min-w-[900px]"><thead class="bg-gray-50/80"><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">编号</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">规则名称</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">触发条件</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">动作</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">等级</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">状态</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">操作</th></thead><tbody id="tb-cfg-rules"></tbody></table></div>
+</div>
 </div>
 </main>
 <div class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
@@ -88,6 +96,61 @@ if (!RC.canMenu('risk-config.html')) rcNoPerm(); else {
     b.textContent = cfg.switches[b.dataset.sw] ? '开启' : '关闭';
     b.className = 'px-3 py-1 rounded-full text-xs font-bold ' + (cfg.switches[b.dataset.sw] ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-400');
   }; });
+  /* ---- 风控规则管理 ---- */
+  function drawRules() {
+    var lvMeta = RC.LEVELS;
+    document.getElementById('tb-cfg-rules').innerHTML = RC.rules().map(function(r, i){
+      var lm = lvMeta[r.level];
+      return '<tr class="hover:bg-gray-50/60"><td class="py-3 px-4 text-sm border-t border-gray-50 font-mono font-bold">'+r.code+'</td>' +
+      '<td class="py-3 px-4 text-sm border-t border-gray-50 font-bold">'+esc(r.name)+'</td>' +
+      '<td class="py-3 px-4 text-sm border-t border-gray-50 text-xs text-gray-500">'+esc(r.cond)+'</td>' +
+      '<td class="py-3 px-4 text-sm border-t border-gray-50">'+r.act+'</td>' +
+      '<td class="py-3 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium '+lm.cls+'">'+lm.label+'</span></td>' +
+      '<td class="py-3 px-4 text-sm border-t border-gray-50"><button class="px-3 py-1 rounded-full text-xs font-bold '+(r.on?'bg-green-50 text-green-600':'bg-gray-100 text-gray-400')+'" data-rule-toggle="'+i+'">'+(r.on?'启用':'停用')+'</button></td>' +
+      '<td class="py-3 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline" data-rule-edit="'+i+'">编辑</button></td></tr>';
+    }).join('');
+    if (window.DDTableKit) DDTableKit.refresh(document.querySelector('#tb-cfg-rules').closest('table'));
+    document.querySelectorAll('[data-rule-toggle]').forEach(function(b){ b.onclick = function(){
+      if (!rcNeed('config_edit')) return;
+      var l = RC.rules(); var r = l[+b.dataset.ruleToggle]; r.on = !r.on;
+      RC.saveRules(l); RC.log(r.on?'启用规则':'停用规则', r.code + ' ' + r.name, '');
+      DDUI.toast('已'+(r.on?'启用':'停用'), 'success'); drawRules();
+    }; });
+    document.querySelectorAll('[data-rule-edit]').forEach(function(b){ b.onclick = function(){ ruleModal(+b.dataset.ruleEdit); }; });
+  }
+  function ruleModal(idx) {
+    if (!rcNeed('config_edit')) return;
+    var isNew = idx === -1;
+    var r = isNew ? { code: '', name: '', cond: '', act: '告警', level: 'mid', on: true } : RC.rules()[idx];
+    var lvOpts = [['low','低'],['mid','中'],['high','高'],['critical','极高']].map(function(o){ return '<option value="'+o[0]+'"'+(r.level===o[0]?' selected':'')+'>'+o[1]+'风险</option>'; }).join('');
+    var actOpts = ['告警','告警+2FA','拦截+告警','复核','告警+建议管控'].map(function(a){ return '<option'+(r.act===a?' selected':'')+'>'+a+'</option>'; }).join('');
+    DDUI.modal({ title: isNew ? '新增风控规则' : '编辑规则 · ' + r.code, width: 520,
+      body: '<div class="ddui-field"><label class="ddui-label">规则名称</label><input class="ddui-input" id="rl-name" value="'+esc(r.name)+'" placeholder="如：拆分交易"/></div>' +
+      '<div class="ddui-field"><label class="ddui-label">触发条件（可执行的判定描述）</label><textarea class="ddui-input" id="rl-cond" rows="3" placeholder="如：同日 ≥ 3 笔金额在审查阈值 90%-99% 区间">'+esc(r.cond)+'</textarea></div>' +
+      '<div class="grid grid-cols-2 gap-3"><div class="ddui-field"><label class="ddui-label">动作</label><select class="ddui-input" id="rl-act">'+actOpts+'</select></div>' +
+      '<div class="ddui-field"><label class="ddui-label">风险等级</label><select class="ddui-input" id="rl-lv">'+lvOpts+'</select></div></div>' +
+      '<p class="text-xs text-gray-400">自动规则仅产生告警，最终管控动作必须人工审批。</p>',
+      actions: [{ text: '取消' }, { text: isNew ? '创建规则' : '保存修改', type: 'primary', onClick: function(close, body){
+        var name = body.querySelector('#rl-name').value.trim();
+        var cond = body.querySelector('#rl-cond').value.trim();
+        if (!name || !cond) { DDUI.toast('请填写规则名称与触发条件', 'error'); return; }
+        var l = RC.rules();
+        if (isNew) {
+          var maxN = l.reduce(function(a,x){ var n = parseInt(x.code.slice(2),10); return n > a ? n : a; }, 0);
+          var nr = { code: 'R-' + String(maxN + 1).padStart(2, '0'), name: name, cond: cond, act: body.querySelector('#rl-act').value, level: body.querySelector('#rl-lv').value, on: true, auto: true };
+          l.push(nr);
+          RC.log('新增规则', nr.code + ' ' + name, cond);
+        } else {
+          l[idx].name = name; l[idx].cond = cond; l[idx].act = body.querySelector('#rl-act').value; l[idx].level = body.querySelector('#rl-lv').value;
+          RC.log('编辑规则', l[idx].code + ' ' + name, cond);
+        }
+        RC.saveRules(l); close(); DDUI.toast(isNew ? '规则已创建并启用' : '已保存', 'success'); drawRules();
+      }}] });
+  }
+  var ruleNewBtn = document.getElementById('rule-new');
+  if (ruleNewBtn) ruleNewBtn.onclick = function(){ ruleModal(-1); };
+  drawRules();
+
   document.getElementById('cfg-save').onclick = function(){
     if (!rcNeed('config_edit')) return;
     document.querySelectorAll('[data-cyc]').forEach(function(i){ cfg.reviewCycle[i.dataset.cyc] = +i.value; });
