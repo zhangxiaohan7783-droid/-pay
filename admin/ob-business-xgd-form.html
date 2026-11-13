@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>XGD 开户表单 - 叮当支付内部运营后台</title>
+<script src="../assets/vendor/tailwindcss.js"></script>
+<script src="../assets/vendor/iconify-icon.min.js"></script>
+<style>
+body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #382b1b; background-color: #f5f4f0; }
+.custom-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
+.rounded-8 { border-radius: 8px; }
+</style>
+<link rel="stylesheet" href="../assets/css/apple.css" data-dd-apple="1"/>
+</head>
+<body class="bg-gray-50">
+<div class="flex min-h-screen">
+<style>
+.ad-sidenav-link{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;color:#9ca3af;font-size:14px;line-height:1.4;transition:background .15s,color .15s;text-decoration:none}
+.ad-sidenav-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.ad-sidenav-active,.ad-sidenav-active:hover{background:#FFD008;color:#382b1b;font-weight:600}
+.ad-sidenav-sec{padding:16px 12px 6px;font-size:11px;font-weight:600;color:#6b7280;letter-spacing:.05em}
+.ad-noscroll{scrollbar-width:none;-ms-overflow-style:none}
+.ad-noscroll::-webkit-scrollbar{display:none}
+</style>
+<aside class="w-64 flex-none hidden lg:flex flex-col" id="sidebar" style="background:#241d12"><div class="p-6 flex items-center space-x-3"><a class="flex items-center space-x-3" href="index.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="../assets/img/logo-h-rev.png"/></a></div><div class="flex-1 overflow-y-auto px-4 py-2 ad-noscroll"><nav class="space-y-1"><a class="ad-sidenav-link" href="index.html"><iconify-icon class="text-xl" icon="solar:widget-bold"></iconify-icon><span>运营总览</span></a><div class="ad-sidenav-sec">客户与开户</div><div class="ad-sidenav-sec">个人开户管理</div><a class="ad-sidenav-link" href="ob-personal-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>个人开户总看板</span></a><a class="ad-sidenav-link" href="ob-personal.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>个人开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-personal-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>个人开户资料归档</span></a><a class="ad-sidenav-link" href="ob-personal-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-personal-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-personal-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>个人开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-personal-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>个人批量处理</span></a><a class="ad-sidenav-link" href="ob-personal-templates.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>驳回话术模板</span></a><a class="ad-sidenav-link" href="ob-personal-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>个人复审台账</span></a><div class="ad-sidenav-sec">商业开户管理</div><a class="ad-sidenav-link" href="ob-business-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>商业开户总看板</span></a><a class="ad-sidenav-link" href="ob-business.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>商业开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-business-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>商业开户资料归档</span></a><a class="ad-sidenav-link" href="ob-business-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-business-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-business-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>商业开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-business-xgd.html"><iconify-icon class="text-xl" icon="solar:globus-bold"></iconify-icon><span>XGD 开户管理</span></a><a class="ad-sidenav-link ad-sidenav-active" href="ob-business-xgd-form.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>XGD 开户表单</span></a><a class="ad-sidenav-link" href="ob-business-xgd.html"><iconify-icon class="text-xl" icon="solar:globus-bold"></iconify-icon><span>XGD 开户管理</span></a><a class="ad-sidenav-link" href="ob-business-xgd-form.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>XGD 开户表单</span></a><a class="ad-sidenav-link" href="ob-business-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>商业 EDD 工单</span></a><a class="ad-sidenav-link" href="ob-business-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>商业批量处理</span></a><a class="ad-sidenav-link" href="ob-business-reject.html"><iconify-icon class="text-xl" icon="solar:shield-cross-bold"></iconify-icon><span>拒户原因库</span></a><a class="ad-sidenav-link" href="ob-business-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>商业复审台账</span></a><a class="ad-sidenav-link" href="ob-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>开户配置</span></a><a class="ad-sidenav-link" href="business.html"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon><span>商业客户管理</span></a><a class="ad-sidenav-link" href="personal.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>个人客户管理</span></a><div class="ad-sidenav-sec">风控与合规</div><a class="ad-sidenav-link" href="risk.html"><iconify-icon class="text-xl" icon="solar:shield-warning-bold"></iconify-icon><span>风控总览</span></a><a class="ad-sidenav-link" href="risk-kyc.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>商户KYC档案</span></a><a class="ad-sidenav-link" href="risk-score.html"><iconify-icon class="text-xl" icon="solar:slider-minimalistic-horizontal-bold"></iconify-icon><span>风险评分配置</span></a><a class="ad-sidenav-link" href="risk-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>EDD 强化尽调</span></a><a class="ad-sidenav-link" href="risk-alerts.html"><iconify-icon class="text-xl" icon="solar:bell-bing-bold"></iconify-icon><span>交易风控告警</span></a><a class="ad-sidenav-link" href="risk-screening.html"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon><span>名单筛查</span></a><a class="ad-sidenav-link" href="risk-ledger.html"><iconify-icon class="text-xl" icon="solar:notebook-bold"></iconify-icon><span>商户风险台账</span></a><a class="ad-sidenav-link" href="risk-controls.html"><iconify-icon class="text-xl" icon="solar:lock-bold"></iconify-icon><span>账户管控中心</span></a><a class="ad-sidenav-link" href="risk-str.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>STR 可疑上报</span></a><a class="ad-sidenav-link" href="risk-audit.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审计日志</span></a><a class="ad-sidenav-link" href="risk-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>合规配置</span></a><a class="ad-sidenav-link" href="risk-review.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>审核工作台</span></a><a class="ad-sidenav-link" href="risk-cases.html"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon><span>案件管理</span></a><a class="ad-sidenav-link" href="risk-learn.html"><iconify-icon class="text-xl" icon="solar:square-academic-cap-bold"></iconify-icon><span>学习中心</span></a><div class="ad-sidenav-sec">安全与服务</div><a class="ad-sidenav-link" href="cs.html"><iconify-icon class="text-xl" icon="solar:headphones-round-sound-bold"></iconify-icon><span>客服管理</span></a><div class="ad-sidenav-sec">团队与账务</div><a class="ad-sidenav-link" href="managers.html"><iconify-icon class="text-xl" icon="solar:user-speak-bold"></iconify-icon><span>客户经理管理</span></a><a class="ad-sidenav-link" href="staff.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>员工管理</span></a><a class="ad-sidenav-link" href="bills.html"><iconify-icon class="text-xl" icon="solar:bill-list-bold"></iconify-icon><span>账单管理</span></a><a class="ad-sidenav-link" href="licenses.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>牌照管理</span></a></nav></div><div class="p-4" style="border-top:1px solid rgba(255,255,255,.08)"><div class="flex items-center space-x-3 p-2 rounded-lg" style="background:rgba(255,255,255,.05)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:#FFD008;color:#382b1b">涵</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold truncate text-white">运营-小涵</p><p class="text-xs text-gray-500 truncate" id="rc-side-role">—</p></div><a href="login.html" class="text-gray-500 hover:text-red-400" title="退出登录"><iconify-icon icon="solar:logout-3-bold"></iconify-icon></a></div></div></aside>
+<main class="flex-1 flex flex-col min-w-0">
+<header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 flex-none">
+<div class="flex items-center">
+<button class="lg:hidden p-2 -ml-2 text-gray-500" onclick="toggleSidebar()"><iconify-icon class="text-2xl" icon="solar:hamburger-menu-bold"></iconify-icon></button>
+<h1 class="text-lg font-bold ml-2">XGD 开户表单</h1>
+</div>
+<div class="flex items-center space-x-4">
+<div id="rc-role-slot"></div>
+<span class="text-xs text-gray-400 hidden md:block">风控合规环境 · 操作全程留痕</span>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6" id="rc-body">
+
+<div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-start gap-4 flex-wrap">
+<div class="w-12 h-12 rounded-8 flex items-center justify-center flex-none" style="background:#0A2540"><span class="text-white font-extrabold text-sm">XGD</span></div>
+<div class="flex-1 min-w-[260px]">
+<h3 class="font-bold text-lg">XGD Europe 通道 · 商业开户</h3>
+<p class="text-xs text-gray-500 mt-1">XGD Europe S.A.（卢森堡，RCS B239899）· 支付机构牌照 Z00000026 · 受 CSSF 监管（非信贷机构）</p>
+<p class="text-xs text-gray-400 mt-1">客户材料邮件递交后由 XGD 代为完成账户注册，激活链接发送至申请邮箱。</p>
+</div>
+<button class="px-4 py-2 rounded-8 text-xs font-bold flex-none" style="background:#FFD008;color:#382b1b" id="xgd-export">导出材料清单</button>
+</div></div>
+<div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+<div class="bg-white rounded-8 custom-shadow p-6">
+<h3 class="font-bold mb-4">一、公司客户信息（按 XGD 申请表字段收集）</h3>
+<div id="xgd-form" class="space-y-3"></div>
+</div>
+<div class="space-y-6">
+<div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex justify-between items-center mb-3"><h3 class="font-bold">二、公司文件材料清单</h3><span class="text-xs text-gray-400" id="xgd-prog"></span></div>
+<div id="xgd-docs" class="space-y-2"></div>
+</div>
+<div class="bg-white rounded-8 custom-shadow p-6">
+<h3 class="font-bold mb-3">UBO 声明（持股 ≥ 25%）</h3>
+<div id="xgd-ubo" class="space-y-2"></div>
+</div>
+</div></div>
+<p class="text-xs text-gray-400">收集进度与填写内容本地留痕；材料齐备后邮件递交 XGD，回执与激活链接登记在案。</p>
+
+</div>
+</main>
+<div class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+</div>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/rc-data.js"></script>
+<script src="../assets/js/ob-data.js"></script>
+<script>
+function toggleSidebar(){var s=document.getElementById('sidebar'),b=document.getElementById('sidebar-backdrop');if(!s)return;s.classList.toggle('hidden');s.classList.toggle('fixed');s.classList.toggle('inset-y-0');s.classList.toggle('left-0');s.classList.toggle('z-50');if(b)b.classList.toggle('hidden');}
+RC.renderSwitcher(document.getElementById('rc-role-slot'));
+var sr=document.getElementById('rc-side-role');if(sr)sr.textContent=RC.ROLES[RC.role()].name;
+function rcDeny(){DDUI.toast('当前角色（'+RC.ROLES[RC.role()].name+'）无此操作权限','error');}
+function rcNeed(act){if(!RC.can(act)){rcDeny();return false;}return true;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function rcNoPerm(){document.getElementById('rc-body').innerHTML='<div class="bg-white rounded-8 custom-shadow p-16 text-center"><iconify-icon class="text-5xl text-gray-300" icon="solar:lock-bold"></iconify-icon><p class="mt-4 font-bold text-gray-700">当前角色无权访问本页面</p><p class="text-sm text-gray-400 mt-1">请联系合规负责人或切换角色查看（右上角可切换演示角色）</p></div>';}
+
+(function(){
+  var KEY = 'dd-ob-xgd-v1';
+  function load(){ try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e){ return {}; } }
+  function save(d){ try { localStorage.setItem(KEY, JSON.stringify(d)); } catch(e){} }
+  var st = load(); st.fields = st.fields || {}; st.docs = st.docs || {}; st.ubo = st.ubo || {};
+
+  var FIELDS = [
+    ['legalName','公司法定名称 Legal name'],['legalForm','法律形式 Legal form'],['regOffice','注册地址 Registered office'],
+    ['country','注册国 Country of incorporation'],['vat','VAT 税号（如适用）'],['email','联系邮箱 Email'],['tel','联系电话 Tel'],
+    ['rep1','第一法人代表（姓名 / 出生日期 / 证件地址）'],['rep2','第二法人代表（如有）'],
+    ['biz','公司业务与模式描述（B2B/B2C、进出口、电商等）'],['goods','交易的商品 / 服务'],['clients','主要客户（类型与国家/地区）'],
+    ['suppliers','主要供应商（类型与国家/地区）'],['amtPer','单笔预计金额'],['txPerMonth','每月预计笔数'],['monthlyVol','预计月交易额（XGD 通道）'],
+    ['regions','主要交易国家/地区'],['reason','选择 XGD 的原因'],['purpose','账户用途'],['website','公司网站 / 电商平台（如有）']
+  ];
+  var DOCS = [
+    '最近 6 个月内出具的商业登记摘录（或同等法律效力文件）',
+    '公司章程（最初版 + 所有最新修订版）',
+    '公司银行账户证明或验资凭证',
+    '公司股权架构图（法人签字并注明日期）',
+    '法人身份证明文件复印件（建议护照）',
+    '法人居住地址证明（近 3 个月水电费单 / 房租单据 / 银行流水）',
+    '所有持股 >25% UBO 的身份证明复印件（建议护照）',
+    '所有持股 >25% UBO 的居住地址证明（近 3 个月单据）'
+  ];
+  var UBO = ['姓名', '出生日期', '居住地址', '持股比例（%）', '权益性质（直接/间接持股链条/其他控制权/高管）'];
+
+  function drawForm(){
+    document.getElementById('xgd-form').innerHTML = FIELDS.map(function(f){
+      var v = st.fields[f[0]] || '';
+      return '<div><label class="block text-xs font-bold text-gray-400 mb-1">'+f[1]+'</label><input class="ddui-input" data-f="'+f[0]+'" value="'+String(v).replace(/"/g,'&quot;')+'"/></div>';
+    }).join('');
+    document.querySelectorAll('[data-f]').forEach(function(inp){
+      inp.addEventListener('change', function(){ st.fields[inp.dataset.f] = inp.value.trim(); save(st); RC.log('XGD 申请表更新', inp.dataset.f, inp.value.trim().slice(0, 60)); });
+    });
+  }
+  function drawDocs(){
+    var done = DOCS.filter(function(d, i){ return st.docs[i]; }).length;
+    document.getElementById('xgd-prog').textContent = '已收齐 ' + done + ' / ' + DOCS.length;
+    document.getElementById('xgd-docs').innerHTML = DOCS.map(function(d, i){
+      var on = !!st.docs[i];
+      return '<label class="flex items-start gap-3 p-3 rounded-8 border '+(on?'border-green-200 bg-green-50/50':'border-gray-200 bg-gray-50')+' cursor-pointer">' +
+        '<input type="checkbox" class="mt-0.5" data-doc="'+i+'"'+(on?' checked':'')+'/><span class="text-sm '+(on?'text-gray-400 line-through':'')+'">'+d+'</span></label>';
+    }).join('');
+    document.querySelectorAll('[data-doc]').forEach(function(c){
+      c.addEventListener('change', function(){ st.docs[c.dataset.doc] = c.checked; save(st); RC.log('XGD 材料签收', DOCS[+c.dataset.doc].slice(0,30), c.checked?'已收齐':'取消'); drawDocs(); });
+    });
+  }
+  function drawUbo(){
+    document.getElementById('xgd-ubo').innerHTML = UBO.map(function(u, i){
+      return '<div><label class="block text-xs font-bold text-gray-400 mb-1">'+u+'</label><input class="ddui-input" data-ubo="'+i+'" value="'+String(st.ubo[i]||'').replace(/"/g,'&quot;')+'"/></div>';
+    }).join('') + '<p class="text-xs text-gray-400">多名 UBO 时逐人填写一份；声明须 UBO 本人签署（卢森堡 2004-11-12 法第 1(7) 条）。</p>';
+    document.querySelectorAll('[data-ubo]').forEach(function(inp){
+      inp.addEventListener('change', function(){ st.ubo[inp.dataset.ubo] = inp.value.trim(); save(st); });
+    });
+  }
+  document.getElementById('xgd-export').onclick = function(){
+    var lines = ['XGD Europe 商业开户材料清单', ''];
+    lines.push('一、公司客户信息');
+    FIELDS.forEach(function(f){ lines.push(f[1] + '：' + (st.fields[f[0]] || '')); });
+    lines.push('', '二、文件材料');
+    DOCS.forEach(function(d, i){ lines.push((st.docs[i] ? '[已收] ' : '[待收] ') + d); });
+    lines.push('', '三、UBO 声明（≥25%）');
+    UBO.forEach(function(u, i){ lines.push(u + '：' + (st.ubo[i] || '')); });
+    var blob = new Blob(['﻿' + lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'XGD开户材料清单.txt'; a.click();
+    RC.log('导出 XGD 材料清单', 'XGD 通道', '');
+    DDUI.toast('清单已导出', 'success');
+  };
+  drawForm(); drawDocs(); drawUbo();
+})();
+
+</script>
+</body>
+</html>
