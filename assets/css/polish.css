@@ -73,9 +73,10 @@
 .ddtk-allbox thead th { position: sticky; top: 0; background: #f9fafb; padding: 8px 10px; text-align: left; font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 600; z-index: 1; }
 .ddtk-allbox td { padding: 8px 10px; border-top: 1px solid #f3f4f6; color: #374151; white-space: nowrap; }
 
-/* 侧边栏分组折叠 */
-.dd-sidenav-sec { cursor: pointer; display: flex; align-items: center; justify-content: space-between; user-select: none; }
+/* 侧边栏分组折叠（客户端 + 后台） */
+.dd-sidenav-sec, .ad-sidenav-sec { cursor: pointer; display: flex; align-items: center; justify-content: space-between; user-select: none; }
 .dd-sidenav-sec:hover { color: #6b7280; }
+.ad-sidenav-sec:hover { color: #9ca3af; }
 .ddtk-nav-arrow { display: inline-flex; color: #d1d5db; transition: transform .18s; }
 .ddtk-nav-collapsed .ddtk-nav-arrow { transform: rotate(-90deg); }
 

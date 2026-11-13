@@ -208,9 +208,9 @@
     table.__ddtk = state;
   }
 
-  /* 侧边栏分组折叠（dd-sidenav-sec），记忆折叠状态 */
+  /* 侧边栏分组折叠（dd-sidenav-sec / ad-sidenav-sec），记忆折叠状态 */
   function sidebarInit() {
-    var secs = document.querySelectorAll('.dd-sidenav-sec');
+    var secs = document.querySelectorAll('.dd-sidenav-sec, .ad-sidenav-sec');
     if (!secs.length) return;
     var KEY = 'dd-nav-collapse-v1';
     var saved = {};
@@ -222,8 +222,8 @@
       /* 收集到下一个 sec 之间的链接 */
       var links = [];
       var n = sec.nextElementSibling;
-      while (n && !n.classList.contains('dd-sidenav-sec')) {
-        if (n.classList.contains('dd-sidenav-link')) links.push(n);
+      while (n && !n.classList.contains('dd-sidenav-sec') && !n.classList.contains('ad-sidenav-sec')) {
+        if (n.classList.contains('dd-sidenav-link') || n.classList.contains('ad-sidenav-link')) links.push(n);
         n = n.nextElementSibling;
       }
       if (!links.length) return;
@@ -237,7 +237,7 @@
       }
       apply(!!saved[label]);
       /* 当前页所在分组不折叠 */
-      if (links.some(function (l) { return l.classList.contains('dd-sidenav-active'); })) apply(false);
+      if (links.some(function (l) { return l.classList.contains('dd-sidenav-active') || l.classList.contains('ad-sidenav-active'); })) apply(false);
       sec.addEventListener('click', function () {
         var collapsed = !sec.classList.contains('ddtk-nav-collapsed');
         apply(collapsed);

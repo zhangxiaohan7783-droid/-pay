@@ -3,14 +3,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>制裁筛查 - 叮当支付内部运营后台</title>
+<title>名单筛查管理 - 叮当支付内部运营后台</title>
 <script src="../assets/vendor/tailwindcss.js"></script>
 <script src="../assets/vendor/iconify-icon.min.js"></script>
-<script src="../assets/vendor/echarts.min.js"></script>
 <style>
-        body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #382b1b; background-color: #f5f4f0; }
-        .custom-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
-        .rounded-8 { border-radius: 8px; }
+body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #382b1b; background-color: #f5f4f0; }
+.custom-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
+.rounded-8 { border-radius: 8px; }
 </style>
 <link rel="stylesheet" href="../assets/css/apple.css" data-dd-apple="1"/>
 </head>
@@ -24,82 +23,96 @@
 .ad-noscroll{scrollbar-width:none;-ms-overflow-style:none}
 .ad-noscroll::-webkit-scrollbar{display:none}
 </style>
-<aside class="w-64 flex-none hidden lg:flex flex-col" id="sidebar" style="background:#241d12"><div class="p-6 flex items-center space-x-3"><a class="flex items-center space-x-3" href="index.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="../assets/img/logo-h-rev.png"/></a></div><div class="flex-1 overflow-y-auto px-4 py-2 ad-noscroll"><nav class="space-y-1"><a class="ad-sidenav-link" href="index.html"><iconify-icon class="text-xl" icon="solar:widget-bold"></iconify-icon><span>运营总览</span></a><div class="ad-sidenav-sec">客户与开户</div><div class="ad-sidenav-sec">个人开户管理</div><a class="ad-sidenav-link" href="ob-personal.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>个人开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-personal-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>个人开户资料归档</span></a><a class="ad-sidenav-link" href="ob-personal-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-personal-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-personal-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>个人开户 Sokin</span></a><div class="ad-sidenav-sec">商业开户管理</div><a class="ad-sidenav-link" href="ob-business.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>商业开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-business-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>商业开户资料归档</span></a><a class="ad-sidenav-link" href="ob-business-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-business-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-business-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>商业开户 Sokin</span></a><a class="ad-sidenav-link" href="business.html"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon><span>商业客户管理</span></a><a class="ad-sidenav-link" href="personal.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>个人客户管理</span></a><div class="ad-sidenav-sec">风控与合规</div><a class="ad-sidenav-link" href="risk.html"><iconify-icon class="text-xl" icon="solar:shield-warning-bold"></iconify-icon><span>风控总览</span></a><a class="ad-sidenav-link" href="risk-review.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>审核工作台</span></a><a class="ad-sidenav-link" href="risk-cases.html"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon><span>案件管理</span></a><a class="ad-sidenav-link ad-sidenav-active" href="risk-screening.html"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon><span>制裁筛查</span></a><a class="ad-sidenav-link" href="risk-learn.html"><iconify-icon class="text-xl" icon="solar:square-academic-cap-bold"></iconify-icon><span>学习中心</span></a><div class="ad-sidenav-sec">安全与服务</div><a class="ad-sidenav-link" href="cs.html"><iconify-icon class="text-xl" icon="solar:headphones-round-sound-bold"></iconify-icon><span>客服管理</span></a><div class="ad-sidenav-sec">团队与账务</div><a class="ad-sidenav-link" href="managers.html"><iconify-icon class="text-xl" icon="solar:user-speak-bold"></iconify-icon><span>客户经理管理</span></a><a class="ad-sidenav-link" href="staff.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>员工管理</span></a><a class="ad-sidenav-link" href="bills.html"><iconify-icon class="text-xl" icon="solar:bill-list-bold"></iconify-icon><span>账单管理</span></a><a class="ad-sidenav-link" href="licenses.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>牌照管理</span></a></nav></div><div class="p-4" style="border-top:1px solid rgba(255,255,255,.08)"><div class="flex items-center space-x-3 p-2 rounded-lg" style="background:rgba(255,255,255,.05)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:#FFD008;color:#382b1b">涵</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold truncate text-white">运营-小涵</p><p class="text-xs text-gray-500 truncate">超级管理员</p></div><a href="login.html" class="text-gray-500 hover:text-red-400" title="退出登录"><iconify-icon icon="solar:logout-3-bold"></iconify-icon></a></div></div></aside>
+<aside class="w-64 flex-none hidden lg:flex flex-col" id="sidebar" style="background:#241d12"><div class="p-6 flex items-center space-x-3"><a class="flex items-center space-x-3" href="index.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="../assets/img/logo-h-rev.png"/></a></div><div class="flex-1 overflow-y-auto px-4 py-2 ad-noscroll"><nav class="space-y-1"><a class="ad-sidenav-link" href="index.html"><iconify-icon class="text-xl" icon="solar:widget-bold"></iconify-icon><span>运营总览</span></a><div class="ad-sidenav-sec">客户与开户</div><div class="ad-sidenav-sec">个人开户管理</div><a class="ad-sidenav-link" href="ob-personal.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>个人开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-personal-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>个人开户资料归档</span></a><a class="ad-sidenav-link" href="ob-personal-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-personal-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-personal-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>个人开户 Sokin</span></a><div class="ad-sidenav-sec">商业开户管理</div><a class="ad-sidenav-link" href="ob-business.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>商业开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-business-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>商业开户资料归档</span></a><a class="ad-sidenav-link" href="ob-business-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-business-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-business-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>商业开户 Sokin</span></a><a class="ad-sidenav-link" href="business.html"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon><span>商业客户管理</span></a><a class="ad-sidenav-link" href="personal.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>个人客户管理</span></a><div class="ad-sidenav-sec">风控与合规</div><a class="ad-sidenav-link" href="risk.html"><iconify-icon class="text-xl" icon="solar:shield-warning-bold"></iconify-icon><span>风控总览</span></a><a class="ad-sidenav-link" href="risk-kyc.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>商户KYC档案</span></a><a class="ad-sidenav-link" href="risk-score.html"><iconify-icon class="text-xl" icon="solar:slider-minimalistic-horizontal-bold"></iconify-icon><span>风险评分配置</span></a><a class="ad-sidenav-link" href="risk-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>EDD 强化尽调</span></a><a class="ad-sidenav-link" href="risk-alerts.html"><iconify-icon class="text-xl" icon="solar:bell-bing-bold"></iconify-icon><span>交易风控告警</span></a><a class="ad-sidenav-link ad-sidenav-active" href="risk-screening.html"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon><span>名单筛查</span></a><a class="ad-sidenav-link" href="risk-ledger.html"><iconify-icon class="text-xl" icon="solar:notebook-bold"></iconify-icon><span>商户风险台账</span></a><a class="ad-sidenav-link" href="risk-controls.html"><iconify-icon class="text-xl" icon="solar:lock-bold"></iconify-icon><span>账户管控中心</span></a><a class="ad-sidenav-link" href="risk-str.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>STR 可疑上报</span></a><a class="ad-sidenav-link" href="risk-audit.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审计日志</span></a><a class="ad-sidenav-link" href="risk-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>合规配置</span></a><a class="ad-sidenav-link" href="risk-review.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>审核工作台</span></a><a class="ad-sidenav-link" href="risk-cases.html"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon><span>案件管理</span></a><a class="ad-sidenav-link" href="risk-learn.html"><iconify-icon class="text-xl" icon="solar:square-academic-cap-bold"></iconify-icon><span>学习中心</span></a><div class="ad-sidenav-sec">安全与服务</div><a class="ad-sidenav-link" href="cs.html"><iconify-icon class="text-xl" icon="solar:headphones-round-sound-bold"></iconify-icon><span>客服管理</span></a><div class="ad-sidenav-sec">团队与账务</div><a class="ad-sidenav-link" href="managers.html"><iconify-icon class="text-xl" icon="solar:user-speak-bold"></iconify-icon><span>客户经理管理</span></a><a class="ad-sidenav-link" href="staff.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>员工管理</span></a><a class="ad-sidenav-link" href="bills.html"><iconify-icon class="text-xl" icon="solar:bill-list-bold"></iconify-icon><span>账单管理</span></a><a class="ad-sidenav-link" href="licenses.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>牌照管理</span></a></nav></div><div class="p-4" style="border-top:1px solid rgba(255,255,255,.08)"><div class="flex items-center space-x-3 p-2 rounded-lg" style="background:rgba(255,255,255,.05)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:#FFD008;color:#382b1b">涵</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold truncate text-white">运营-小涵</p><p class="text-xs text-gray-500 truncate" id="rc-side-role">—</p></div><a href="login.html" class="text-gray-500 hover:text-red-400" title="退出登录"><iconify-icon icon="solar:logout-3-bold"></iconify-icon></a></div></div></aside>
 <main class="flex-1 flex flex-col min-w-0">
 <header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 flex-none">
 <div class="flex items-center">
-<button class="lg:hidden p-2 -ml-2 text-gray-500" onclick="toggleSidebar()">
-<iconify-icon class="text-2xl" icon="solar:hamburger-menu-bold"></iconify-icon>
-</button>
-<h1 class="text-lg font-bold ml-2">制裁筛查</h1>
+<button class="lg:hidden p-2 -ml-2 text-gray-500" onclick="toggleSidebar()"><iconify-icon class="text-2xl" icon="solar:hamburger-menu-bold"></iconify-icon></button>
+<h1 class="text-lg font-bold ml-2">名单筛查管理</h1>
 </div>
 <div class="flex items-center space-x-4">
-<div id="dd-role-slot"></div>
-<span class="text-xs text-gray-400 hidden md:block">后台环境 · 数据实时同步</span>
+<div id="rc-role-slot"></div>
+<span class="text-xs text-gray-400 hidden md:block">风控合规环境 · 操作全程留痕</span>
 </div>
 </header>
-<div class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6">
-<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4"><div class="bg-white rounded-8 custom-shadow p-6"><div class="flex items-center justify-between mb-4"><span class="text-sm text-gray-500">今日筛查</span><div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon></div></div><p class="text-2xl font-bold text-gray-900">132 人次</p><p class="text-xs text-gray-400 mt-2">开户 18 · 交易 96 · 回扫 18</p></div><div class="bg-white rounded-8 custom-shadow p-6"><div class="flex items-center justify-between mb-4"><span class="text-sm text-gray-500">命中待复核</span><div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon></div></div><p class="text-2xl font-bold text-gray-900">3 条</p><p class="text-xs text-gray-400 mt-2">需风控员复核</p></div><div class="bg-white rounded-8 custom-shadow p-6"><div class="flex items-center justify-between mb-4"><span class="text-sm text-gray-500">确认命中</span><div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:forbidden-circle-bold"></iconify-icon></div></div><p class="text-2xl font-bold text-gray-900">1 条</p><p class="text-xs text-gray-400 mt-2">本月累计</p></div><div class="bg-white rounded-8 custom-shadow p-6"><div class="flex items-center justify-between mb-4"><span class="text-sm text-gray-500">误报率</span><div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:graph-down-bold"></iconify-icon></div></div><p class="text-2xl font-bold text-gray-900">4.2%</p><p class="text-xs text-gray-400 mt-2">近 30 天</p></div></div><div class="bg-white rounded-8 custom-shadow p-6"><h3 class="font-bold text-gray-900 mb-1">手动筛查</h3><p class="text-xs text-gray-400 mb-4">对单个对象发起实时筛查（制裁名单 / PEP / 负面媒体），预审员与风控员均可使用</p><div class="grid grid-cols-1 sm:grid-cols-4 gap-3"><input class="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-8 text-sm focus:outline-none focus:border-[#00B7EC]" id="sc-name" placeholder="姓名 / 企业名（必填）"/><input class="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-8 text-sm focus:outline-none focus:border-[#00B7EC]" id="sc-dob" type="date"/><select class="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-8 text-sm focus:outline-none" id="sc-nat"><option>国籍 / 注册国</option><option>中国</option><option>中国香港</option><option>意大利</option><option>美国</option><option>俄罗斯</option><option>伊朗</option><option>朝鲜</option></select><button class="px-4 py-2.5 rounded-8 text-sm font-bold" style="background:#FFD008;color:#382b1b" id="sc-run" data-risk-need="screen_input" type="button">发起筛查</button></div><div class="hidden mt-4 p-4 rounded-8 bg-gray-50 text-sm" id="sc-result"></div></div><div class="bg-white rounded-8 custom-shadow p-6"><div class="flex items-center justify-between mb-4 flex-wrap gap-3"><h3 class="font-bold text-gray-900">筛查记录</h3><div class="flex items-center gap-3 flex-wrap"><div class="relative"><iconify-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" icon="solar:magnifer-linear"></iconify-icon><input class="data-search pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-8 text-sm focus:outline-none focus:border-[#00B7EC] w-52" placeholder="搜索对象 / 名单"/></div><select class="data-filter px-3 py-2 bg-gray-50 border border-gray-200 rounded-8 text-sm focus:outline-none"><option>全部结果</option><option>待复核</option><option>确认命中</option><option>误报</option></select></div></div><div class="overflow-x-auto"><table class="w-full min-w-[860px]"><thead class="bg-gray-50/80"><tr><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">筛查时间</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">对象</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">触发场景</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">命中名单</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">匹配度</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">结果</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">操作</th></tr></thead><tbody class="data-tbody"><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50">10-16 15:02</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><b>Goden S.r.l.</b></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-600">开户</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">EU 综合制裁名单</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">92%</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-600">待复核</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-recheck" data-risk-need="screen_recheck" type="button">复核</button></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50">10-16 14:40</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><b>Alexei Volkov</b></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-600">交易</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">OFAC SDN</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">88%</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-600">待复核</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-recheck" data-risk-need="screen_recheck" type="button">复核</button></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50">10-16 11:20</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><b>Luca Esposito</b></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-600">开户</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">PEP 数据库</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">76%</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-600">待复核</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-recheck" data-risk-need="screen_recheck" type="button">复核</button></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50">10-16 09:14</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><b>Marco Rossi</b></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">回扫</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">UN 安理会名单</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">61%</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">误报</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-view" type="button">记录</button></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50">10-15 18:33</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><b>金某某（NK 同名）</b></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">回扫</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">OFAC SDN</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">97%</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-500">确认命中</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline act-view" type="button">记录</button></td></tr></tbody></table></div></div><div class="bg-white rounded-8 custom-shadow p-6"><div class="flex items-center justify-between mb-3"><h3 class="font-bold text-gray-900">名单源管理</h3><button class="px-4 py-1.5 rounded-8 text-xs font-bold" style="background:#FFD008;color:#382b1b" id="list-manage" data-risk-need="list_manage" type="button">名单源设置</button></div><p class="text-xs text-gray-400">当前接入：OFAC SDN/综合名单 · EU 综合制裁名单 · UN 安理会名单 · UK HMT 名单 · PEP 数据库 · 负面媒体库。存量客户每日 02:00 自动回扫，名单更新后 24h 内全量重扫。</p></div>
+<div class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6" id="rc-body">
+
+<div class="flex gap-2" id="scr-tabs">
+<button class="px-4 py-2 rounded-8 text-sm font-bold" data-tab="rec">筛查记录</button>
+<button class="px-4 py-2 rounded-8 text-sm font-bold" data-tab="hit">命中复核</button>
+<button class="px-4 py-2 rounded-8 text-sm font-bold" data-tab="list">名单库</button>
+</div>
+<div class="bg-white rounded-8 custom-shadow overflow-hidden" id="scr-pane"></div>
 </div>
 </main>
 <div class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
 </div>
 <script src="../assets/js/ui.js"></script>
-<script src="../assets/js/risk.js"></script>
+<script src="../assets/js/rc-data.js"></script>
 <script>
-DDRisk.renderSwitcher(document.getElementById('dd-role-slot'));
-function toggleSidebar(){var s=document.getElementById('sidebar'),b=document.getElementById('sidebar-backdrop');if(!s)return;s.classList.toggle('hidden');s.classList.toggle('flex');s.classList.toggle('fixed');s.classList.toggle('inset-y-0');s.classList.toggle('left-0');s.classList.toggle('z-50');if(b)b.classList.toggle('hidden');}
-var dKw = '', dSt = '';
-function ddApplyFilter() {
-    document.querySelectorAll('.data-tbody tr').forEach(function (tr) {
-        var ok = (!dKw || tr.textContent.toLowerCase().indexOf(dKw) > -1) && (!dSt || dSt.indexOf('全部') === 0 || tr.textContent.indexOf(dSt) > -1);
-        tr.style.display = ok ? '' : 'none';
-    });
+function toggleSidebar(){var s=document.getElementById('sidebar'),b=document.getElementById('sidebar-backdrop');if(!s)return;s.classList.toggle('hidden');s.classList.toggle('fixed');s.classList.toggle('inset-y-0');s.classList.toggle('left-0');s.classList.toggle('z-50');if(b)b.classList.toggle('hidden');}
+RC.renderSwitcher(document.getElementById('rc-role-slot'));
+var sr=document.getElementById('rc-side-role');if(sr)sr.textContent=RC.ROLES[RC.role()].name;
+function rcDeny(){DDUI.toast('当前角色（'+RC.ROLES[RC.role()].name+'）无此操作权限','error');}
+function rcNeed(act){if(!RC.can(act)){rcDeny();return false;}return true;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function rcNoPerm(){document.getElementById('rc-body').innerHTML='<div class="bg-white rounded-8 custom-shadow p-16 text-center"><iconify-icon class="text-5xl text-gray-300" icon="solar:lock-bold"></iconify-icon><p class="mt-4 font-bold text-gray-700">当前角色无权访问本页面</p><p class="text-sm text-gray-400 mt-1">请联系合规负责人或切换角色查看（右上角可切换演示角色）</p></div>';}
+
+if (!RC.canMenu('risk-screening.html')) rcNoPerm(); else {
+(function(){
+  var tab = 'rec';
+  function styleTabs(){ document.querySelectorAll('#scr-tabs button').forEach(function(b){
+    var on = b.dataset.tab === tab;
+    b.style.background = on ? '#FFD008' : '#fff'; b.style.color = on ? '#382b1b' : '#6b7280'; b.style.border = '1px solid ' + (on ? '#FFD008' : '#e5e7eb');
+  }); }
+  function draw() {
+    styleTabs();
+    var d = RC.screening(), pane = document.getElementById('scr-pane');
+    if (tab === 'rec') {
+      pane.innerHTML = '<div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-bold">筛查记录（实时 + 定时批量）</h3>' +
+        (RC.can('screen_mark')?'<button class="px-4 py-2 rounded-8 text-xs font-bold" style="background:#FFD008;color:#382b1b" id="scr-run">立即批量筛查</button>':'') + '</div>' +
+        '<div class="overflow-x-auto"><table class="w-full min-w-[760px]"><thead class="bg-gray-50/80">' + ['<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">批次</th>','<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">时间</th>','<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">类型</th>','<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">范围</th>','<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">命中</th>','<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">状态</th>'].join('') + '</thead><tbody>' +
+        d.records.map(function(r){ return '<tr class="hover:bg-gray-50/60"><td class="py-3 px-4 text-sm border-t border-gray-50 font-mono font-bold">'+r.id+'</td><td class="py-3 px-4 text-sm border-t border-gray-50">'+r.ts+'</td><td class="py-3 px-4 text-sm border-t border-gray-50">'+r.type+'</td><td class="py-3 px-4 text-sm border-t border-gray-50">'+r.scope+'</td><td class="py-3 px-4 text-sm border-t border-gray-50">'+(r.hits?'<b class="text-red-500">'+r.hits+'</b>':'0')+'</td><td class="py-3 px-4 text-sm border-t border-gray-50">'+r.status+'</td></tr>'; }).join('') + '</tbody></table></div>';
+      var run = document.getElementById('scr-run');
+      if (run) run.onclick = function(){
+        var d2 = RC.screening();
+        d.records.unshift({ id: 'SCR-' + (5521 + Math.floor(Math.random()*90)), ts: new Date().toISOString().slice(0,16).replace('T',' '), type: '手动批量', scope: '全量商户 + 交易对手', hits: 0, status: '完成' });
+        RC.saveScreening(d); RC.log('手动批量筛查', '全量名单', '筛查完成，无新增命中'); DDUI.toast('批量筛查完成，无新增命中', 'success'); draw();
+      };
+    } else if (tab === 'hit') {
+      pane.innerHTML = '<div class="p-6 border-b border-gray-100"><h3 class="font-bold">命中记录复核</h3></div><div class="overflow-x-auto"><table class="w-full min-w-[900px]"><thead class="bg-gray-50/80">' + ['<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">命中</th>','<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">对象</th>','<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">名单</th>','<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">匹配度</th>','<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">说明</th>','<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">状态</th>','<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">操作</th>'].join('') + '</thead><tbody>' +
+        d.hits.map(function(h){
+          var stCls = h.status==='待复核'?'bg-yellow-50 text-yellow-600':h.status==='误报'?'bg-gray-100 text-gray-500':'bg-red-50 text-red-500';
+          return '<tr class="hover:bg-gray-50/60"><td class="py-3 px-4 text-sm border-t border-gray-50 font-mono font-bold">'+h.id+'</td><td class="py-3 px-4 text-sm border-t border-gray-50">'+esc(h.target)+'</td><td class="py-3 px-4 text-sm border-t border-gray-50">'+h.list+'</td><td class="py-3 px-4 text-sm border-t border-gray-50 font-bold">'+h.match+'</td><td class="py-3 px-4 text-sm border-t border-gray-50 text-xs text-gray-500">'+esc(h.detail)+'</td><td class="py-3 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium '+stCls+'">'+h.status+'</span></td>' +
+          '<td class="py-3 px-4 text-sm border-t border-gray-50">'+(h.status==='待复核'?'<button class="text-xs font-bold text-gray-500 hover:underline" data-fp="'+h.id+'">误报</button> <button class="text-xs font-bold text-red-500 hover:underline ml-1" data-cf="'+h.id+'">确认命中</button>':'—')+'</td></tr>';
+        }).join('') + '</tbody></table></div>';
+      pane.querySelectorAll('[data-fp]').forEach(function(b){ b.onclick = function(){
+        if (!rcNeed('screen_mark')) return;
+        var d2 = RC.screening(); d2.hits.forEach(function(h){ if (h.id===b.dataset.fp) h.status='误报'; });
+        RC.saveScreening(d2); RC.log('筛查误报标记', b.dataset.fp, '人工复核确认为误报'); DDUI.toast('已标记误报', 'success'); draw();
+      }; });
+      pane.querySelectorAll('[data-cf]').forEach(function(b){ b.onclick = function(){
+        if (!rcNeed('screen_mark')) return;
+        var d2 = RC.screening(); d2.hits.forEach(function(h){ if (h.id===b.dataset.cf) h.status='确认命中'; });
+        RC.saveScreening(d2); RC.log('筛查命中确认', b.dataset.cf, '确认命中，自动生成告警并冻结相关交易'); DDUI.toast('已确认命中，生成告警', 'success'); draw();
+      }; });
+    } else {
+      pane.innerHTML = '<div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-bold">名单库（制裁 / PEP / 负面 / 自定义）</h3><span class="text-xs text-gray-400">名单库管理需合规负责人权限</span></div><div class="overflow-x-auto"><table class="w-full min-w-[720px]"><thead class="bg-gray-50/80">' + ['<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">名单库</th>','<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">来源</th>','<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">更新日期</th>','<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">条目数</th>','<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">启用</th>'].join('') + '</thead><tbody>' +
+        d.lists.map(function(l, i){
+          return '<tr><td class="py-3 px-4 text-sm border-t border-gray-50 font-bold">'+l.name+'</td><td class="py-3 px-4 text-sm border-t border-gray-50">'+l.src+'</td><td class="py-3 px-4 text-sm border-t border-gray-50">'+l.updated+'</td><td class="py-3 px-4 text-sm border-t border-gray-50 font-mono">'+l.entries.toLocaleString()+'</td>' +
+          '<td class="py-3 px-4 text-sm border-t border-gray-50"><button class="px-3 py-1 rounded-full text-xs font-bold '+(l.on?'bg-green-50 text-green-600':'bg-gray-100 text-gray-400')+'" data-ls="'+i+'">'+(l.on?'已启用':'已停用')+'</button></td></tr>';
+        }).join('') + '</tbody></table></div>';
+      pane.querySelectorAll('[data-ls]').forEach(function(b){ b.onclick = function(){
+        if (!rcNeed('list_manage')) return;
+        var d2 = RC.screening(); var l = d2.lists[+b.dataset.ls]; l.on = !l.on;
+        RC.saveScreening(d2); RC.log(l.on?'启用名单库':'停用名单库', l.name, ''); DDUI.toast('已'+(l.on?'启用':'停用'), 'success'); draw();
+      }; });
+    }
+  }
+  document.querySelectorAll('#scr-tabs button').forEach(function(b){ b.onclick = function(){ tab = b.dataset.tab; draw(); }; });
+  draw();
+})();
 }
-document.querySelectorAll('.data-search').forEach(function (i) { i.addEventListener('input', function () { dKw = this.value.trim().toLowerCase(); ddApplyFilter(); }); });
-document.querySelectorAll('.data-filter').forEach(function (s) { s.addEventListener('change', function () { dSt = this.value; ddApplyFilter(); }); });
-window.addEventListener('DOMContentLoaded', function(){ DDRisk.guard(); });
 </script>
-<script>
-document.getElementById('sc-run').addEventListener('click', function () {
-    var name = document.getElementById('sc-name').value.trim();
-    if (!name) { DDUI.toast('请填写姓名 / 企业名', 'error'); return; }
-    var nat = document.getElementById('sc-nat').value;
-    var hit = /俄罗斯|伊朗|朝鲜/.test(nat) || /volkov|金/i.test(name);
-    var box = document.getElementById('sc-result');
-    box.classList.remove('hidden');
-    box.innerHTML = hit
-        ? '<div class="flex items-center gap-2 text-red-500 font-bold"><iconify-icon icon="solar:danger-triangle-bold"></iconify-icon>疑似命中</div><p class="text-xs text-gray-500 mt-2">OFAC SDN 匹配度 88%（同名 + 国籍关联）。已生成复核任务，请风控员在「筛查记录」中复核确认。</p>'
-        : '<div class="flex items-center gap-2 text-green-600 font-bold"><iconify-icon icon="solar:check-circle-bold"></iconify-icon>未命中</div><p class="text-xs text-gray-500 mt-2">制裁名单 / PEP / 负面媒体均无匹配记录，筛查结果已存档（保留 5 年）。</p>';
-    DDUI.toast('筛查完成', 'success');
-});
-document.querySelectorAll('.act-recheck').forEach(function (b) {
-    b.addEventListener('click', function () {
-        var tds = b.closest('tr').querySelectorAll('td');
-        DDUI.modal({
-            title: '命中复核 · ' + tds[1].textContent.trim(),
-            body: '<div class="ddui-kv"><span>命中名单</span><b>' + tds[3].textContent.trim() + '</b></div>' +
-                  '<div class="ddui-kv"><span>匹配度</span><b>' + tds[4].textContent.trim() + '</b></div>' +
-                  '<div class="ddui-kv"><span>比对要素</span><b style="font-weight:500;font-size:12px">姓名相似度 · 出生日期 · 国籍/注册国 · 证件号</b></div>' +
-                  '<div class="ddui-field"><label class="ddui-label">复核结论</label><select class="ddui-select"><option>误报（要素不一致，放行）</option><option>确认命中（冻结并上报合规主管）</option><option>无法确认（要求客户补充证明材料）</option></select></div>',
-            actions: [{ text: '取消' }, { text: '提交复核结论', type: 'primary', onClick: function (c) { c(); DDUI.toast('复核结论已提交', 'success'); } }]
-        });
-    });
-});
-document.querySelectorAll('.act-view').forEach(function (b) {
-    b.addEventListener('click', function () {
-        var tds = b.closest('tr').querySelectorAll('td');
-        DDUI.modal({ title: '筛查档案 · ' + tds[1].textContent.trim(),
-            body: '<div class="ddui-kv"><span>命中名单</span><b>' + tds[3].textContent.trim() + '</b></div><div class="ddui-kv"><span>结果</span><b>' + tds[5].textContent.trim() + '</b></div><div class="ddui-kv"><span>复核人</span><b>风控员-小周</b></div>' });
-    });
-});
-document.getElementById('list-manage').addEventListener('click', function () {
-    DDUI.modal({ title: '名单源设置', body: '<div class="space-y-2 text-sm">' +
-        ['OFAC SDN / 综合名单（每日自动更新）', 'EU 综合制裁名单（每日自动更新）', 'UN 安理会名单（每日自动更新）', 'UK HMT 名单（每日自动更新）', 'PEP 数据库（每周更新）', '负面媒体库（每日更新）'].map(function (x) {
-        return '<label class="flex items-center gap-2"><input type="checkbox" checked class="accent-[#FFD008]"/>' + x + '</label>'; }).join('') + '</div>',
-        actions: [{ text: '取消' }, { text: '保存', type: 'primary', onClick: function (c) { c(); DDUI.toast('名单源设置已保存', 'success'); } }] });
-});
-</script>
-<script src="../assets/js/i18n.js"></script>
 </body>
 </html>
