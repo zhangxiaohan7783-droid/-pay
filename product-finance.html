@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>费用管理 - Dingdang Pay 叮当支付</title>
+<script src="assets/vendor/tailwindcss.js"></script>
+<script>tailwind.config = { theme: { extend: { colors: { primary: '#FFD008', dark: '#382b1b', accent1: '#FF8106', accent2: '#00B7EC' }, borderRadius: { '8': '8px' } } } }</script>
+<link rel="stylesheet" href="assets/css/apple.css" data-dd-apple="1"/>
+<style>
+.pd-eyebrow{font-size:13px;font-weight:600;letter-spacing:.14em;color:#86868b;text-transform:uppercase}
+.pd-h1{font-size:clamp(36px,5.4vw,60px);line-height:1.08;font-weight:800;letter-spacing:-.02em;color:#1d1d1f}
+.pd-h2{font-size:clamp(28px,3.6vw,40px);line-height:1.15;font-weight:800;letter-spacing:-.015em;color:#1d1d1f}
+.pd-sub{font-size:18px;line-height:1.6;color:#6e6e73}
+.pd-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:48px;padding:0 26px;border-radius:999px;font-weight:700;font-size:15px;transition:transform .2s var(--dd-ease),box-shadow .2s,background .2s}
+.pd-btn:active{transform:scale(.97)}
+.pd-btn.pri{background:#FFD008;color:#382b1b;box-shadow:0 6px 18px rgba(255,208,8,.35)}
+.pd-btn.pri:hover{box-shadow:0 10px 26px rgba(255,208,8,.45)}
+.pd-btn.ghost{background:rgba(0,0,0,.05);color:#1d1d1f}
+.pd-btn.ghost:hover{background:rgba(0,0,0,.08)}
+.pd-card{background:#fff;border-radius:22px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 28px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.04)}
+.pd-feat{padding:28px;border-radius:22px;background:#f5f5f7;transition:transform .3s var(--dd-ease),background .3s}
+.pd-feat:hover{transform:translateY(-3px);background:#efeff2}
+.pd-ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.pd-stat b{display:block;font-size:34px;font-weight:800;letter-spacing:-.02em;color:#1d1d1f}
+.pd-stat span{font-size:14px;color:#6e6e73}
+.pd-table{width:100%;border-collapse:separate;border-spacing:0}
+.pd-table td{padding:18px 24px;border-bottom:1px solid rgba(0,0,0,.06);font-size:15px}
+.pd-table tr:last-child td{border-bottom:0}
+.pd-table td:last-child{text-align:right;font-weight:700;color:#1d1d1f}
+.pd-faq details{border-bottom:1px solid rgba(0,0,0,.08);padding:20px 4px}
+.pd-faq summary{list-style:none;cursor:pointer;font-weight:700;font-size:17px;color:#1d1d1f;display:flex;justify-content:space-between;gap:16px}
+.pd-faq summary::-webkit-details-marker{display:none}
+.pd-faq summary::after{content:"+";font-size:24px;line-height:1;color:#86868b;transition:transform .25s var(--dd-ease)}
+.pd-faq details[open] summary::after{transform:rotate(45deg)}
+.pd-faq p{margin-top:12px;color:#6e6e73;line-height:1.7;font-size:15px}
+.pd-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:#fff;border:1px solid rgba(0,0,0,.08);font-size:13px;font-weight:600;color:#1d1d1f}
+.pd-mock-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(0,0,0,.06)}
+.pd-mock-row:last-child{border-bottom:0}
+.pd-flag{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex:none}
+.pd-anchor{scroll-margin-top:84px}
+.pd-in{opacity:0;transform:translateY(18px);transition:opacity .7s var(--dd-ease),transform .7s var(--dd-ease)}
+.pd-in.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.pd-in{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body class="bg-white">
+<!-- dd-site-nav:start -->
+<nav class="dd-site-nav">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16 items-center">
+<a class="flex items-center" href="home.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="assets/img/logo-h.png"/></a>
+<div class="dd-site-menu hidden md:flex items-center gap-8" id="dd-site-menu"><a class="nav-link" href="home.html">首页</a><a class="nav-link" href="product-accounts.html">全球账户</a><a class="nav-link" href="product-expense.html">费用管理</a><a class="nav-link on" href="product-finance.html">财务管理</a><a class="nav-link" href="product-payments.html">全球即时付款</a><a class="nav-link" href="product-acquiring.html">全球收单</a><a class="nav-link" href="about.html">关于我们</a><a class="nav-link" href="help.html">帮助</a></div>
+<div class="flex items-center gap-3"><a class="hidden sm:inline text-sm font-medium text-dark hover:opacity-70" href="login.html">登录</a><a class="bg-primary text-dark px-5 py-2 rounded-full text-sm font-bold" href="register.html?demo=1">立即开户</a><button class="dd-burger w-10 h-10 items-center justify-center rounded-full hover:bg-gray-100" aria-label="菜单" aria-expanded="false" aria-controls="dd-site-menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button></div>
+</div>
+</div>
+</nav>
+<!-- dd-site-nav:end -->
+<main>
+<!-- Hero -->
+<section class="pt-16 md:pt-24 pb-20" style="background:linear-gradient(180deg,#f5f5f7 0%,#fff 100%)">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+<p class="pd-eyebrow mb-5">财务管理</p>
+<h1 class="pd-h1 mb-6">小微企业财税<br/>一个平台全搞定</h1>
+<p class="text-lg text-gray-500 max-w-2xl mx-auto mb-10">流水自动关联订单与发票，支出一键上传凭证，税表一键生成——不懂财务的老板也能轻松管好公司财税。</p>
+<div class="flex gap-4 justify-center"><a class="bg-primary text-dark px-8 py-3.5 rounded-full font-bold hover:shadow-lg transition-all" href="register.html?demo=1">免费开通</a><a class="px-8 py-3.5 rounded-full font-bold border border-gray-200 hover:border-gray-400 transition-all" href="dashboard.html">查看演示</a></div>
+</div>
+</section>
+<!-- 核心功能 -->
+<section class="max-w-6xl mx-auto px-4 mb-24">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="pd-card pd-in p-8">
+<iconify-icon class="text-3xl text-primary mb-4" icon="solar:bill-list-bold"></iconify-icon>
+<h3 class="text-xl font-bold mb-3">订单一键生成账单发票</h3>
+<p class="text-gray-500 text-sm leading-relaxed">收单订单自动生成账单与合规发票，发票号、税率、买卖方信息自动填充，支持 PDF 下载与邮件发送客户。</p>
+</div>
+<div class="pd-card pd-in p-8">
+<iconify-icon class="text-3xl text-accent2 mb-4" icon="solar:link-bold"></iconify-icon>
+<h3 class="text-xl font-bold mb-3">流水一键关联订单与发票</h3>
+<p class="text-gray-500 text-sm leading-relaxed">每笔银行流水智能匹配对应订单与发票，自动对账，三单合一（订单/发票/流水），再也不用人工逐笔核对。</p>
+</div>
+<div class="pd-card pd-in p-8">
+<iconify-icon class="text-3xl text-accent1 mb-4" icon="solar:cloud-upload-bold"></iconify-icon>
+<h3 class="text-xl font-bold mb-3">支出一键上传凭证</h3>
+<p class="text-gray-500 text-sm leading-relaxed">发票、小票、收据、工资单拍照上传，自动识别发票号与金额并归类到成本科目，凭证缺失自动提醒。</p>
+</div>
+<div class="pd-card pd-in p-8">
+<iconify-icon class="text-3xl text-primary mb-4" icon="solar:calculator-bold"></iconify-icon>
+<h3 class="text-xl font-bold mb-3">一键生成税表</h3>
+<p class="text-gray-500 text-sm leading-relaxed">按意大利、德国、法国、英国、奥地利、爱尔兰六国规则自动生成 VAT 申报表、企业所得税计算与年报包，可直接导出报送。</p>
+</div>
+</div>
+</section>
+<!-- 自动化流程 -->
+<section class="py-24 mb-24" style="background:#f5f5f7">
+<div class="max-w-6xl mx-auto px-4">
+<div class="text-center max-w-2xl mx-auto mb-14 pd-in"><p class="pd-eyebrow mb-3">财务自动化</p><h2 class="pd-h2">从流水到报税，全自动</h2></div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="bg-white rounded-8 p-6 text-center pd-in"><p class="text-3xl font-extrabold text-primary mb-2">1</p><p class="font-bold mb-1">收款入账</p><p class="text-xs text-gray-500">收单/汇款流水自动归集</p></div>
+<div class="bg-white rounded-8 p-6 text-center pd-in"><p class="text-3xl font-extrabold text-primary mb-2">2</p><p class="font-bold mb-1">自动关联</p><p class="text-xs text-gray-500">流水 ↔ 订单 ↔ 发票三单匹配</p></div>
+<div class="bg-white rounded-8 p-6 text-center pd-in"><p class="text-3xl font-extrabold text-primary mb-2">3</p><p class="font-bold mb-1">凭证归档</p><p class="text-xs text-gray-500">支出凭证识别归档到科目</p></div>
+<div class="bg-white rounded-8 p-6 text-center pd-in"><p class="text-3xl font-extrabold text-primary mb-2">4</p><p class="font-bold mb-1">一键报税</p><p class="text-xs text-gray-500">VAT / 企业所得税 / 年报导出</p></div>
+</div>
+</div>
+</section>
+<!-- 税务局账户 -->
+<section class="max-w-6xl mx-auto px-4 mb-24"><div class="text-center max-w-2xl mx-auto mb-14 pd-in"><p class="pd-eyebrow mb-3">税务局账户台账</p><h2 class="pd-h2">税务局里还有多少钱，一眼看清</h2><p class="text-gray-500 mt-4">预缴、留抵、应缴、应退分国别实时台账，申报截止日前自动提醒，不再错过任何申报期。</p></div></section>
+<!-- CTA -->
+<section class="max-w-6xl mx-auto px-4 mb-24"><div class="pd-in rounded-[28px] text-white p-10 md:p-14 flex flex-col md:flex-row items-center justify-between gap-8" style="background:linear-gradient(135deg,#382b1b 0%,#1f2937 100%)"><div><h2 class="text-3xl font-extrabold mb-3">让财税自动化为您的生意省时间</h2><p class="text-gray-400">注册即用，演示环境可体验完整流程。</p></div><a class="bg-primary text-dark px-8 py-3.5 rounded-full font-bold flex-none hover:shadow-lg transition-all" href="register.html?demo=1">立即体验</a></div></section>
+</main>
+<!-- dd-site-footer:start -->
+<footer class="bg-dark text-white pt-16 pb-10">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-10 mb-12">
+<div class="col-span-2">
+<div class="flex items-center gap-2 mb-5"><img alt="Dingdang Pay" class="h-9 w-auto" src="assets/img/logo-h-rev.png"/></div>
+<p class="text-gray-400 text-sm leading-relaxed max-w-sm">叮当支付成立于 2025 年，是一家跨境支付科技公司。我们持有美国 MSB 牌照，正申请英国 EMI 与马耳他 PI 牌照，为全球化企业构建全球收付款基础设施。</p>
+<p class="text-gray-400 text-sm mt-4">客服邮箱: support@dingdangpay.com</p>
+</div>
+<div><h4 class="font-semibold mb-5 text-primary text-sm">产品服务</h4><ul class="space-y-3 text-gray-400 text-sm">
+<li><a class="hover:text-white" href="product-accounts.html">全球账户</a></li>
+<li><a class="hover:text-white" href="product-expense.html">费用管理</a></li>
+<li><a class="hover:text-white" href="product-payments.html">全球即时付款</a></li>
+<li><a class="hover:text-white" href="product-acquiring.html">全球收单</a></li>
+<li><a class="hover:text-white" href="app/index.html">下载 App</a></li></ul></div>
+<div><h4 class="font-semibold mb-5 text-primary text-sm">关于叮当</h4><ul class="space-y-3 text-gray-400 text-sm">
+<li><a class="hover:text-white" href="about.html">关于我们</a></li>
+<li><a class="hover:text-white" href="compliance.html">监管牌照</a></li>
+<li><a class="hover:text-white" href="help.html">帮助中心</a></li>
+<li><a class="hover:text-white" href="register.html?demo=1">注册开户</a></li></ul></div>
+<div><h4 class="font-semibold mb-5 text-primary text-sm">法律条款</h4><ul class="space-y-3 text-gray-400 text-sm">
+<li><a class="hover:text-white" href="privacy.html">隐私协议</a></li>
+<li><a class="hover:text-white" href="terms.html">服务条款</a></li></ul></div>
+</div>
+<div class="pt-8 border-t border-white/10 text-xs text-gray-500 flex flex-col md:flex-row justify-between gap-4">
+<p>© 2026 Dingdang Pay. 持有美国 MSB 牌照；英国 EMI、马耳他 PI 牌照申请中。</p>
+<div class="flex gap-6"><span>合作伙伴: Yeepay · PayKKa</span><span>2026 系统集成中</span></div>
+</div>
+</div>
+</footer>
+<!-- dd-site-footer:end -->
+<script src="assets/js/ui.js"></script>
+<script>
+(function(){var els=document.querySelectorAll('.pd-in');if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('on')});return;}
+var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('on');io.unobserve(x.target);}})},{threshold:.12});
+els.forEach(function(e){io.observe(e)});})();
+</script>
+<script src="assets/js/i18n.js"></script>
+</body>
+</html>
