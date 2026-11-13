@@ -70,36 +70,9 @@ if (!RC.canMenu('risk-kyc.html')) rcNoPerm(); else {
         '<td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium '+stCls+'">'+m.kyc+'</span></td>' +
         '<td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium '+lm.cls+'">'+lm.label+' '+m.score+'</span></td>' +
         '<td class="py-3.5 px-4 text-sm border-t border-gray-50">'+m.reviewDue+'</td>' +
-        '<td class="py-3.5 px-4 text-sm border-t border-gray-50"><button class="text-xs font-bold text-[#00B7EC] hover:underline" data-prof="'+m.id+'">档案</button></td></tr>';
+        '<td class="py-3.5 px-4 text-sm border-t border-gray-50"><a class="text-xs font-bold text-[#00B7EC] hover:underline" href="risk-kyc-detail.html?id='+m.id+'">查看档案 →</a></td></tr>';
     }).join('');
     if (window.DDTableKit) DDTableKit.refresh(document.querySelector('#tb-kyc').closest('table'));
-    document.querySelectorAll('[data-prof]').forEach(function(b){ b.onclick = function(){ profile(b.dataset.prof); }; });
-  }
-  function boTree(bs) {
-    return '<ul class="pl-4 border-l-2 border-gray-200 space-y-2">' + bs.map(function(b){
-      return '<li><div class="text-sm"><b>'+esc(b.name)+'</b> <span class="text-xs text-gray-400">持股 '+b.share+'</span>'+(b.id?' <span class="text-xs text-gray-400">· '+esc(b.id)+'</span>':'')+'</div>'+(b.children?boTree(b.children):'')+'</li>';
-    }).join('') + '</ul>';
-  }
-  function profile(id) {
-    var m = RC.merchant(id);
-    var lm = RC.LEVELS[m.level];
-    var opts = ['已通过', '复审待办', 'EDD 进行中', '暂停入网'].map(function(s){ return '<option'+(m.kyc===s?' selected':'')+'>'+s+'</option>'; }).join('');
-    DDUI.modal({ title: 'KYC 档案 · ' + m.name, width: 640,
-      body:
-      '<div class="flex items-center gap-2 mb-4"><span class="px-2 py-0.5 rounded-full text-xs font-bold '+lm.cls+'">'+lm.label+' · 评分 '+m.score+'</span>'+m.tags.map(function(t){return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-100 text-gray-500">'+esc(t)+'</span>';}).join('')+'</div>' +
-      '<div class="ddui-kv"><span>注册号 / VAT</span><b>'+m.reg+' · '+m.vat+'</b></div>' +
-      '<div class="ddui-kv"><span>注册地 / 行业</span><b>'+m.country+' · '+m.industry+'</b></div>' +
-      '<div class="ddui-kv"><span>上游 / 下游</span><b style="font-weight:500">'+esc(m.upstream)+'<br/>'+esc(m.downstream)+'</b></div>' +
-      '<div class="ddui-kv"><span>证件材料</span><b>'+m.docs.join('、')+'</b></div>' +
-      '<div class="mt-3"><p class="text-xs font-bold text-gray-400 mb-2">受益所有人（BO）穿透结构</p>'+boTree(m.bo)+'</div>' +
-      (RC.can('kyc_edit') ? '<div class="mt-4"><label class="ddui-label">KYC 状态流转</label><select class="ddui-input" id="kyc-st">'+opts+'</select></div>' : ''),
-      actions: [{ text: '关闭' }].concat(RC.can('kyc_edit') ? [{ text: '保存状态', type: 'primary', onClick: function(close, body){
-        var v = body.querySelector('#kyc-st').value;
-        var l = RC.merchants(); l.forEach(function(x){ if (x.id === id) x.kyc = v; });
-        RC.saveMerchants(l); RC.log('KYC 状态变更', id + ' ' + m.name, 'KYC 状态 → ' + v);
-        close(); DDUI.toast('已保存并留痕', 'success'); draw();
-      }}] : [])
-    });
   }
   draw();
 })();
