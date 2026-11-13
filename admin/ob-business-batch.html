@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>商业开户批量处理 - 叮当支付内部运营后台</title>
+<script src="../assets/vendor/tailwindcss.js"></script>
+<script src="../assets/vendor/iconify-icon.min.js"></script>
+<style>
+body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #382b1b; background-color: #f5f4f0; }
+.custom-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
+.rounded-8 { border-radius: 8px; }
+</style>
+<link rel="stylesheet" href="../assets/css/apple.css" data-dd-apple="1"/>
+</head>
+<body class="bg-gray-50">
+<div class="flex min-h-screen">
+<style>
+.ad-sidenav-link{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;color:#9ca3af;font-size:14px;line-height:1.4;transition:background .15s,color .15s;text-decoration:none}
+.ad-sidenav-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.ad-sidenav-active,.ad-sidenav-active:hover{background:#FFD008;color:#382b1b;font-weight:600}
+.ad-sidenav-sec{padding:16px 12px 6px;font-size:11px;font-weight:600;color:#6b7280;letter-spacing:.05em}
+.ad-noscroll{scrollbar-width:none;-ms-overflow-style:none}
+.ad-noscroll::-webkit-scrollbar{display:none}
+</style>
+<aside class="w-64 flex-none hidden lg:flex flex-col" id="sidebar" style="background:#241d12"><div class="p-6 flex items-center space-x-3"><a class="flex items-center space-x-3" href="index.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="../assets/img/logo-h-rev.png"/></a></div><div class="flex-1 overflow-y-auto px-4 py-2 ad-noscroll"><nav class="space-y-1"><a class="ad-sidenav-link" href="index.html"><iconify-icon class="text-xl" icon="solar:widget-bold"></iconify-icon><span>运营总览</span></a><div class="ad-sidenav-sec">客户与开户</div><div class="ad-sidenav-sec">个人开户管理</div><a class="ad-sidenav-link" href="ob-personal-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>个人开户总看板</span></a><a class="ad-sidenav-link" href="ob-personal.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>个人开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-personal-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>个人开户资料归档</span></a><a class="ad-sidenav-link" href="ob-personal-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-personal-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-personal-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>个人开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-personal-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>个人批量处理</span></a><a class="ad-sidenav-link" href="ob-personal-templates.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>驳回话术模板</span></a><a class="ad-sidenav-link" href="ob-personal-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>个人复审台账</span></a><div class="ad-sidenav-sec">商业开户管理</div><a class="ad-sidenav-link" href="ob-business-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>商业开户总看板</span></a><a class="ad-sidenav-link" href="ob-business.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>商业开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-business-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>商业开户资料归档</span></a><a class="ad-sidenav-link" href="ob-business-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-business-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-business-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>商业开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-business-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>商业 EDD 工单</span></a><a class="ad-sidenav-link ad-sidenav-active" href="ob-business-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>商业批量处理</span></a><a class="ad-sidenav-link" href="ob-business-reject.html"><iconify-icon class="text-xl" icon="solar:shield-cross-bold"></iconify-icon><span>拒户原因库</span></a><a class="ad-sidenav-link" href="ob-business-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>商业复审台账</span></a><a class="ad-sidenav-link" href="ob-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>开户配置</span></a><a class="ad-sidenav-link" href="business.html"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon><span>商业客户管理</span></a><a class="ad-sidenav-link" href="personal.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>个人客户管理</span></a><div class="ad-sidenav-sec">风控与合规</div><a class="ad-sidenav-link" href="risk.html"><iconify-icon class="text-xl" icon="solar:shield-warning-bold"></iconify-icon><span>风控总览</span></a><a class="ad-sidenav-link" href="risk-kyc.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>商户KYC档案</span></a><a class="ad-sidenav-link" href="risk-score.html"><iconify-icon class="text-xl" icon="solar:slider-minimalistic-horizontal-bold"></iconify-icon><span>风险评分配置</span></a><a class="ad-sidenav-link" href="risk-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>EDD 强化尽调</span></a><a class="ad-sidenav-link" href="risk-alerts.html"><iconify-icon class="text-xl" icon="solar:bell-bing-bold"></iconify-icon><span>交易风控告警</span></a><a class="ad-sidenav-link" href="risk-screening.html"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon><span>名单筛查</span></a><a class="ad-sidenav-link" href="risk-ledger.html"><iconify-icon class="text-xl" icon="solar:notebook-bold"></iconify-icon><span>商户风险台账</span></a><a class="ad-sidenav-link" href="risk-controls.html"><iconify-icon class="text-xl" icon="solar:lock-bold"></iconify-icon><span>账户管控中心</span></a><a class="ad-sidenav-link" href="risk-str.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>STR 可疑上报</span></a><a class="ad-sidenav-link" href="risk-audit.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审计日志</span></a><a class="ad-sidenav-link" href="risk-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>合规配置</span></a><a class="ad-sidenav-link" href="risk-review.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>审核工作台</span></a><a class="ad-sidenav-link" href="risk-cases.html"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon><span>案件管理</span></a><a class="ad-sidenav-link" href="risk-learn.html"><iconify-icon class="text-xl" icon="solar:square-academic-cap-bold"></iconify-icon><span>学习中心</span></a><div class="ad-sidenav-sec">安全与服务</div><a class="ad-sidenav-link" href="cs.html"><iconify-icon class="text-xl" icon="solar:headphones-round-sound-bold"></iconify-icon><span>客服管理</span></a><div class="ad-sidenav-sec">团队与账务</div><a class="ad-sidenav-link" href="managers.html"><iconify-icon class="text-xl" icon="solar:user-speak-bold"></iconify-icon><span>客户经理管理</span></a><a class="ad-sidenav-link" href="staff.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>员工管理</span></a><a class="ad-sidenav-link" href="bills.html"><iconify-icon class="text-xl" icon="solar:bill-list-bold"></iconify-icon><span>账单管理</span></a><a class="ad-sidenav-link" href="licenses.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>牌照管理</span></a></nav></div><div class="p-4" style="border-top:1px solid rgba(255,255,255,.08)"><div class="flex items-center space-x-3 p-2 rounded-lg" style="background:rgba(255,255,255,.05)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:#FFD008;color:#382b1b">涵</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold truncate text-white">运营-小涵</p><p class="text-xs text-gray-500 truncate" id="rc-side-role">—</p></div><a href="login.html" class="text-gray-500 hover:text-red-400" title="退出登录"><iconify-icon icon="solar:logout-3-bold"></iconify-icon></a></div></div></aside>
+<main class="flex-1 flex flex-col min-w-0">
+<header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 flex-none">
+<div class="flex items-center">
+<button class="lg:hidden p-2 -ml-2 text-gray-500" onclick="toggleSidebar()"><iconify-icon class="text-2xl" icon="solar:hamburger-menu-bold"></iconify-icon></button>
+<h1 class="text-lg font-bold ml-2">商业开户批量处理</h1>
+</div>
+<div class="flex items-center space-x-4">
+<div id="rc-role-slot"></div>
+<span class="text-xs text-gray-400 hidden md:block">风控合规环境 · 操作全程留痕</span>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6" id="rc-body">
+
+<div class="bg-blue-50 border border-blue-100 rounded-8 p-4 text-sm text-blue-700 flex items-start gap-2"><iconify-icon class="text-lg flex-none mt-0.5" icon="solar:info-circle-bold"></iconify-icon><span>批量处理仅限「低风险 + 无筛查命中 + 材料齐全」的待初审件；高风险、疑似命中、缺件一律逐单审核。</span></div>
+<div class="bg-white rounded-8 custom-shadow overflow-hidden">
+<div class="p-6 border-b border-gray-100 flex justify-between items-center flex-wrap gap-3">
+<div class="flex gap-2"><button class="px-4 py-2 rounded-8 text-xs font-bold border border-gray-200" id="ck-all">全选可批量件</button></div>
+<div class="flex gap-2"><button class="px-4 py-2 rounded-8 text-xs font-bold border border-gray-200" id="b-return">批量退回补材料</button><button class="px-4 py-2 rounded-8 text-xs font-bold" style="background:#FFD008;color:#382b1b" id="b-approve">批量通过开户</button></div>
+</div>
+<div class="overflow-x-auto"><table class="w-full min-w-[860px]"><thead class="bg-gray-50/80"><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase"></th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">单号</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">客户</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">国家</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">风险</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">状态</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">说明</th></thead><tbody id="tb-batch"></tbody></table></div>
+</div>
+</div>
+</main>
+<div class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+</div>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/rc-data.js"></script>
+<script src="../assets/js/ob-data.js"></script>
+<script>
+function toggleSidebar(){var s=document.getElementById('sidebar'),b=document.getElementById('sidebar-backdrop');if(!s)return;s.classList.toggle('hidden');s.classList.toggle('fixed');s.classList.toggle('inset-y-0');s.classList.toggle('left-0');s.classList.toggle('z-50');if(b)b.classList.toggle('hidden');}
+RC.renderSwitcher(document.getElementById('rc-role-slot'));
+var sr=document.getElementById('rc-side-role');if(sr)sr.textContent=RC.ROLES[RC.role()].name;
+function rcDeny(){DDUI.toast('当前角色（'+RC.ROLES[RC.role()].name+'）无此操作权限','error');}
+function rcNeed(act){if(!RC.can(act)){rcDeny();return false;}return true;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function rcNoPerm(){document.getElementById('rc-body').innerHTML='<div class="bg-white rounded-8 custom-shadow p-16 text-center"><iconify-icon class="text-5xl text-gray-300" icon="solar:lock-bold"></iconify-icon><p class="mt-4 font-bold text-gray-700">当前角色无权访问本页面</p><p class="text-sm text-gray-400 mt-1">请联系合规负责人或切换角色查看（右上角可切换演示角色）</p></div>';}
+
+function obKpi(list, isB){
+  var c = { a:0, b:0, e:0, p:0, r:0, rv:0 };
+  list.forEach(function(x){
+    if (x.status==='待初审') c.a++;
+    else if (x.status==='待补材料') c.b++;
+    else if (x.status.indexOf('EDD')>-1) c.e++;
+    else if (x.status==='审核通过') c.p++;
+    else if (x.status==='已拒绝') c.r++;
+    else if (x.status==='复审中') c.rv++;
+  });
+  return c;
+}
+function obKpiCards(c){
+  return [['待初审',c.a,'#3b82f6'],['待补材料',c.b,'#eab308'],['EDD 处理中',c.e,'#f97316'],['审核通过',c.p,'#16a34a'],['已拒绝',c.r,'#ef4444'],['复审中',c.rv,'#8b5cf6']].map(function(k){
+    return '<div class="bg-white rounded-8 custom-shadow p-5"><p class="text-xs text-gray-400">'+k[0]+'</p><p class="text-3xl font-extrabold mt-2" style="color:'+k[2]+'">'+k[1]+'</p></div>';
+  }).join('');
+}
+function obLvBadge(lv){ var m = RC.LEVELS[lv]; return '<span class="px-2 py-0.5 rounded-full text-xs font-medium '+m.cls+'">'+m.label+'</span>'; }
+function obStBadge(st){ return '<span class="px-2 py-0.5 rounded-full text-xs font-medium '+OB.ST_CLS[st]+'">'+st+'</span>'; }
+function obHitBadge(h){ return h==='命中'?'<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-red-50 text-red-500">命中</span>':h==='疑似'?'<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-orange-50 text-orange-600">疑似</span>':'<span class="text-xs text-gray-300">无</span>'; }
+
+(function(){
+  var kind = "business";
+  var list = kind === 'personal' ? OB.personal() : OB.business();
+  /* 仅低风险+无命中+材料齐全的可批量 */
+  var ok = list.filter(function(x){
+    var eligible = x.level === 'low' && x.status === '待初审';
+    if (kind === 'personal') return eligible && x.hit === '无' && x.docs.length >= 2;
+    return eligible && x.hitEnt === '无' && x.hitDir === '无' && x.hitBo === '无';
+  });
+  var locked = list.filter(function(x){ return ok.indexOf(x) < 0 && x.status !== '审核通过' && x.status !== '已拒绝'; });
+  function rowHtml(x, dis){
+    var nm = x.name || x.company;
+    return '<tr class="'+(dis?'opacity-50':'hover:bg-gray-50/60')+'"><td class="py-3 px-4 text-sm border-t border-gray-50">'+(dis?'':'<input type="checkbox" class="ob-ck" value="'+x.id+'"/>')+'</td><td class="py-3 px-4 text-sm border-t border-gray-50 font-mono font-bold">'+x.id+'</td><td class="py-3 px-4 text-sm border-t border-gray-50">'+esc(nm)+'</td><td class="py-3 px-4 text-sm border-t border-gray-50">'+x.country+'</td><td class="py-3 px-4 text-sm border-t border-gray-50">'+obLvBadge(x.level)+'</td><td class="py-3 px-4 text-sm border-t border-gray-50">'+obStBadge(x.status)+'</td><td class="py-3 px-4 text-sm border-t border-gray-50 text-xs text-gray-400">'+(dis?'不符合批量条件（须逐单审核）':'')+'</td></tr>';
+  }
+  document.getElementById('tb-batch').innerHTML = ok.map(function(x){return rowHtml(x,false);}).join('') + locked.map(function(x){return rowHtml(x,true);}).join('');
+  if (window.DDTableKit) DDTableKit.refresh(document.querySelector('#tb-batch').closest('table'));
+  document.getElementById('ck-all').onclick = function(){ document.querySelectorAll('.ob-ck').forEach(function(c){ c.checked = true; }); };
+  function batch(action){
+    var ids = Array.from(document.querySelectorAll('.ob-ck:checked')).map(function(c){return c.value;});
+    if (!ids.length) { DDUI.toast('请先勾选开户单', 'error'); return; }
+    var label = action === 'approve' ? '批量通过' : '批量退回补材料';
+    DDUI.confirm(label, '将对 ' + ids.length + ' 单执行「' + label + '」，全部留痕。确认？', function(){
+      ids.forEach(function(id){ OB.act(id, action, { note: '批量处理' }); });
+      DDUI.toast('已处理 ' + ids.length + ' 单', 'success');
+      setTimeout(function(){ location.reload(); }, 600);
+    }, label);
+  }
+  document.getElementById('b-approve').onclick = function(){ batch('approve'); };
+  document.getElementById('b-return').onclick = function(){ batch('return'); };
+})();
+
+</script>
+</body>
+</html>
