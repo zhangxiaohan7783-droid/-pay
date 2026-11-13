@@ -23,7 +23,10 @@
   }
 
   function isPageSearched() {
-    return !!(document.getElementById('dd-page-search') || document.querySelector('.data-search'));
+    /* 页面已有任何搜索输入（页头 #dd-page-search / 卡片级 .data-search / 自定义搜索框）时，表格不再重复注入搜索框 */
+    return !!(document.getElementById('dd-page-search') || document.querySelector('.data-search') ||
+      document.querySelector('main input[type="search"]') ||
+      document.querySelector('main input[placeholder*="搜索"], main input[placeholder*="Search"]'));
   }
 
   function buildToolbar(table, state) {
