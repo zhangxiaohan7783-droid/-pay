@@ -548,8 +548,8 @@ function tfRenderLedger() {
             '<td class="py-3 px-6 text-sm border-t border-gray-50 text-right text-red-500 font-medium">' + (e.out ? '−' + tfNumFmt(c, e.out) : '—') + '</td>' +
             '<td class="py-3 px-6 text-sm border-t border-gray-50 text-right font-bold ' + (bal >= 0 ? 'text-gray-900' : 'text-red-500') + '">' + tfSigned(c, bal) + '</td></tr>';
     }).join('');
-    html += '<tr class="bg-yellow-50/60"><td class="py-3 px-6 text-sm border-t border-yellow-100 font-bold" colspan="4">当前余额（正 = 税务局持有您的资金；负 = 您欠缴）</td>' +
-        '<td class="py-3 px-6 text-sm border-t border-yellow-100 text-right font-bold ' + (bal >= 0 ? 'text-green-600' : 'text-red-500') + '">' + tfSigned(c, bal) + '</td></tr>';
+    html += '<tr><td class="py-3.5 px-6 text-xs border-t-2 border-gray-200 text-gray-400" colspan="4">当前余额（正 = 税务局持有您的资金 · 负 = 您欠缴）</td>' +
+        '<td class="py-3.5 px-6 border-t-2 border-gray-200 text-right text-base font-extrabold ' + (bal >= 0 ? 'text-green-600' : 'text-red-500') + '">' + tfSigned(c, bal) + '</td></tr>';
     document.getElementById('tf-ledger').innerHTML = html;
 }
 function tfPrepay() {

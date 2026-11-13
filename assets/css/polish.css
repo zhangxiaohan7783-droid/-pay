@@ -4,11 +4,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
+  margin-bottom: 8px;
+  flex-wrap: nowrap;
 }
-.ddtk-bar-l { display: flex; align-items: center; gap: 8px; }
-.ddtk-count { font-size: 12px; color: #9ca3af; }
+.ddtk-bar-l { display: flex; align-items: center; gap: 8px; flex: none; }
+.ddtk-count { font-size: 11px; color: #c0c4cc; letter-spacing: .02em; }
 .ddtk-bar-r { display: flex; align-items: center; gap: 8px; }
 .ddtk-search {
   height: 30px;
@@ -123,6 +123,9 @@
 main > header h2, main > header h1 { white-space: nowrap; }
 /* 顶栏内的主体切换器按钮尺寸对齐 */
 .dd-top-right #dd-ent-switcher > button { height: 34px; border-radius: 9px; }
+
+/* ===== 全站顶栏不固定（避免遮挡内容） ===== */
+header.sticky, .dd-topbar { position: static !important; }
 
 /* ===== 按钮文字单行不错行 ===== */
 button, .dd-qa-btn, .pill, a[class*="btn"] { white-space: nowrap; }

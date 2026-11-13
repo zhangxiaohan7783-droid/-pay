@@ -161,7 +161,7 @@ main > header, header.sticky, nav.sticky {
   -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
   border-bottom-color: var(--dd-line-2) !important;
 }
-main > header { position: sticky; top: 0; z-index: 40; }
+main > header { position: static; }
 
 /* 状态徽章更柔和 */
 .bg-green-50 { background-color: rgba(52, 199, 89, .10) !important; }
