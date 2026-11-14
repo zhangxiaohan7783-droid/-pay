@@ -2,6 +2,10 @@
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; }
 body { font-family: var(--dd-font); color: var(--dd-ink); background: #e8e8ed; -webkit-font-smoothing: antialiased; }
+/* Airwallex 风：紫罗兰主色（App 作用域覆盖） */
+.phone { --dd-blue: #612FF6; --dd-primary: #612FF6; }
+.phone .sec-h a, .phone .sec-h button, .phone .copy, .phone .navbar .back, .phone .navbar .act { color: #612FF6; }
+.phone .btn.tint { background: rgba(97, 47, 246, .1); color: #612FF6; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; border: 0; background: none; cursor: pointer; }
 input, select { font: inherit; }
@@ -62,7 +66,7 @@ svg.i { width: 22px; height: 22px; flex: none; }
 .tabbar a { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; font-size: 10px; font-weight: 500; color: #8e8e93; padding-top: 4px; }
 .tabbar a svg { width: 26px; height: 26px; }
 .tabbar a.on { color: var(--dd-ink); }
-.tabbar a.on .tb-ic { background: #f4e8c8; color: #8a6d2f; }
+.tabbar a.on .tb-ic { background: #efebfe; color: #612FF6; }
 .tb-ic { width: 44px; height: 30px; border-radius: 15px; display: flex; align-items: center; justify-content: center; transition: background .2s; }
 .tb-ic svg { width: 22px; height: 22px; }
 
@@ -93,7 +97,7 @@ svg.i { width: 22px; height: 22px; flex: none; }
 
 .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 50px; border-radius: 14px; font-size: 17px; font-weight: 600; transition: transform .14s var(--dd-ease), opacity .2s; }
 .btn:active { transform: scale(.97); }
-.btn.pri { background: #efd694; color: #3d3325; }
+.btn.pri { background: #612FF6; color: #fff; }
 .btn.dark { background: var(--dd-ink); color: #fff; }
 .btn.tint { background: rgba(0, 122, 255, .1); color: var(--dd-blue); }
 .btn.danger { background: rgba(255, 59, 48, .1); color: var(--dd-red); }
@@ -120,8 +124,8 @@ svg.i { width: 22px; height: 22px; flex: none; }
 .amount-box .hint.err { color: var(--dd-red); }
 
 /* ---------- 首页 ---------- */
-.hero { margin: 0 16px 24px; border-radius: 16px; padding: 22px; color: #1d1d1f; background: #fff; border: 1px solid #efe5c8; box-shadow: 0 2px 10px rgba(29, 29, 31, .05); position: relative; overflow: hidden; }
-.hero::after { content: ""; position: absolute; right: -60px; top: -60px; width: 200px; height: 200px; border-radius: 50%; background: rgba(214, 178, 94, .08); }
+.hero { margin: 0 16px 24px; border-radius: 16px; padding: 22px; color: #1d1d1f; background: #fff; border: 1px solid #eceaf4; box-shadow: 0 2px 10px rgba(29, 29, 31, .05); position: relative; overflow: hidden; }
+.hero::after { content: ""; position: absolute; right: -60px; top: -60px; width: 200px; height: 200px; border-radius: 50%; background: rgba(97, 47, 246, .05); }
 .hero small { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px; color: #86868b; opacity: 1; }
 .hero .bal { font-size: 36px; font-weight: 650; letter-spacing: -.02em; margin: 8px 0 3px; display: flex; align-items: baseline; gap: 6px; }
 .hero .bal em { font-style: normal; font-size: 18px; font-weight: 600; color: #86868b; }
@@ -130,14 +134,14 @@ svg.i { width: 22px; height: 22px; flex: none; }
 .eye svg { width: 16px; height: 16px; }
 .quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 20px; position: relative; z-index: 1; }
 .quick button { display: flex; flex-direction: column; align-items: center; gap: 7px; font-size: 12px; font-weight: 500; color: #1d1d1f; }
-.quick .qi { width: 52px; height: 52px; border-radius: 15px; background: #faf6ec; color: #8a6d2f; display: flex; align-items: center; justify-content: center; transition: transform .14s; }
+.quick .qi { width: 52px; height: 52px; border-radius: 15px; background: #f4f1fe; color: #612FF6; display: flex; align-items: center; justify-content: center; transition: transform .14s; }
 .quick button:active .qi { transform: scale(.92); }
 .quick .qi svg { width: 24px; height: 24px; }
 
 .accs { display: flex; gap: 12px; overflow-x: auto; padding: 0 16px 4px; scroll-snap-type: x mandatory; scroll-padding: 0 16px; scrollbar-width: none; }
 .accs::-webkit-scrollbar { display: none; }
 .acc { flex: none; width: 150px; padding: 16px; scroll-snap-align: start; border-radius: 16px; }
-.acc .flag { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #fff; margin-bottom: 14px; }
+.acc .flag { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #48484a; margin-bottom: 14px; letter-spacing: .02em; }
 .acc small { font-size: 13px; color: var(--dd-ink-2); }
 .acc b { display: block; font-size: 19px; font-weight: 700; margin-top: 2px; }
 .acc.add { display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--dd-blue); gap: 8px; font-size: 14px; font-weight: 600; background: rgba(255, 255, 255, .6); border: 1.5px dashed rgba(0, 122, 255, .3); box-shadow: none; }
@@ -163,8 +167,8 @@ svg.i { width: 22px; height: 22px; flex: none; }
 .kpi b { display: block; font-size: 22px; font-weight: 700; margin-top: 4px; letter-spacing: -.01em; }
 .kpi em { font-style: normal; font-size: 12px; font-weight: 600; color: var(--dd-green); }
 .bars { display: flex; align-items: flex-end; gap: 8px; height: 110px; padding: 16px 16px 0; }
-.bars div { flex: 1; border-radius: 6px 6px 3px 3px; background: #f4ecd6; transition: height .6s var(--dd-ease); }
-.bars div.on { background: #dcc27f; }
+.bars div { flex: 1; border-radius: 6px 6px 3px 3px; background: #efebfe; transition: height .6s var(--dd-ease); }
+.bars div.on { background: #612FF6; }
 .bars-x { display: flex; gap: 8px; padding: 6px 16px 14px; font-size: 11px; color: var(--dd-ink-3); }
 .bars-x span { flex: 1; text-align: center; }
 .chan { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px; margin-bottom: 22px; }
@@ -175,7 +179,7 @@ svg.i { width: 22px; height: 22px; flex: none; }
 
 /* ---------- 我的 ---------- */
 .me { display: flex; gap: 14px; align-items: center; padding: 16px; margin: 0 16px 22px; }
-.me .av { width: 60px; height: 60px; font-size: 22px; background: #f4e8c8; color: #8a6d2f; }
+.me .av { width: 60px; height: 60px; font-size: 22px; background: #efebfe; color: #612FF6; }
 .me b { font-size: 20px; display: block; }
 .me small { font-size: 13px; color: var(--dd-ink-2); }
 
