@@ -120,7 +120,7 @@ svg.i { width: 22px; height: 22px; flex: none; }
 .amount-box .hint.err { color: var(--dd-red); }
 
 /* ---------- 首页 ---------- */
-.hero { margin: 0 16px 22px; border-radius: 24px; padding: 22px; color: var(--dd-brand-ink); background: url('../assets/img/card-yellow.png') center/cover, linear-gradient(135deg, #FFD008 0%, #FFE164 100%); background-color: #FFD008; box-shadow: 0 10px 30px rgba(255, 196, 0, .28); position: relative; overflow: hidden; }
+.hero { margin: 0 16px 22px; border-radius: 24px; padding: 22px; color: var(--dd-brand-ink); background: linear-gradient(135deg, #FFD008 0%, #FFE164 100%); background-color: #FFD008; box-shadow: 0 10px 30px rgba(255, 196, 0, .28); position: relative; overflow: hidden; }
 .hero::after { content: ""; position: absolute; right: -40px; top: -40px; width: 180px; height: 180px; border-radius: 50%; background: rgba(255, 255, 255, .25); }
 .hero small { font-size: 13px; opacity: .75; font-weight: 500; display: flex; align-items: center; gap: 6px; }
 .hero .bal { font-size: 36px; font-weight: 800; letter-spacing: -.02em; margin: 6px 0 2px; display: flex; align-items: baseline; gap: 6px; }

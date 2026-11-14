@@ -36,6 +36,7 @@
     lang: '<path d="M4 5h9M8.5 3v2M6 5c.5 3 2.5 6 6 7.5M11 5c-.8 4-3.4 7-7 8.5"/><path d="m13 21 4-10 4 10M14.5 17.5h5"/>',
     face: '<path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M9 9v1.5M15 9v1.5M12 9v4h-1M9.5 16a4 4 0 0 0 5 0"/>',
     qr: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 18v3h-3"/>',
+    slider: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h10M18 18h2"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="16" cy="18" r="2"/>',
     refresh: '<path d="M20 11a8 8 0 0 0-14.9-3M4 4v4h4M4 13a8 8 0 0 0 14.9 3M20 20v-4h-4"/>',
     bill: '<path d="M6 2h12a1 1 0 0 1 1 1v19l-3-2-3 2-3-2-3 2V3a1 1 0 0 1 1-1z"/><path d="M9 7h6M9 11h6M9 15h4"/>',
     calc: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M9 6h6"/><path d="M9 11h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M9 19h.01M12 19h.01M15 19h.01"/>'
@@ -178,7 +179,6 @@
       '<div class="sec-h" style="padding:0 20px 8px"><h3>所有余额</h3><a href="#/accounts">管理</a></div>' +
       '<div class="accs" style="margin-bottom:22px">' + S.accounts.map(function (a, i) { return '<button class="card acc" data-go="account/' + i + '" style="text-align:left"><div class="flag" style="background:' + a.c + '">' + a.cur.slice(0, 3) + '</div><small>' + a.name + '</small><b>' + mask((SYM[a.cur] || '') + fmt(a.bal)) + '</b></button>'; }).join('') + '<button class="card acc add" id="h-add">' + ic('plus') + '新增币种</button></div>' +
       riskBanner() +
-      '<div class="promo"><span class="pi">' + ic('globe') + '</span><span style="flex:1"><b>速汇中国 · 微信到账</b><small>欧元直达微信/银行卡，最快 5 分钟</small></span><button class="pill" style="background:#FFD008;color:#382b1b" data-go="send">去付款</button></div>' +
       '<div class="sec" style="margin-bottom:22px"><div class="sec-h"><h3>财税待办</h3><a href="#/tax">全部</a></div>' + taxTodoCard() + '</div>' +
       '<div class="sec"><div class="sec-h"><h3>最近交易</h3><a href="#/tx">查看全部</a></div><div id="h-tx">' + skel(3) + '</div></div>',
       mount: function () {
@@ -202,12 +202,87 @@
       } });
   }
 
+  /* 卡详情：查看 / 操作 / 绑定 Apple Pay */
+  R.card = function (idx) {
+    var cards = window.DDCards ? DDCards.load() : [];
+    var c = cards[+idx];
+    if (!c) return R.notfound();
+    var subs = window.DDSubs ? DDSubs.load() : [];
+    var sub = subs.filter(function (x) { return x.id === c.sub; })[0];
+    var owner = window.DDTeam ? DDTeam.name(c.owner) : '';
+    return { html: nav('卡详情') +
+      '<div style="padding:12px 16px 0"><div class="card" style="padding:20px;background:linear-gradient(135deg,#382b1b,#1f2937);color:#fff;border:0">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center"><small style="opacity:.7">Dingdang ' + (c.type === 'offline' ? '线下消费卡' : '线上付款卡') + '</small><b>' + c.brand + '</b></div>' +
+      '<p style="font-size:22px;font-weight:800;letter-spacing:2px;margin:18px 0 6px;font-family:monospace">' + esc(c.no) + '</p>' +
+      '<div style="display:flex;justify-content:space-between;font-size:12px;opacity:.75"><span>' + esc(owner || '未关联') + '</span><span>' + (c.frozen ? '已冻结' : '正常') + '</span></div></div></div>' +
+      '<div class="kpis" style="grid-template-columns:1fr 1fr"><div class="card kpi"><small>可用余额</small><b>€' + fmt(cardAvail(c, subs)) + '</b><em style="color:var(--dd-ink-2)">' + esc(sub ? sub.name : '') + '</em></div><div class="card kpi"><small>月限额</small><b>€' + fmt(c.limit, 0) + '</b><em style="color:var(--dd-ink-2)">单卡月度</em></div></div>' +
+      '<div class="cap">卡操作</div><div class="list">' +
+      '<button class="row" id="cd-apple"><span class="ri" style="background:#000">' + ic('card') + '</span><span class="rt"><b>添加到 Apple Pay</b><small>线下消费卡可绑，手机感应支付</small></span>' + CHEV + '</button>' +
+      '<button class="row" id="cd-limit"><span class="ri" style="background:#FF9500">' + ic('slider') + '</span><span class="rt"><b>调整月限额</b><small>当前 €' + fmt(c.limit, 0) + '</small></span>' + CHEV + '</button>' +
+      '<button class="row" id="cd-frz"><span class="ri" style="background:' + (c.frozen ? '#34C759' : '#FF3B30') + '">' + ic('shield') + '</span><span class="rt"><b>' + (c.frozen ? '解冻卡片' : '冻结卡片') + '</b><small>' + (c.frozen ? '解冻后立即可用' : '冻结期间无法消费') + '</small></span>' + CHEV + '</button></div>' +
+      '<div class="cap" style="margin-top:18px">近期卡交易</div><div class="list plain">' +
+      '<div class="row"><span class="rt"><b>Google Ads</b><small>11-12 08:05</small></span><span class="rv neg">−€1,120.00</span></div>' +
+      '<div class="row"><span class="rt"><b>Amazon Web Services</b><small>11-11 18:33</small></span><span class="rv neg">−€2,340.00</span></div>' +
+      '<div class="row"><span class="rt"><b>Meta Platforms</b><small>11-08 13:56</small></span><span class="rv neg">−€864.20</span></div></div>',
+      mount: function () {
+        function save() { var l = DDCards.load(); l[+idx] = c; DDCards.save(l); }
+        $('#cd-apple').onclick = function () {
+          if (c.type !== 'offline') { toast('仅线下消费卡支持绑定 Apple Pay', 'error'); return; }
+          if (c.frozen) { toast('卡片已冻结，无法绑定', 'error'); return; }
+          DDUI.confirm('添加到 Apple Pay', '将卡 ··' + String(c.no).slice(-4) + ' 添加至 Apple 钱包？', function () {
+            DDUI.toast('已发送至 Apple 钱包，请在手机完成验证', 'success');
+          }, '添加');
+        };
+        $('#cd-limit').onclick = function () {
+          DDUI.modal({ title: '调整月限额', width: 380,
+            body: '<div class="ddui-field"><label class="ddui-label">月限额（EUR）</label><input class="ddui-input" id="cl-v" type="number" min="1" value="' + c.limit + '"/></div>',
+            actions: [{ text: '取消' }, { text: '保存', type: 'primary', onClick: function (close, body) {
+              var v = parseFloat(body.querySelector('#cl-v').value);
+              if (!(v > 0)) { DDUI.toast('请输入有效金额', 'error'); return; }
+              c.limit = v; save(); close(); DDUI.toast('限额已调整', 'success'); render();
+            } }] });
+        };
+        $('#cd-frz').onclick = function () {
+          DDUI.confirm(c.frozen ? '解冻卡片' : '冻结卡片', c.frozen ? '解冻后卡片立即可用于消费。' : '冻结期间卡片无法消费，可随时解冻。', function () {
+            c.frozen = !c.frozen; save(); DDUI.toast(c.frozen ? '已冻结' : '已解冻', 'success'); render();
+          }, c.frozen ? '解冻' : '冻结');
+        };
+      } };
+  };
+
+  /* 内部转账：子账户间即时划转 */
+  R.internal = function () {
+    var subs = window.DDSubs ? DDSubs.load() : [];
+    return { html: nav('内部转账') + '<div style="padding:8px 16px"><div class="list">' +
+      '<label class="row"><span class="rt"><b>从</b></span><select class="rv" id="it-from" style="border:0;background:transparent;font-size:15px;text-align:right;outline:none">' + subs.map(function (x) { return '<option value="' + x.id + '">' + esc(x.name) + '（' + x.cur + ' ' + fmt(x.bal) + '）'; }).join('') + '</select></label>' +
+      '<label class="row"><span class="rt"><b>到</b></span><select class="rv" id="it-to" style="border:0;background:transparent;font-size:15px;text-align:right;outline:none">' + subs.map(function (x) { return '<option value="' + x.id + '">' + esc(x.name) + '（' + x.cur + '）'; }).join('') + '</select></label>' +
+      '</div><div class="amount-box"><span class="cur">金额（EUR）</span><input id="it-amt" type="number" inputmode="decimal" placeholder="0.00" style="font-size:40px;font-weight:800;text-align:center;border:0;background:transparent;outline:none;width:100%;box-shadow:none"/></div>' +
+      '<p class="foot-note" style="text-align:center">子账户之间即时到账 · 无手续费</p>' +
+      '<button class="btn pri" id="it-go" style="width:100%">确认转账</button></div>',
+      mount: function () {
+        $('#it-go').onclick = function () {
+          var f = $('#it-from').value, t = $('#it-to').value, amt = parseFloat($('#it-amt').value);
+          if (f === t) { toast('转出与转入账户不能相同', 'error'); return; }
+          if (!(amt > 0)) { toast('请输入金额', 'error'); return; }
+          var l = DDSubs.load();
+          var from = l.filter(function (x) { return x.id === f; })[0];
+          if (from.bal < amt) { toast('余额不足', 'error'); return; }
+          from.bal -= amt;
+          l.filter(function (x) { return x.id === t; })[0].bal += amt;
+          DDSubs.save(l);
+          DDUI.toast('转账成功，已即时到账', 'success');
+          history.back();
+        };
+      } };
+  };
+
   R.accounts = function () {
     return { html: '<div class="large-ttl"><h1>账户</h1><button class="icon-btn" aria-label="新增币种" id="a-add">' + ic('plus') + '</button></div>' +
       '<div class="cap">资产 ' + S.accounts.length + ' 个</div><div class="list" style="margin-bottom:22px">' + S.accounts.map(function (a, i) {
         return '<button class="row" data-go="account/' + i + '"><span class="av" style="background:' + a.c + ';color:#fff;font-size:11px">' + a.cur.slice(0, 3) + '</span><span class="rt"><b>' + a.name + '</b><small>' + esc(a.iban) + '</small></span><span class="rv neg">' + mask((SYM[a.cur] || '') + fmt(a.bal)) + '</span>' + CHEV + '</button>';
       }).join('') + '</div>' +
       '<div class="cap">账户管理</div><div class="list">' +
+      '<button class="row" data-go="internal"><span class="ri" style="background:#0A84FF">' + ic('swap') + '</span><span class="rt"><b>内部转账</b><small>子账户之间即时划转</small></span>' + CHEV + '</button>' +
       '<button class="row" data-go="receive"><span class="ri" style="background:#34C759">' + ic('down') + '</span><span class="rt"><b>收款</b></span>' + CHEV + '</button>' +
       '<button class="row" data-go="tx"><span class="ri" style="background:#FF9500">' + ic('doc') + '</span><span class="rt"><b>交易记录</b></span>' + CHEV + '</button>' +
       '<button class="row" data-go="paylink"><span class="ri" style="background:#007AFF">' + ic('link') + '</span><span class="rt"><b>收款链接</b></span>' + CHEV + '</button>' +
@@ -542,18 +617,8 @@
           el.innerHTML = '<div class="card" style="margin:8px 16px 14px;padding:18px"><small style="color:var(--dd-ink-2)">卡可用余额合计（EUR）</small><div style="font-size:30px;font-weight:800;letter-spacing:-.02em;margin-top:4px">' + mask('€' + fmt(total)) + '</div><small style="color:var(--dd-ink-2)">' + cards.length + ' 张卡 · ' + cards.filter(function (c) { return c.frozen; }).length + ' 张冻结</small></div>' +
             '<div class="list">' + cards.map(function (c) {
               var sub = subs.filter(function (x) { return x.id === c.sub; })[0];
-              return '<div class="row"><span class="ri" style="background:' + (c.frozen ? '#8E8E93' : '#5856D6') + '">' + ic('card') + '</span><span class="rt"><b>·· ' + String(c.no || '').slice(-4) + (c.frozen ? ' <span class="pill fail" style="margin-left:6px">已冻结</span>' : '') + '</b><small>' + esc(sub ? sub.name : c.sub) + ' · 月限额 €' + fmt(c.limit, 0) + ' · 可用 €' + fmt(cardAvail(c, subs)) + '</small></span><button class="pill ' + (c.frozen ? '' : 'fail') + '" data-frz="' + esc(c.no) + '">' + (c.frozen ? '解冻' : '冻结') + '</button></div>';
+              return '<button class="row" data-go="card/' + cards.indexOf(c) + '"><span class="ri" style="background:' + (c.frozen ? '#8E8E93' : '#5856D6') + '">' + ic('card') + '</span><span class="rt"><b>·· ' + String(c.no || '').slice(-4) + (c.frozen ? ' <span class="pill fail" style="margin-left:6px">已冻结</span>' : '') + '</b><small>' + esc(sub ? sub.name : c.sub) + ' · 可用 €' + fmt(cardAvail(c, subs)) + '</small></span>' + CHEV + '</button>';
             }).join('') + '</div>';
-          el.querySelectorAll('[data-frz]').forEach(function (b) {
-            b.onclick = function () {
-              var c = DDCards.load().filter(function (x) { return x.no === b.dataset.frz; })[0];
-              if (!c) return;
-              DDUI.confirm(c.frozen ? '解冻卡片' : '冻结卡片', c.frozen ? '解冻后卡片立即可用于消费。' : '冻结期间卡片无法消费，可随时解冻。', function () {
-                var l = DDCards.load(); l.forEach(function (x) { if (x.no === c.no) x.frozen = !x.frozen; });
-                DDCards.save(l); toast(c.frozen ? '卡片已解冻' : '卡片已冻结', 'success'); draw();
-              }, c.frozen ? '解冻' : '冻结');
-            };
-          });
         }
         $('#cd-add').onclick = function () { toast('请在 Web 客户端提交开卡申请', 'info'); };
         draw();
