@@ -84,7 +84,7 @@
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
   /* ---------- 路由 ---------- */
-  var TABS = [['home', '首页', 'home'], ['accounts', '账户', 'wallet'], ['pay', '付款', 'send'], ['acquire', '收单', 'store'], ['me', '我的', 'user']];
+  var TABS = [['home', '首页', 'home'], ['accounts', '账户', 'wallet'], ['cards', '卡', 'card'], ['messages', '消息', 'bell'], ['me', '我的', 'user']];
   var view = $('#view'), tabbar = $('#tabbar'), hist = [];
   tabbar.innerHTML = TABS.map(function (t) { return '<a href="#/' + t[0] + '" data-tab="' + t[0] + '"><span class="tb-ic">' + ic(t[2]) + '</span>' + t[1] + '</a>'; }).join('');
 
@@ -174,8 +174,8 @@
     var unread = S.notes.filter(function (n) { return n.unread; }).length;
     return { html: '<div class="large-ttl"><h1>首页</h1><span style="display:flex;gap:10px"><button class="icon-btn" aria-label="扫一扫" id="h-scan">' + ic('scan') + '</button><button class="icon-btn" aria-label="通知" data-go="notifications">' + ic('bell') + (unread ? '<i class="dot"></i>' : '') + '</button></span></div>' +
       '<div class="hero"><small>总资产估值 (EUR) <button class="eye" id="h-eye" aria-label="显示/隐藏余额">' + ic(S.hide ? 'eyeoff' : 'eye') + '</button></small><div class="bal">' + (S.hide ? '••••••' : '<em>€</em>' + fmt(total())) + '</div><div class="chg">' + L('今日 ') + '+€1,284.20 · +1.4%</div>' +
-      '<div class="quick"><button data-go="send"><span class="qi">' + ic('send') + '</span>付款</button><button data-go="receive"><span class="qi">' + ic('down') + '</span>收款</button><button data-go="exchange"><span class="qi">' + ic('swap') + '</span>换汇</button><button data-go="paylink"><span class="qi">' + ic('link') + '</span>收款链接</button></div></div>' +
-      '<div class="sec-h" style="padding:0 20px 8px"><h3>我的账户</h3><a href="#/accounts">全部</a></div>' +
+      '<div class="quick"><button data-go="send"><span class="qi">' + ic('send') + '</span>转账</button><button data-go="receive"><span class="qi">' + ic('down') + '</span>收款</button><button data-go="exchange"><span class="qi">' + ic('swap') + '</span>换汇</button><button data-go="paylink"><span class="qi">' + ic('link') + '</span>收款链接</button></div></div>' +
+      '<div class="sec-h" style="padding:0 20px 8px"><h3>所有余额</h3><a href="#/accounts">管理</a></div>' +
       '<div class="accs" style="margin-bottom:22px">' + S.accounts.map(function (a, i) { return '<button class="card acc" data-go="account/' + i + '" style="text-align:left"><div class="flag" style="background:' + a.c + '">' + a.cur.slice(0, 3) + '</div><small>' + a.name + '</small><b>' + mask((SYM[a.cur] || '') + fmt(a.bal)) + '</b></button>'; }).join('') + '<button class="card acc add" id="h-add">' + ic('plus') + '新增币种</button></div>' +
       riskBanner() +
       '<div class="promo"><span class="pi">' + ic('globe') + '</span><span style="flex:1"><b>速汇中国 · 微信到账</b><small>欧元直达微信/银行卡，最快 5 分钟</small></span><button class="pill" style="background:#FFD008;color:#382b1b" data-go="send">去付款</button></div>' +
@@ -207,9 +207,11 @@
       '<div class="cap">资产 ' + S.accounts.length + ' 个</div><div class="list" style="margin-bottom:22px">' + S.accounts.map(function (a, i) {
         return '<button class="row" data-go="account/' + i + '"><span class="av" style="background:' + a.c + ';color:#fff;font-size:11px">' + a.cur.slice(0, 3) + '</span><span class="rt"><b>' + a.name + '</b><small>' + esc(a.iban) + '</small></span><span class="rv neg">' + mask((SYM[a.cur] || '') + fmt(a.bal)) + '</span>' + CHEV + '</button>';
       }).join('') + '</div>' +
-      '<div class="cap">管理</div><div class="list">' +
-      '<button class="row" data-go="cards"><span class="ri" style="background:#5856D6">' + ic('card') + '</span><span class="rt"><b>银行卡</b></span>' + CHEV + '</button>' +
+      '<div class="cap">账户管理</div><div class="list">' +
+      '<button class="row" data-go="receive"><span class="ri" style="background:#34C759">' + ic('down') + '</span><span class="rt"><b>收款</b></span>' + CHEV + '</button>' +
       '<button class="row" data-go="tx"><span class="ri" style="background:#FF9500">' + ic('doc') + '</span><span class="rt"><b>交易记录</b></span>' + CHEV + '</button>' +
+      '<button class="row" data-go="paylink"><span class="ri" style="background:#007AFF">' + ic('link') + '</span><span class="rt"><b>收款链接</b></span>' + CHEV + '</button>' +
+      '<button class="row" data-go="acquire"><span class="ri" style="background:#FF6482">' + ic('store') + '</span><span class="rt"><b>收单</b></span>' + CHEV + '</button>' +
       '<button class="row" data-go="exchange"><span class="ri" style="background:#AF52DE">' + ic('swap') + '</span><span class="rt"><b>货币兑换</b></span>' + CHEV + '</button>' +
       '<button class="row" data-go="tax"><span class="ri" style="background:#00B7EC">' + ic('doc') + '</span><span class="rt"><b>税务申报</b></span>' + CHEV + '</button>' +
       '<button class="row" data-go="invoices"><span class="ri" style="background:#FF8106">' + ic('bill') + '</span><span class="rt"><b>营收发票</b></span>' + CHEV + '</button></div>',
@@ -460,6 +462,19 @@
       } };
   };
 
+  R.messages = function () {
+    var unread = S.notes.filter(function (n) { return n.unread; }).length;
+    return { html: '<div class="large-ttl"><h1>消息' + (unread ? ' <span class="pill fail" style="font-size:11px;vertical-align:3px">' + unread + ' 未读</span>' : '') + '</h1></div><div id="msg-list"></div>',
+      mount: function () {
+        var el = $('#msg-list');
+        if (!S.notes.length) { stateBox(el, 'empty', { title: '暂无消息', text: '交易与安全提醒会显示在这里' }); return; }
+        el.innerHTML = '<div class="list" style="margin-bottom:22px">' + S.notes.map(function (n) {
+          return '<div class="row"><span class="ri" style="background:' + (n.t === '安全提醒' ? '#FF3B30' : '#FFD008') + ';color:' + (n.t === '安全提醒' ? '#fff' : '#382b1b') + '">' + ic(n.t === '安全提醒' ? 'shield' : 'bell') + '</span><span class="rt"><b>' + (n.unread ? '<i style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--dd-blue);margin-right:6px;vertical-align:2px"></i>' : '') + n.t + '</b><small style="white-space:normal">' + esc(n.d) + '</small></span><span class="rv" style="font-size:12px;align-self:flex-start">' + n.time + '</span></div>';
+        }).join('') + '</div><div style="padding:0 16px 22px"><button class="btn tint" id="msg-read">全部已读</button></div>';
+        var b = $('#msg-read'); if (b) b.onclick = function () { S.notes.forEach(function (n) { n.unread = false; }); save(); render(); };
+      } };
+  };
+
   R.notifications = function () {
     return { html: nav('通知', '<button id="nt-all">全部已读</button>') + '<div id="nt"></div>',
       mount: function () {
@@ -477,7 +492,7 @@
   R.me = function () {
     function row(go, col, icon, t, v) { return '<button class="row" data-go="' + go + '"><span class="ri" style="background:' + col + '">' + ic(icon) + '</span><span class="rt"><b>' + t + '</b></span>' + (v ? '<span class="rv" style="font-size:15px">' + v + '</span>' : '') + CHEV + '</button>'; }
     return { html: '<div class="large-ttl"><h1>我的</h1></div><div class="card me"><span class="av">F</span><span style="flex:1"><b>Flash Commerce srl</b><small>demo@dingdangpay.com</small><br/><span class="pill ok" style="margin-top:6px">' + ic('shield').replace('class="i ', 'style="width:12px;height:12px" class="i ') + 'KYB 已认证</span></span></div>' +
-      '<div class="list" style="margin-bottom:22px">' + row('recipients', '#007AFF', 'users', '收款人') + row('cards', '#5856D6', 'card', '虚拟卡') + row('tx', '#FF9500', 'doc', '交易记录') + row('tax', '#00B7EC', 'calc', '税务申报') + row('invoices', '#FF8106', 'bill', '营收发票') + row('risk', '#FF3B30', 'shield', '风控中心') + '</div>' +
+      '<div class="list" style="margin-bottom:22px">' + row('recipients', '#007AFF', 'users', '收款人') + row('tx', '#FF9500', 'doc', '交易记录') + row('tax', '#00B7EC', 'calc', '税务申报') + row('invoices', '#FF8106', 'bill', '营收发票') + row('risk', '#FF3B30', 'shield', '风控中心') + '</div>' +
       '<div class="list" style="margin-bottom:22px">' + row('security', '#34C759', 'shield', '安全中心') + row('settings', '#8E8E93', 'gear', '通用设置') + row('help', '#FF2D55', 'help', '帮助与客服') + '</div>' +
       '<div class="list"><button class="row" id="me-out"><span class="ri" style="background:#FF3B30">' + ic('logout') + '</span><span class="rt"><b style="color:var(--dd-red)">退出登录</b></span></button></div><p class="foot-note" style="text-align:center;margin-top:18px">叮当支付 v3.2.0 · MFSA & FCA 持牌</p>',
       mount: function () { $('#me-out').onclick = function () { DDUI.confirm('退出登录', '退出后需重新验证身份才能使用。', function () { S.authed = false; save(); hist = []; go('welcome'); }, '退出'); }; } };
@@ -516,7 +531,7 @@
     return c.frozen ? 0 : Math.min(c.limit, bal);
   }
   R.cards = function () {
-    return { html: nav('虚拟卡', '<button id="cd-add">开卡</button>') + '<div id="cd"></div>',
+    return { html: '<div class="large-ttl"><h1>卡</h1><button class="icon-btn" id="cd-add" aria-label="开卡">' + ic('plus') + '</button></div><div id="cd"></div>',
       mount: function () {
         function draw() {
           var el = $('#cd'); if (!el) return;
