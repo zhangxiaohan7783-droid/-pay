@@ -230,3 +230,7 @@ svg.i { width: 22px; height: 22px; flex: none; }
 /* 列表行不缩放，仅高亮 */
 .row:active:not(:disabled) { transform: none; }
 .copy:active, .pill:active { transform: scale(.94); }
+
+/* 金额等宽数字（Airwallex 风） */
+.hero .bal, .acc b, .row .rv, .kpi b, .amount-box input { font-variant-numeric: tabular-nums; }
+.acc .flag img, .row .av img { display: block; }

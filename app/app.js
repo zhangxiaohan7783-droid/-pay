@@ -78,6 +78,15 @@
   var SYM = { EUR: '€', USD: '$', GBP: '£', CNY: '¥', USDT: '₮' };
   var RATE = { EUR: 1, USD: 1.09, GBP: .86, CNY: 7.82, USDT: 1.09 };
   function fmt(n, d) { return Number(n).toLocaleString('en-US', { minimumFractionDigits: d == null ? 2 : d, maximumFractionDigits: d == null ? 2 : d }); }
+  /* 币种国旗（flagcdn 圆形图标；USDT 用文字符号） */
+  var CC = { EUR: 'eu', USD: 'us', GBP: 'gb', CNY: 'cn', CHF: 'ch', HKD: 'hk', SGD: 'sg', JPY: 'jp' };
+  function ddFlagImg(cur, size) {
+    if (cur === 'USDT') return '<span style="font-size:15px;font-weight:700;color:#26A17B">₮</span>';
+    var cc = CC[cur];
+    if (!cc) return '<span style="font-size:11px;font-weight:700;color:#48484a">' + cur.slice(0, 2) + '</span>';
+    return '<img src="https://flagcdn.com/w80/' + cc + '.png" alt="' + cur + '" style="width:' + size + 'px;height:' + size + 'px;object-fit:cover;border-radius:50%"/>';
+  }
+
   function money(n, cur) { return (n < 0 ? '−' : '') + (SYM[cur] || '') + fmt(Math.abs(n)); }
   function mask(s) { return S.hide ? '••••••' : s; }
   function total() { return S.accounts.reduce(function (a, x) { return a + x.bal / RATE[x.cur]; }, 0); }
@@ -177,7 +186,7 @@
       '<div class="hero"><small>总资产估值 (EUR) <button class="eye" id="h-eye" aria-label="显示/隐藏余额">' + ic(S.hide ? 'eyeoff' : 'eye') + '</button></small><div class="bal">' + (S.hide ? '••••••' : '<em>€</em>' + fmt(total())) + '</div><div class="chg">' + L('今日 ') + '+€1,284.20 · +1.4%</div>' +
       '<div class="quick"><button data-go="send"><span class="qi">' + ic('send') + '</span>转账</button><button data-go="receive"><span class="qi">' + ic('down') + '</span>收款</button><button data-go="exchange"><span class="qi">' + ic('swap') + '</span>换汇</button><button data-go="paylink"><span class="qi">' + ic('link') + '</span>收款链接</button></div></div>' +
       '<div class="sec-h" style="padding:0 20px 8px"><h3>所有余额</h3><a href="#/accounts">管理</a></div>' +
-      '<div class="accs" style="margin-bottom:22px">' + S.accounts.map(function (a, i) { return '<button class="card acc" data-go="account/' + i + '" style="text-align:left"><div class="flag" style="background:#f5f5f7;font-size:17px">' + ({EUR:"EU",USD:"US",GBP:"GB",CNY:"CN",USDT:"₮",CHF:"CH",HKD:"HK",SGD:"SG",JPY:"JP"}[a.cur]||a.cur.slice(0,2)) + '</div><small>' + a.name + '</small><b>' + mask((SYM[a.cur] || '') + fmt(a.bal)) + '</b></button>'; }).join('') + '<button class="card acc add" id="h-add">' + ic('plus') + '新增币种</button></div>' +
+      '<div class="accs" style="margin-bottom:22px">' + S.accounts.map(function (a, i) { return '<button class="card acc" data-go="account/' + i + '" style="text-align:left"><div class="flag" style="background:#f5f5f7;overflow:hidden;padding:0">' + ddFlagImg(a.cur, 32) + '<span style="display:none">' + ((window.DDFlags||{})[a.cur]||a.cur.slice(0,2)) + '</span></div><small>' + a.name + '</small><b>' + mask((SYM[a.cur] || '') + fmt(a.bal)) + '</b></button>'; }).join('') + '<button class="card acc add" id="h-add">' + ic('plus') + '新增币种</button></div>' +
       riskBanner() +
       '<div class="sec" style="margin-bottom:22px"><div class="sec-h"><h3>财税待办</h3><a href="#/tax">全部</a></div>' + taxTodoCard() + '</div>' +
       '<div class="sec"><div class="sec-h"><h3>最近交易</h3><a href="#/tx">查看全部</a></div><div id="h-tx">' + skel(3) + '</div></div>',
@@ -217,6 +226,7 @@
       '<div style="display:flex;justify-content:space-between;font-size:12px;opacity:.75"><span>' + esc(owner || '未关联') + '</span><span>' + (c.frozen ? '已冻结' : '正常') + '</span></div></div></div>' +
       '<div class="kpis" style="grid-template-columns:1fr 1fr"><div class="card kpi"><small>可用余额</small><b>€' + fmt(cardAvail(c, subs)) + '</b><em style="color:var(--dd-ink-2)">' + esc(sub ? sub.name : '') + '</em></div><div class="card kpi"><small>月限额</small><b>€' + fmt(c.limit, 0) + '</b><em style="color:var(--dd-ink-2)">单卡月度</em></div></div>' +
       '<div class="cap">卡操作</div><div class="list">' +
+      '<button class="row" id="cd-view"><span class="ri" style="background:#612FF6">' + ic('eye') + '</span><span class="rt"><b>查看卡信息</b><small>完整卡号 / 有效期 / CVV，需双重验证</small></span>' + CHEV + '</button>' +
       '<button class="row" id="cd-apple"><span class="ri" style="background:#000">' + ic('card') + '</span><span class="rt"><b>添加到 Apple Pay</b><small>线下消费卡可绑，手机感应支付</small></span>' + CHEV + '</button>' +
       '<button class="row" id="cd-limit"><span class="ri" style="background:#FF9500">' + ic('slider') + '</span><span class="rt"><b>调整月限额</b><small>当前 €' + fmt(c.limit, 0) + '</small></span>' + CHEV + '</button>' +
       '<button class="row" id="cd-frz"><span class="ri" style="background:' + (c.frozen ? '#34C759' : '#FF3B30') + '">' + ic('shield') + '</span><span class="rt"><b>' + (c.frozen ? '解冻卡片' : '冻结卡片') + '</b><small>' + (c.frozen ? '解冻后立即可用' : '冻结期间无法消费') + '</small></span>' + CHEV + '</button></div>' +
@@ -226,6 +236,26 @@
       '<div class="row"><span class="rt"><b>Meta Platforms</b><small>11-08 13:56</small></span><span class="rv neg">−€864.20</span></div></div>',
       mount: function () {
         function save() { var l = DDCards.load(); l[+idx] = c; DDCards.save(l); }
+        $('#cd-view').onclick = function () {
+          var full = '5312 7788 4410 ' + String(c.no).slice(-4);
+          DDUI.modal({ title: '安全验证', width: 380,
+            body: '<p style="font-size:13px;color:#86868b;margin-bottom:14px">查看完整卡信息需要邮箱验证码 + 验证器动态码双重验证</p>' +
+            '<div class="ddui-field"><label class="ddui-label">邮箱验证码</label><div style="display:flex;gap:8px"><input class="ddui-input" id="cv-em" placeholder="发送至 demo@dingdangpay.com（演示码 888888）" style="flex:1"/><button class="pill" style="background:#efebfe;color:#612FF6;padding:0 14px" id="cv-send">发送</button></div></div>' +
+            '<div class="ddui-field"><label class="ddui-label">验证器动态码</label><input class="ddui-input" id="cv-2fa" placeholder="6 位动态码（演示 888888）"/></div>',
+            actions: [{ text: '取消' }, { text: '验证并查看', type: 'primary', onClick: function (close, body) {
+              var em = body.querySelector('#cv-em').value.trim(), tf = body.querySelector('#cv-2fa').value.trim();
+              if (em !== '888888' || tf !== '888888') { DDUI.toast('验证码错误', 'error'); return; }
+              close();
+              DDUI.modal({ title: '卡信息', width: 380,
+                body: '<div class="ddui-kv"><span>卡号</span><b class="font-mono">' + full + '</b></div>' +
+                '<div class="ddui-kv"><span>有效期</span><b class="font-mono">12 / 29</b></div>' +
+                '<div class="ddui-kv"><span>CVV</span><b class="font-mono">8 8 4</b></div>' +
+                '<p class="text-xs" style="color:#86868b;margin-top:12px">卡信息已脱敏存储，本次查看已记录审计日志</p>' });
+            } }],
+            onOpen: function (body) {
+              body.querySelector('#cv-send').onclick = function () { DDUI.toast('验证码已发送至邮箱（演示码 888888）', 'success'); };
+            } });
+        };
         $('#cd-apple').onclick = function () {
           if (c.type !== 'offline') { toast('仅线下消费卡支持绑定 Apple Pay', 'error'); return; }
           if (c.frozen) { toast('卡片已冻结，无法绑定', 'error'); return; }
@@ -279,7 +309,7 @@
   R.accounts = function () {
     return { html: '<div class="large-ttl"><h1>账户</h1><button class="icon-btn" aria-label="新增币种" id="a-add">' + ic('plus') + '</button></div>' +
       '<div class="cap">资产 ' + S.accounts.length + ' 个</div><div class="list" style="margin-bottom:22px">' + S.accounts.map(function (a, i) {
-        return '<button class="row" data-go="account/' + i + '"><span class="av" style="background:#f5f5f7;font-size:19px">' + ({EUR:"EU",USD:"US",GBP:"GB",CNY:"CN",USDT:"₮",CHF:"CH",HKD:"HK",SGD:"SG",JPY:"JP"}[a.cur]||a.cur.slice(0,2)) + '</span><span class="rt"><b>' + a.name + '</b><small>' + esc(a.iban) + '</small></span><span class="rv neg">' + mask((SYM[a.cur] || '') + fmt(a.bal)) + '</span>' + CHEV + '</button>';
+        return '<button class="row" data-go="account/' + i + '"><span class="av" style="background:#f5f5f7;overflow:hidden;padding:0">' + ddFlagImg(a.cur, 40) + '<span style="display:none">' + ((window.DDFlags||{})[a.cur]||a.cur.slice(0,2)) + '</span></span><span class="rt"><b>' + a.name + '</b><small>' + esc(a.iban) + '</small></span><span class="rv neg">' + mask((SYM[a.cur] || '') + fmt(a.bal)) + '</span>' + CHEV + '</button>';
       }).join('') + '</div>' +
       '<div class="cap">账户管理</div><div class="list">' +
       '<button class="row" data-go="internal"><span class="ri" style="background:#0A84FF">' + ic('swap') + '</span><span class="rt"><b>内部转账</b><small>子账户之间即时划转</small></span>' + CHEV + '</button>' +
