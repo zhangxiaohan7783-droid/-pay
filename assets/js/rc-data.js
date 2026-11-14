@@ -50,10 +50,22 @@
     config_edit:   ['head', 'admin']
   };
 
+  /* 权限矩阵覆盖配置（角色权限配置中心可视化修改，存 dd-rc-acl-override） */
+  var OVR_KEY = 'dd-rc-acl-override-v1';
+  function overrides() { try { return JSON.parse(localStorage.getItem(OVR_KEY) || '{}'); } catch (e) { return {}; } }
+  function saveOverrides(o) { try { localStorage.setItem(OVR_KEY, JSON.stringify(o)); } catch (e) {} }
+  function actRoles(act) { var o = overrides(); return o['act:' + act] || ACT_ACL[act] || []; }
+  function menuRoles(page) { var o = overrides(); return o['menu:' + page] || MENU_ACL[page] || []; }
+  function setActRoles(act, roles) { var o = overrides(); o['act:' + act] = roles; saveOverrides(o); }
+  function setMenuRoles(page, roles) { var o = overrides(); o['menu:' + page] = roles; saveOverrides(o); }
+  function resetOverrides() { try { localStorage.removeItem(OVR_KEY); } catch (e) {} }
+
   function role() { var r = localStorage.getItem(ROLE_KEY); return ROLES[r] ? r : 'admin'; }
   function setRole(r) { if (ROLES[r]) { localStorage.setItem(ROLE_KEY, r); log('切换角色', '系统', '当前角色 → ' + ROLES[r].name); location.reload(); } }
-  function can(act) { return (ACT_ACL[act] || []).indexOf(role()) > -1; }
-  function canMenu(page) { return (MENU_ACL[page] || []).indexOf(role()) > -1; }
+  /* 超管仅系统配置维护，禁止日常业务操作（PRD §3） */
+  var ADMIN_FORBID = ['kyc_edit', 'edd_review', 'edd_approve', 'alert_handle', 'alert_assign', 'screen_mark', 'control_apply', 'control_lift', 'str_draft', 'str_submit'];
+  function can(act) { var r = role(); if (r === 'admin' && ADMIN_FORBID.indexOf(act) > -1) return false; return actRoles(act).indexOf(r) > -1; }
+  function canMenu(page) { return menuRoles(page).indexOf(role()) > -1; }
   function readonly() { return role() === 'auditor'; }
 
   /* ================= 审计日志（只增不删） ================= */
@@ -293,6 +305,7 @@
 
   window.RC = {
     ROLES: ROLES, role: role, setRole: setRole, can: can, canMenu: canMenu, readonly: readonly,
+    MENU_ACL: MENU_ACL, ACT_ACL: ACT_ACL, actRoles: actRoles, menuRoles: menuRoles, setActRoles: setActRoles, setMenuRoles: setMenuRoles, resetOverrides: resetOverrides,
     audit: audit, log: log,
     merchants: merchants, saveMerchants: saveMerchants, merchant: merchant, LEVELS: LEVELS,
     alerts: alerts, saveAlerts: saveAlerts, ALT_STATUS: ALT_STATUS,

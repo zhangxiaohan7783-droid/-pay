@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>角色权限配置中心 - 叮当支付内部运营后台</title>
+<script src="../assets/vendor/tailwindcss.js"></script>
+<script src="../assets/vendor/iconify-icon.min.js"></script>
+<style>
+body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #382b1b; background-color: #f5f4f0; }
+.custom-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
+.rounded-8 { border-radius: 8px; }
+</style>
+<link rel="stylesheet" href="../assets/css/apple.css" data-dd-apple="1"/>
+</head>
+<body class="bg-gray-50">
+<div class="flex min-h-screen">
+<style>
+.ad-sidenav-link{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;color:#9ca3af;font-size:14px;line-height:1.4;transition:background .15s,color .15s;text-decoration:none}
+.ad-sidenav-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.ad-sidenav-active,.ad-sidenav-active:hover{background:#FFD008;color:#382b1b;font-weight:600}
+.ad-sidenav-sec{padding:16px 12px 6px;font-size:11px;font-weight:600;color:#6b7280;letter-spacing:.05em}
+.ad-noscroll{scrollbar-width:none;-ms-overflow-style:none}
+.ad-noscroll::-webkit-scrollbar{display:none}
+</style>
+<aside class="w-64 flex-none hidden lg:flex flex-col" id="sidebar" style="background:#241d12"><div class="p-6 flex items-center space-x-3"><a class="flex items-center space-x-3" href="index.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="../assets/img/logo-h-rev.png"/></a></div><div class="flex-1 overflow-y-auto px-4 py-2 ad-noscroll"><nav class="space-y-1"><a class="ad-sidenav-link" href="index.html"><iconify-icon class="text-xl" icon="solar:widget-bold"></iconify-icon><span>运营总览</span></a><div class="ad-sidenav-sec">平台运营</div><a class="ad-sidenav-link" href="op-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>平台运营总看板</span></a><a class="ad-sidenav-link" href="op-customers.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>客户主体总览</span></a><a class="ad-sidenav-link" href="op-channels.html"><iconify-icon class="text-xl" icon="solar:globus-bold"></iconify-icon><span>渠道管理</span></a><a class="ad-sidenav-link ad-sidenav-active" href="op-roles.html"><iconify-icon class="text-xl" icon="solar:lock-password-bold"></iconify-icon><span>角色权限配置</span></a><a class="ad-sidenav-link" href="op-export.html"><iconify-icon class="text-xl" icon="solar:download-square-bold"></iconify-icon><span>监管数据包导出</span></a><div class="ad-sidenav-sec">客户与开户</div><div class="ad-sidenav-sec">个人开户管理</div><a class="ad-sidenav-link" href="ob-personal-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>个人开户总看板</span></a><a class="ad-sidenav-link" href="ob-personal.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>个人开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-personal-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>个人开户资料归档</span></a><a class="ad-sidenav-link" href="ob-personal-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-personal-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-personal-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>个人开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-personal-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>个人批量处理</span></a><a class="ad-sidenav-link" href="ob-personal-templates.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>驳回话术模板</span></a><a class="ad-sidenav-link" href="ob-personal-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>个人复审台账</span></a><div class="ad-sidenav-sec">商业开户管理</div><a class="ad-sidenav-link" href="ob-business-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>商业开户总看板</span></a><a class="ad-sidenav-link" href="ob-business.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>商业开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-business-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>商业开户资料归档</span></a><a class="ad-sidenav-link" href="ob-business-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-business-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-business-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>商业开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-business-xgd.html"><iconify-icon class="text-xl" icon="solar:globus-bold"></iconify-icon><span>XGD 开户管理</span></a><a class="ad-sidenav-link" href="ob-business-xgd-form.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>XGD 开户表单</span></a><a class="ad-sidenav-link" href="ob-business-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>商业 EDD 工单</span></a><a class="ad-sidenav-link" href="ob-business-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>商业批量处理</span></a><a class="ad-sidenav-link" href="ob-business-reject.html"><iconify-icon class="text-xl" icon="solar:shield-cross-bold"></iconify-icon><span>拒户原因库</span></a><a class="ad-sidenav-link" href="ob-business-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>商业复审台账</span></a><a class="ad-sidenav-link" href="ob-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>开户配置</span></a><a class="ad-sidenav-link" href="business.html"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon><span>商业客户管理</span></a><a class="ad-sidenav-link" href="personal.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>个人客户管理</span></a><div class="ad-sidenav-sec">风控与合规</div><a class="ad-sidenav-link" href="risk.html"><iconify-icon class="text-xl" icon="solar:shield-warning-bold"></iconify-icon><span>风控总览</span></a><a class="ad-sidenav-link" href="risk-kyc.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>商户KYC档案</span></a><a class="ad-sidenav-link" href="risk-score.html"><iconify-icon class="text-xl" icon="solar:slider-minimalistic-horizontal-bold"></iconify-icon><span>风险评分配置</span></a><a class="ad-sidenav-link" href="risk-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>EDD 强化尽调</span></a><a class="ad-sidenav-link" href="risk-alerts.html"><iconify-icon class="text-xl" icon="solar:bell-bing-bold"></iconify-icon><span>交易风控告警</span></a><a class="ad-sidenav-link" href="risk-screening.html"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon><span>名单筛查</span></a><a class="ad-sidenav-link" href="risk-ledger.html"><iconify-icon class="text-xl" icon="solar:notebook-bold"></iconify-icon><span>商户风险台账</span></a><a class="ad-sidenav-link" href="risk-controls.html"><iconify-icon class="text-xl" icon="solar:lock-bold"></iconify-icon><span>账户管控中心</span></a><a class="ad-sidenav-link" href="risk-str.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>STR 可疑上报</span></a><a class="ad-sidenav-link" href="risk-audit.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审计日志</span></a><a class="ad-sidenav-link" href="risk-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>合规配置</span></a><a class="ad-sidenav-link" href="risk-review.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>审核工作台</span></a><a class="ad-sidenav-link" href="risk-cases.html"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon><span>案件管理</span></a><a class="ad-sidenav-link" href="risk-learn.html"><iconify-icon class="text-xl" icon="solar:square-academic-cap-bold"></iconify-icon><span>学习中心</span></a><div class="ad-sidenav-sec">安全与服务</div><a class="ad-sidenav-link" href="cs.html"><iconify-icon class="text-xl" icon="solar:headphones-round-sound-bold"></iconify-icon><span>客服管理</span></a><div class="ad-sidenav-sec">团队与账务</div><a class="ad-sidenav-link" href="managers.html"><iconify-icon class="text-xl" icon="solar:user-speak-bold"></iconify-icon><span>客户经理管理</span></a><a class="ad-sidenav-link" href="staff.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>员工管理</span></a><a class="ad-sidenav-link" href="bills.html"><iconify-icon class="text-xl" icon="solar:bill-list-bold"></iconify-icon><span>账单管理</span></a><a class="ad-sidenav-link" href="licenses.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>牌照管理</span></a></nav></div><div class="p-4" style="border-top:1px solid rgba(255,255,255,.08)"><div class="flex items-center space-x-3 p-2 rounded-lg" style="background:rgba(255,255,255,.05)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:#FFD008;color:#382b1b">涵</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold truncate text-white">运营-小涵</p><p class="text-xs text-gray-500 truncate" id="rc-side-role">—</p></div><a href="login.html" class="text-gray-500 hover:text-red-400" title="退出登录"><iconify-icon icon="solar:logout-3-bold"></iconify-icon></a></div></div></aside>
+<main class="flex-1 flex flex-col min-w-0">
+<header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 flex-none">
+<div class="flex items-center">
+<button class="lg:hidden p-2 -ml-2 text-gray-500" onclick="toggleSidebar()"><iconify-icon class="text-2xl" icon="solar:hamburger-menu-bold"></iconify-icon></button>
+<h1 class="text-lg font-bold ml-2">角色权限配置中心</h1>
+</div>
+<div class="flex items-center space-x-4">
+<div id="rc-role-slot"></div>
+<span class="text-xs text-gray-400 hidden md:block">风控合规环境 · 操作全程留痕</span>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6" id="rc-body">
+
+<div class="bg-blue-50 border border-blue-100 rounded-8 p-4 text-sm text-blue-700 flex items-start gap-2"><iconify-icon class="text-lg flex-none mt-0.5" icon="solar:info-circle-bold"></iconify-icon><span>仅超级管理员可修改；变更全部留痕（修改前后对比写入审计日志）；超管自身被禁止日常业务操作（界面对业务按钮置灰）。</span></div>
+<div class="bg-white rounded-8 custom-shadow overflow-hidden">
+<div class="p-6 border-b border-gray-100 flex justify-between items-center"><h3 class="font-bold">动作权限矩阵</h3><button class="px-4 py-2 rounded-8 text-xs font-bold border border-gray-200" id="acl-reset">恢复默认矩阵</button></div>
+<div class="overflow-x-auto"><table class="w-full min-w-[900px]"><thead class="bg-gray-50/80" id="acl-head"></thead><tbody id="tb-acl"></tbody></table></div>
+</div>
+</div>
+</main>
+<div class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+</div>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/rc-data.js"></script>
+<script src="../assets/js/ob-data.js"></script>
+<script>
+function toggleSidebar(){var s=document.getElementById('sidebar'),b=document.getElementById('sidebar-backdrop');if(!s)return;s.classList.toggle('hidden');s.classList.toggle('fixed');s.classList.toggle('inset-y-0');s.classList.toggle('left-0');s.classList.toggle('z-50');if(b)b.classList.toggle('hidden');}
+RC.renderSwitcher(document.getElementById('rc-role-slot'));
+var sr=document.getElementById('rc-side-role');if(sr)sr.textContent=RC.ROLES[RC.role()].name;
+function rcDeny(){DDUI.toast('当前角色（'+RC.ROLES[RC.role()].name+'）无此操作权限','error');}
+function rcNeed(act){if(!RC.can(act)){rcDeny();return false;}return true;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function rcNoPerm(){document.getElementById('rc-body').innerHTML='<div class="bg-white rounded-8 custom-shadow p-16 text-center"><iconify-icon class="text-5xl text-gray-300" icon="solar:lock-bold"></iconify-icon><p class="mt-4 font-bold text-gray-700">当前角色无权访问本页面</p><p class="text-sm text-gray-400 mt-1">请联系合规负责人或切换角色查看（右上角可切换演示角色）</p></div>';}
+
+(function(){
+  if (RC.role() !== 'admin') { rcNoPerm(); return; }
+  var ACTS = [
+    ['kyc_edit','KYC 状态流转'],['score_config','评分配置'],['edd_review','EDD 材料审核'],['edd_approve','EDD 结论签发'],
+    ['alert_handle','告警处理'],['alert_assign','告警分配'],['screen_mark','筛查误报/确认'],['list_manage','名单库管理'],
+    ['control_apply','管控发起'],['control_lift','管控解除'],['str_draft','STR 起草'],['str_submit','STR 签发'],
+    ['audit_export','审计导出'],['config_edit','合规配置']
+  ];
+  var RKEYS = Object.keys(RC.ROLES);
+  document.getElementById('acl-head').innerHTML = '<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">动作</th>' + RKEYS.map(function(r){ return '<th class="text-center py-3 px-3 text-xs font-semibold text-gray-400 uppercase">'+RC.ROLES[r].name+'</th>'; }).join('');
+  function draw(){
+    document.getElementById('tb-acl').innerHTML = ACTS.map(function(a){
+      var roles = RC.actRoles(a[0]);
+      return '<tr class="hover:bg-gray-50/60"><td class="py-3 px-4 text-sm border-t border-gray-50 font-bold">'+a[1]+'<br/><span class="text-xs text-gray-400 font-mono">'+a[0]+'</span></td>' +
+      RKEYS.map(function(r){
+        var on = roles.indexOf(r) > -1;
+        return '<td class="py-3 px-3 text-center border-t border-gray-50"><button class="w-6 h-6 rounded-md text-xs font-bold '+(on?'bg-green-500 text-white':'bg-gray-100 text-gray-300')+'" data-acl="'+a[0]+'|'+r+'">'+(on?'✓':'')+'</button></td>';
+      }).join('') + '</tr>';
+    }).join('');
+    document.querySelectorAll('[data-acl]').forEach(function(b){ b.onclick = function(){
+      var parts = b.dataset.acl.split('|'), act = parts[0], r = parts[1];
+      var roles = RC.actRoles(act).slice();
+      var i = roles.indexOf(r);
+      var before = roles.join(',');
+      if (i > -1) roles.splice(i, 1); else roles.push(r);
+      RC.setActRoles(act, roles);
+      RC.log('权限矩阵变更', act, RC.ROLES[r].name + '：' + (i > -1 ? '移除' : '授予') + '（原：' + (before||'空') + ' → 新：' + roles.join(',') + '）');
+      draw();
+    }; });
+  }
+  document.getElementById('acl-reset').onclick = function(){
+    DDUI.confirm('恢复默认', '清除全部自定义权限配置，恢复系统默认矩阵？', function(){
+      RC.resetOverrides(); RC.log('权限矩阵重置', '全部', '恢复默认'); DDUI.toast('已恢复默认', 'success'); draw();
+    }, '恢复默认');
+  };
+  draw();
+})();
+
+</script>
+</body>
+</html>
