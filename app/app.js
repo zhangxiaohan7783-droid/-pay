@@ -48,10 +48,18 @@
   var S0 = {
     authed: false, hide: false, bio: true, push: true, n2fa: true,
     accounts: [
-      { cur: 'EUR', name: '欧元账户', bal: 48260.35, c: '#003399', iban: 'MT84 MALT 0110 0001 2345 MTLC AST0 01S' },
-      { cur: 'USD', name: '美元账户', bal: 23105.80, c: '#3C3B6E', iban: 'GB29 NWBK 6016 1331 9268 19' },
-      { cur: 'GBP', name: '英镑账户', bal: 8920.00, c: '#C8102E', iban: 'GB33 BUKB 2020 1555 5555 55' },
-      { cur: 'USDT', name: 'USDT 钱包', bal: 15000.00, c: '#26A17B', iban: 'TRC20 · TQ7x…9fKp' }
+      { cur: 'EUR', name: '卢森堡本地主账户', region: '卢森堡', bal: 48260.35, c: '#003399', iban: 'LU12 DDPY 0011 0001 2345 AST0 01S', acv: 2,
+        bals: [{ cur: 'EUR', bal: 48260.35 }, { cur: 'USD', bal: 5200.00 }],
+        rules: { channels: ['SEPA Instant', 'SWIFT', '速汇中国', 'Apple Pay'], payIn: 'SEPA 即时到账 · 跨境 SWIFT T+1', payOut: '本地出款当日 · 国际出款 T+2', curs: ['EUR', 'USD', 'GBP', 'CHF'], banned: ['俄罗斯', '白俄罗斯', '伊朗', '朝鲜'] } },
+      { cur: 'USD', name: '美国本地主账户', region: '美国', bal: 23105.80, c: '#3C3B6E', iban: 'GB29 NWBK 6016 1331 9268 19', acv: 2,
+        bals: [{ cur: 'USD', bal: 23105.80 }],
+        rules: { channels: ['ACH', 'FedWire', 'SWIFT', '独立站收单'], payIn: 'ACH 当日 · FedWire 即时 · SWIFT T+1', payOut: '本地出款当日 · 国际出款 T+2', curs: ['USD', 'EUR', 'GBP'], banned: ['俄罗斯', '白俄罗斯', '伊朗', '朝鲜'] } },
+      { cur: 'GBP', name: '英国本地主账户', region: '英国', bal: 8920.00, c: '#C8102E', iban: 'GB33 BUKB 2020 1555 5555 55', acv: 2,
+        bals: [{ cur: 'GBP', bal: 8920.00 }],
+        rules: { channels: ['Faster Payments', 'CHAPS', 'SWIFT'], payIn: 'Faster Payments 即时到账 · SWIFT T+1', payOut: '本地出款当日 · 国际出款 T+2', curs: ['GBP', 'EUR', 'USD'], banned: ['俄罗斯', '白俄罗斯', '伊朗', '朝鲜'] } },
+      { cur: 'USDT', name: 'USDT 稳定币主账户', region: '波场 TRON', bal: 15000.00, c: '#26A17B', iban: 'TRC20 · TQ7x…9fKp', acv: 2,
+        bals: [{ cur: 'USDT', bal: 15000.00 }],
+        rules: { channels: ['TRC20 链上转账', 'ERC20 链上转账', '平台内部划转'], payIn: '链上确认后约 1 分钟入账', payOut: '链上广播即时 · 确认约 1 分钟', curs: ['USDT', 'EUR', 'USD'], banned: ['俄罗斯', '白俄罗斯', '伊朗', '朝鲜'] } }
     ],
     recipients: [
       { id: 'r1', name: '深圳市优品贸易有限公司', bank: '招商银行 · 尾号 8821', cur: 'CNY', c: '#FF9500' },
@@ -74,6 +82,8 @@
     ]
   };
   var S = S0; try { var _st = JSON.parse(localStorage.getItem('dd-app') || 'null'); if (_st) for (var _k in _st) S[_k] = _st[_k]; } catch (e) { }
+  /* 主账户模型 v2：老数据自动迁移（保留登录态，重置账户结构与规则） */
+  if (S.acv !== 2) { S.accounts = S0.accounts; S.acv = 2; try { localStorage.setItem('dd-app', JSON.stringify(S)); } catch (e) { } }
   function save() { localStorage.setItem('dd-app', JSON.stringify(S)); }
   var SYM = { EUR: '€', USD: '$', GBP: '£', CNY: '¥', USDT: '₮' };
   var RATE = { EUR: 1, USD: 1.09, GBP: .86, CNY: 7.82, USDT: 1.09 };
@@ -308,8 +318,9 @@
 
   R.accounts = function () {
     return { html: '<div class="large-ttl"><h1>账户</h1><button class="icon-btn" aria-label="新增币种" id="a-add">' + ic('plus') + '</button></div>' +
-      '<div class="cap">资产 ' + S.accounts.length + ' 个</div><div class="list" style="margin-bottom:22px">' + S.accounts.map(function (a, i) {
-        return '<button class="row" data-go="account/' + i + '"><span class="av" style="background:#f5f5f7;overflow:hidden;padding:0">' + ddFlagImg(a.cur, 40) + '<span style="display:none">' + ((window.DDFlags||{})[a.cur]||a.cur.slice(0,2)) + '</span></span><span class="rt"><b>' + a.name + '</b><small>' + esc(a.iban) + '</small></span><span class="rv neg">' + mask((SYM[a.cur] || '') + fmt(a.bal)) + '</span>' + CHEV + '</button>';
+      '<div class="cap">主账户 ' + S.accounts.length + ' 个 · 每地区一个，支持多币种</div><div class="list" style="margin-bottom:22px">' + S.accounts.map(function (a, i) {
+        var nb = (a.bals || []).length;
+        return '<button class="row" data-go="account/' + i + '"><span class="av" style="background:#f5f5f7;overflow:hidden;padding:0">' + ddFlagImg(a.cur, 40) + '<span style="display:none">' + ((window.DDFlags||{})[a.cur]||a.cur.slice(0,2)) + '</span></span><span class="rt"><b>' + a.name + '</b><small>' + esc(a.region || '') + (nb > 1 ? ' · ' + nb + ' 币种' : '') + ' · ' + esc(a.iban) + '</small></span><span class="rv neg">' + mask((SYM[a.cur] || '') + fmt(a.bal)) + '</span>' + CHEV + '</button>';
       }).join('') + '</div>' +
       '<div class="cap">账户管理</div><div class="list">' +
       '<button class="row" data-go="internal"><span class="ri" style="background:#0A84FF">' + ic('swap') + '</span><span class="rt"><b>内部转账</b><small>子账户之间即时划转</small></span>' + CHEV + '</button>' +
@@ -326,15 +337,53 @@
   R.account = function (i) {
     var a = S.accounts[+i]; if (!a) return R.notfound();
     var list = S.tx.filter(function (t) { return t.cur === a.cur; });
-    return { html: nav(a.name) + '<div class="amount-box" style="padding-top:8px"><span class="cur">' + a.cur + '</span><div style="font-size:44px;font-weight:800;margin-top:12px;letter-spacing:-.02em">' + mask((SYM[a.cur] || '') + fmt(a.bal)) + '</div><div class="hint">可用余额</div></div>' +
+    var bals = a.bals || [{ cur: a.cur, bal: a.bal }];
+    function balsAreaHtml() {
+      return bals.map(function (b) {
+        var pri = b.cur === a.cur;
+        return '<div style="display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid rgba(118,118,128,.12)"><span style="width:28px;height:28px;border-radius:50%;background:#f2f2f7;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">' + ddFlagImg(b.cur, 24) + '</span><span style="flex:1;min-width:0"><b style="font-size:15px">' + b.cur + (pri ? ' <em style="font-style:normal;font-size:10px;font-weight:700;color:#612FF6;background:#efebfe;border-radius:999px;padding:2px 7px;vertical-align:1px">主币种</em>' : '') + '</b></span><b style="font-size:16px;font-weight:650;font-variant-numeric:tabular-nums">' + (SYM[b.cur] || '') + fmt(b.bal) + '</b>' + (pri ? '' : '<button class="rd-set" data-cur="' + b.cur + '" style="font-size:12px;font-weight:600;color:#612FF6;padding:4px 8px">设为主币种</button>') + '</div>';
+      }).join('');
+    }
+    function rulesHtml(a) {
+      var r = a.rules || { channels: ['—'], payIn: '—', payOut: '—', curs: [a.cur], banned: [] };
+      return '<div class="rd-h"><b>收款转账规则</b><button class="icon-btn" id="rd-close" aria-label="关闭">' + ic('plus') + '</button></div>' +
+        '<div class="rd-sec"><h4>' + ic('store') + '支持支付通道</h4><div class="rd-tags">' + r.channels.map(function (x) { return '<span class="rd-tag">' + esc(x) + '</span>'; }).join('') + '</div></div>' +
+        '<div class="rd-sec"><h4>' + ic('down') + '收款时间</h4><p>' + esc(r.payIn) + '</p><h4 style="margin-top:12px">' + ic('send') + '出款时间</h4><p>' + esc(r.payOut) + '</p></div>' +
+        '<div class="rd-sec"><h4>' + ic('refresh') + '支持币种</h4><div class="rd-tags">' + r.curs.map(function (x) { return '<span class="rd-tag">' + x + '</span>'; }).join('') + '</div></div>' +
+        '<div class="rd-sec"><h4>' + ic('shield') + '禁止交易国家 / 地区</h4><div class="rd-tags">' + (r.banned.length ? r.banned.map(function (x) { return '<span class="rd-tag warn">' + esc(x) + '</span>'; }).join('') : '<span style="font-size:13px;color:var(--dd-ink-2)">无</span>') + '</div></div>';
+    }
+    return { html: nav(a.name) +
+      '<div class="amount-box" style="padding-top:8px"><span class="cur">' + a.cur + (bals.length > 1 ? ' · 多币种' : '') + '</span><div style="font-size:44px;font-weight:800;margin-top:12px;letter-spacing:-.02em;font-variant-numeric:tabular-nums">' + mask((SYM[a.cur] || '') + fmt(a.bal)) + '</div><div class="hint">主展示币种余额 · 点击下方行可切换</div></div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px"><button class="btn pri" data-go="send">' + ic('send') + '付款</button><button class="btn tint" data-go="receive">' + ic('down') + '收款</button></div>' +
-      '<div class="card iban-card"><div class="k">账户名</div><div class="v">Flash Commerce srl</div><div class="k">' + (a.cur === 'USDT' ? '钱包地址' : 'IBAN') + '</div><div class="v"><span>' + esc(a.iban) + '</span><button class="copy" data-copy="' + esc(a.iban) + '">复制</button></div><div class="k">BIC / SWIFT</div><div class="v" style="margin-bottom:0"><span>DDPYMTM2XXX</span><button class="copy" data-copy="DDPYMTM2XXX">复制</button></div></div>' +
-      '<div class="sec"><div class="sec-h"><h3>交易</h3></div><div id="ac-tx"></div></div>',
+      '<div class="card" style="margin:0 16px 14px;padding:4px 16px"><div style="font-size:13px;font-weight:600;color:var(--dd-ink-2);padding-top:10px">账户余额</div><div id="ac-bals">' + balsAreaHtml() + '</div></div>' +
+      '<div style="padding:0 16px"><button class="btn tint" id="ac-rules" style="width:100%">' + ic('doc') + ' 收款转账规则</button></div>' +
+      '<div class="card iban-card" style="margin-top:14px"><div class="k">账户名</div><div class="v">Flash Commerce srl</div><div class="k">' + (a.cur === 'USDT' ? '钱包地址' : 'IBAN') + '</div><div class="v"><span>' + esc(a.iban) + '</span><button class="copy" data-copy="' + esc(a.iban) + '">复制</button></div><div class="k">BIC / SWIFT</div><div class="v" style="margin-bottom:0"><span>DDPYMTM2XXX</span><button class="copy" data-copy="DDPYMTM2XXX">复制</button></div></div>' +
+      '<div class="sec"><div class="sec-h"><h3>交易</h3></div><div id="ac-tx"></div></div>' +
+      '<div class="rdrawer-mask" id="rd-mask"></div><aside class="rdrawer" id="rdrawer">' + rulesHtml(a) + '</aside>',
       mount: function (v) {
         bindCopy(v);
         var el = $('#ac-tx');
         if (!list.length) stateBox(el, 'empty', { title: '暂无交易', text: '该账户还没有任何交易记录', action: '去收款', onAction: function () { go('receive'); } });
         else el.innerHTML = '<div class="list" style="margin:0">' + list.map(txRow).join('') + '</div>';
+        /* 主展示币种切换：与原主币种互换 cur/bal */
+        v.querySelectorAll('.rd-set').forEach(function (b) {
+          b.onclick = function () {
+            var cur = b.dataset.cur;
+            var p = bals.filter(function (x) { return x.cur === a.cur; })[0];
+            var n = bals.filter(function (x) { return x.cur === cur; })[0];
+            var oc = a.cur, ob = p.bal;
+            a.cur = cur; a.bal = n.bal; p.cur = cur; p.bal = n.bal; n.cur = oc; n.bal = ob;
+            save(); toast(cur + ' 已设为主展示币种', 'success'); render();
+          };
+        });
+        /* 右侧滑出：收款转账规则 */
+        var mask = $('#rd-mask'), dr = $('#rdrawer');
+        function open() { mask.classList.add('show'); dr.classList.add('show'); }
+        function close() { mask.classList.remove('show'); dr.classList.remove('show'); }
+        $('#ac-rules').onclick = open;
+        mask.onclick = close;
+        $('#rd-close').onclick = close;
+        $('#rd-close').style.transform = 'rotate(45deg)';
       } };
   };
   function bindCopy(v) { v.querySelectorAll('[data-copy]').forEach(function (b) { b.onclick = function (e) { e.stopPropagation(); try { navigator.clipboard.writeText(b.dataset.copy); } catch (x) { } b.textContent = '已复制'; toast('已复制到剪贴板', 'success'); setTimeout(function () { b.textContent = '复制'; }, 1500); }; }); }
@@ -510,37 +559,49 @@
   R.exchange = function () {
     function balsHtml() {
       return S.accounts.map(function (x) {
-        return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0"><span style="width:30px;height:30px;border-radius:50%;background:#f2f2f7;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">' + ddFlagImg(x.cur, 26) + '</span><span style="flex:1;min-width:0"><b style="font-size:15px">' + x.cur + '</b><small style="display:block;color:var(--dd-ink-2);font-size:12px">' + x.name + '</small></span><b style="font-size:16px;font-weight:650;font-variant-numeric:tabular-nums">' + (SYM[x.cur] || '') + fmt(x.bal) + '</b></div>';
+        var extra = (x.bals || []).filter(function (b) { return b.cur !== x.cur; });
+        var ex = extra.length ? '<small style="display:block;color:var(--dd-ink-2);font-size:12px;margin-top:1px">另持有 ' + extra.map(function (b) { return b.cur + ' ' + (SYM[b.cur] || '') + fmt(b.bal); }).join(' · ') + '</small>' : '';
+        return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0"><span style="width:30px;height:30px;border-radius:50%;background:#f2f2f7;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">' + ddFlagImg(x.cur, 26) + '</span><span style="flex:1;min-width:0"><b style="font-size:15px">' + esc(x.name) + '</b>' + ex + '</span><b style="font-size:16px;font-weight:650;font-variant-numeric:tabular-nums;flex-shrink:0">' + (SYM[x.cur] || '') + fmt(x.bal) + '</b></div>';
       }).join('');
     }
-    var opts = S.accounts.map(function (x) { return '<option>' + x.cur + '</option>'; }).join('');
+    var allCurs = []; S.accounts.forEach(function (x) { if (allCurs.indexOf(x.cur) < 0) allCurs.push(x.cur); (x.bals || []).forEach(function (b) { if (allCurs.indexOf(b.cur) < 0) allCurs.push(b.cur); }); });
+    var opts = allCurs.map(function (c) { return '<option>' + c + '</option>'; }).join('');
     return { html: nav('换汇') +
-      '<div class="card" style="margin:8px 16px 0;padding:12px 16px 4px"><div style="font-size:13px;font-weight:600;color:var(--dd-ink-2)">我的余额</div><div id="fx-bals">' + balsHtml() + '</div></div>' +
+      '<div class="card" style="margin:8px 16px 0;padding:12px 16px 4px"><div style="font-size:13px;font-weight:600;color:var(--dd-ink-2)">我的余额 · 主账户</div><div id="fx-bals">' + balsHtml() + '</div></div>' +
       '<div class="list plain" style="margin-top:8px">' +
       '<label class="row"><span class="rt"><b>卖出</b><small id="fx-avail"></small></span><input id="fx-a" inputmode="decimal" placeholder="0.00" style="width:120px;text-align:right;border:0;outline:0;font-size:22px;font-weight:650;background:transparent;box-shadow:none;padding:0;font-variant-numeric:tabular-nums"/><select id="fx-from" style="margin-left:6px;border:0;background:transparent;font-weight:600;box-shadow:none;padding:0">' + opts + '</select></label>' +
       '<label class="row"><span class="rt"><b>买入</b><small id="fx-r"></small></span><span id="fx-b" style="font-size:22px;font-weight:650;font-variant-numeric:tabular-nums">0.00</span><select id="fx-to" style="margin-left:6px;border:0;background:transparent;font-weight:600;box-shadow:none;padding:0"></select></label></div>' +
       '<p class="foot-note">汇率实时更新，锁定 30 秒 · 0 手续费</p><div style="padding:24px 16px 0"><button class="btn pri" id="fx-go" disabled>立即换汇</button></div>',
       mount: function () {
         var a = $('#fx-a'), f = $('#fx-from'), t = $('#fx-to'), b = $('#fx-go');
-        function acc(cur) { return S.accounts.filter(function (x) { return x.cur === cur; })[0] || { bal: 0 }; }
+        /* 主账户顶层币种优先，其次多币种余额中的次币种 */
+        function accRef(cur) {
+          var top = S.accounts.filter(function (x) { return x.cur === cur; })[0];
+          if (top) return { get: function () { return top.bal; }, add: function (v) { top.bal += v; top.acv = 2; } };
+          for (var ai = 0; ai < S.accounts.length; ai++) {
+            var e = (S.accounts[ai].bals || []).filter(function (x) { return x.cur === cur; })[0];
+            if (e) return { get: function () { return e.bal; }, add: function (v) { e.bal += v; } };
+          }
+          return { get: function () { return 0; }, add: function () { } };
+        }
         function rate() { return (RATE[t.value] || 1) / (RATE[f.value] || 1); }
-        function rebuildTo() { t.innerHTML = S.accounts.filter(function (x) { return x.cur !== f.value; }).map(function (x) { return '<option>' + x.cur + '</option>'; }).join(''); calc(); }
+        function rebuildTo() { t.innerHTML = allCurs.filter(function (c) { return c !== f.value; }).map(function (c) { return '<option>' + c + '</option>'; }).join(''); calc(); }
         function calc() {
-          var v = parseFloat(a.value) || 0, r = rate(), fa = acc(f.value);
+          var v = parseFloat(a.value) || 0, r = rate(), fa = accRef(f.value);
           $('#fx-b').textContent = fmt(v * r);
           $('#fx-r').textContent = '1 ' + f.value + ' = ' + r.toFixed(4) + ' ' + t.value;
-          $('#fx-avail').textContent = '可用 ' + (SYM[f.value] || '') + fmt(fa.bal);
-          b.disabled = !(v > 0 && v <= fa.bal);
+          $('#fx-avail').textContent = '可用 ' + (SYM[f.value] || '') + fmt(fa.get());
+          b.disabled = !(v > 0 && v <= fa.get());
         }
         a.oninput = function () { this.value = this.value.replace(/[^\d.]/g, ''); calc(); };
         f.onchange = rebuildTo; t.onchange = calc;
         rebuildTo();
         b.onclick = function () {
-          var v = parseFloat(a.value), fr = acc(f.value);
-          if (!(v > 0 && v <= fr.bal)) { toast('请输入有效金额', 'error'); return; }
+          var v = parseFloat(a.value), fr = accRef(f.value);
+          if (!(v > 0 && v <= fr.get())) { toast('请输入有效金额', 'error'); return; }
           DDUI.busy(b, 900, '换汇成功').then(function () {
-            var to = acc(t.value), got = v * rate();
-            fr.bal -= v; to.bal += got;
+            var to = accRef(t.value), got = v * rate();
+            fr.add(-v); to.add(got);
             S.tx.unshift({ id: 't' + Date.now(), t: f.value + ' → ' + t.value + ' 换汇', k: 'fx', amt: -v, cur: f.value, d: '刚刚', st: 'ok', ch: '换汇' });
             save();
             $('#fx-bals').innerHTML = balsHtml();

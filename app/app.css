@@ -234,3 +234,17 @@ svg.i { width: 22px; height: 22px; flex: none; }
 /* 金额等宽数字（Airwallex 风） */
 .hero .bal, .acc b, .row .rv, .kpi b, .amount-box input { font-variant-numeric: tabular-nums; }
 .acc .flag img, .row .av img { display: block; }
+
+/* 右侧滑出抽屉：账户收款转账规则 */
+.rdrawer-mask { position: absolute; inset: 0; z-index: 60; background: rgba(0, 0, 0, .32); opacity: 0; transition: opacity .28s; pointer-events: none; }
+.rdrawer-mask.show { opacity: 1; pointer-events: auto; }
+.rdrawer { position: absolute; top: 0; right: 0; bottom: 0; z-index: 61; width: 86%; max-width: 360px; background: var(--dd-bg); transform: translateX(100%); transition: transform .38s var(--dd-spring); overflow-y: auto; padding: 18px 0 34px; }
+.rdrawer.show { transform: none; }
+.rdrawer .rd-h { display: flex; align-items: center; justify-content: space-between; padding: 0 18px 14px; }
+.rdrawer .rd-h b { font-size: 18px; font-weight: 700; }
+.rdrawer .rd-sec { margin: 0 18px 14px; background: var(--dd-card, #fff); border: 1px solid #efe5c8; border-radius: 16px; padding: 14px 16px; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+.rdrawer .rd-sec h4 { font-size: 13px; font-weight: 600; color: var(--dd-ink-2); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.rdrawer .rd-sec p { font-size: 14px; line-height: 1.6; margin: 0; }
+.rdrawer .rd-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.rdrawer .rd-tag { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: #efebfe; color: #612FF6; }
+.rdrawer .rd-tag.warn { background: #fdecec; color: #c0392b; }
