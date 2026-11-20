@@ -24,6 +24,24 @@
         .rounded-8 { border-radius: 8px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* 迷你卡面（状态列） */
+        .dd-minicard { width: 118px; aspect-ratio: 8/5; border-radius: 8px; padding: 7px 9px; color: #fff; background: linear-gradient(135deg,#382b1b,#6b573a); display: flex; flex-direction: column; justify-content: space-between; font-size: 8px; line-height: 1.25; box-shadow: 0 2px 6px rgba(0,0,0,.12); }
+        .dd-minicard.frozen { background: linear-gradient(135deg,#6b7280,#9ca3af); }
+        .dd-minicard .mc-top { display: flex; justify-content: space-between; align-items: center; opacity: .85; }
+        .dd-minicard .mc-top b { font-style: italic; font-size: 9px; }
+        .dd-minicard .mc-no { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; letter-spacing: .08em; font-weight: 700; }
+        .dd-minicard .mc-bot { display: flex; justify-content: space-between; align-items: center; }
+        .dd-minicard .mc-st { font-weight: 700; color: #bbf7d0; }
+        .dd-minicard.frozen .mc-st { color: #fecaca; }
+        /* 操作下拉 */
+        .dd-op { position: relative; display: inline-block; }
+        .dd-op-menu { position: absolute; right: 0; top: calc(100% + 4px); z-index: 30; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.12); min-width: 124px; padding: 4px; }
+        .dd-op-menu.hidden { display: none; }
+        .dd-op-menu button { display: block; width: 100%; text-align: left; padding: 7px 10px; font-size: 12px; font-weight: 600; color: #4b5563; border-radius: 6px; background: none; border: 0; cursor: pointer; }
+        .dd-op-menu button:hover { background: #f3f4f6; color: #382b1b; }
+        .dd-op-menu button.danger { color: #dc2626; }
+        /* 行可点击 */
+        #card-tbody tr[data-no] { cursor: pointer; }
 </style>
 <link rel="stylesheet" href="assets/css/apple.css" data-dd-apple="1"/>
 </head>
@@ -127,6 +145,15 @@
         };
     });
 
+    function miniCard(c) {
+        return '<div class="dd-minicard' + (c.frozen ? ' frozen' : '') + '">'
+            + '<div class="mc-top"><span>Dingdang Pay</span><b>' + (c.brand === 'Visa' ? 'VISA' : 'Mastercard') + '</b></div>'
+            + '<div class="mc-no">•••• ' + c.no.slice(-4) + '</div>'
+            + '<div class="mc-bot"><span>' + (c.type === 'offline' ? '线下消费卡' : '线上付款卡') + '</span><span class="mc-st">' + (c.frozen ? '已冻结' : '● 正常') + '</span></div></div>';
+    }
+    document.addEventListener('click', function () {
+        document.querySelectorAll('.dd-op-menu').forEach(function (x) { x.classList.add('hidden'); });
+    });
     function typePill(tp) {
         return tp === 'offline'
             ? '<span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background:rgba(255,129,6,.14);color:#d16500">线下消费卡</span>'
@@ -162,8 +189,8 @@
             var sub = DDSubs.load().filter(function (a) { return a.id === c.sub; })[0] || { name: c.sub };
             var ow = c.owner ? DDTeam.name(c.owner) : '<span class="text-gray-300">—</span>';
             var sp = SPEND[c.no.slice(-4)] || 0;
-            return '<tr class="border-b border-gray-50 hover:bg-gray-50/60 transition-colors ' + (c.frozen ? 'opacity-70' : '') + '">'
-                + '<td class="px-5 py-3.5">' + (c.frozen ? '<span class="px-2 py-0.5 rounded-full bg-red-50 text-red-500 text-xs font-bold">已冻结</span>' : '<span class="px-2 py-0.5 rounded-full bg-green-50 text-green-600 text-xs font-bold">正常</span>') + '</td>'
+            return '<tr class="border-b border-gray-50 hover:bg-gray-50/60 transition-colors" data-no="' + c.no + '">'
+                + '<td class="px-5 py-3.5">' + miniCard(c) + '</td>'
                 + '<td class="px-3 py-3.5 font-medium text-dark">' + c.brand + '</td>'
                 + '<td class="px-3 py-3.5 font-mono text-gray-600">*' + c.no.slice(-4) + '</td>'
                 + '<td class="px-3 py-3.5">' + (c.type === 'offline' ? '<span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background:rgba(255,129,6,.14);color:#d16500">线下消费卡</span>' : '<span class="px-2 py-0.5 rounded-full text-xs font-bold" style="background:rgba(0,183,236,.14);color:#0089b3">线上付款卡</span>') + '</td>'
@@ -172,15 +199,35 @@
                 + '<td class="px-3 py-3.5 text-accent2 font-medium">' + ow + '</td>'
                 + '<td class="px-3 py-3.5 text-right text-gray-600 whitespace-nowrap">€ ' + fmt(c.limit) + '</td>'
                 + '<td class="px-3 py-3.5 text-right font-bold text-dark whitespace-nowrap">' + fmt(sp) + ' 欧元</td>'
-                + '<td class="px-3 py-3.5 text-right whitespace-nowrap">'
-                + '<button class="text-xs font-bold text-gray-500 hover:text-dark px-2 py-1" data-a="limit" data-i="' + i + '">限额</button>'
-                + '<button class="text-xs font-bold text-gray-500 hover:text-dark px-2 py-1" data-a="owner" data-i="' + i + '">关联人员</button>'
-                + '<button class="text-xs font-bold px-2 py-1 ' + (c.frozen ? 'text-green-600' : 'text-red-500') + '" data-a="freeze" data-i="' + i + '">' + (c.frozen ? '解冻' : '冻结') + '</button>'
-                + '<button class="text-xs font-bold text-accent2 hover:underline px-2 py-1" data-a="info" data-i="' + i + '">卡信息</button><button class="text-xs font-bold text-gray-500 hover:text-dark px-2 py-1" data-a="tx" data-i="' + i + '">流水</button>'
-                + '</td></tr>';
+                + '<td class="px-3 py-3.5 text-right whitespace-nowrap"><div class="dd-op">'
+                + '<button class="px-3 py-1.5 text-xs font-bold text-dark border border-gray-200 rounded-8 hover:border-dark transition-colors" data-op="' + i + '">操作 ▾</button>'
+                + '<div class="dd-op-menu hidden">'
+                + '<button data-a="info" data-i="' + i + '">卡信息</button>'
+                + '<button data-a="tx" data-i="' + i + '">流水</button>'
+                + '<button data-a="limit" data-i="' + i + '">调整限额</button>'
+                + '<button data-a="owner" data-i="' + i + '">关联人员</button>'
+                + '<button data-a="freeze" data-i="' + i + '"' + (c.frozen ? '' : ' class="danger"') + '>' + (c.frozen ? '解冻' : '冻结') + '</button>'
+                + '</div></div></td></tr>';
         }).join('');
         document.getElementById('card-tbody').querySelectorAll('button[data-a]').forEach(function (b) {
             b.onclick = function () { act(b.getAttribute('data-a'), +b.getAttribute('data-i')); };
+        });
+        /* 操作下拉开合 */
+        document.getElementById('card-tbody').querySelectorAll('button[data-op]').forEach(function (b) {
+            b.onclick = function (e) {
+                e.stopPropagation();
+                var m = b.parentElement.querySelector('.dd-op-menu');
+                var wasOpen = !m.classList.contains('hidden');
+                document.querySelectorAll('.dd-op-menu').forEach(function (x) { x.classList.add('hidden'); });
+                if (!wasOpen) m.classList.remove('hidden');
+            };
+        });
+        /* 点击行进入卡详情整页 */
+        document.getElementById('card-tbody').querySelectorAll('tr[data-no]').forEach(function (tr) {
+            tr.onclick = function (e) {
+                if (e.target.closest('button') || e.target.closest('a') || e.target.closest('.dd-op')) return;
+                location.href = 'card-detail.html?no=' + encodeURIComponent(tr.getAttribute('data-no'));
+            };
         });
     }
     function act(a, i) {
@@ -209,12 +256,12 @@
             return;
         }
         if (a === 'freeze') {
-            DDUI.confirm({
-                title: (c.frozen ? '解冻' : '冻结') + '虚拟卡',
-                text: c.frozen ? '解冻后该卡立即恢复消费。' : '冻结后该卡所有交易将被拒绝，可随时解冻。',
-                okText: c.frozen ? '确认解冻' : '确认冻结', danger: !c.frozen,
-                onOk: function () { c.frozen = !c.frozen; save(list); render(); DDUI.toast(c.frozen ? '卡片已冻结' : '卡片已解冻', 'success'); }
-            });
+            DDUI.confirm(
+                (c.frozen ? '解冻' : '冻结') + '虚拟卡',
+                c.frozen ? '解冻后该卡立即恢复消费。' : '冻结后该卡所有交易将被拒绝，可随时解冻。',
+                function () { c.frozen = !c.frozen; save(list); render(); DDUI.toast(c.frozen ? '卡片已冻结' : '卡片已解冻', 'success'); },
+                c.frozen ? '确认解冻' : '确认冻结'
+            );
             return;
         }
         if (a === 'limit') {
