@@ -69,12 +69,45 @@
 
 <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
 <div><h2 class="text-2xl font-bold text-gray-900">我的钱包</h2>
-<p class="text-gray-500 mt-1 text-sm">每地区一个主账户 · 多币种余额分行展示 · 点击账户查看收款转账规则</p></div>
+<p class="text-gray-500 mt-1 text-sm">管理多币种账户余额、充值与提现</p></div>
 <div class="flex space-x-3">
 <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-8 text-sm font-medium hover:bg-gray-50 flex items-center" onclick="showAlert('提现申请已提交，预计 T+1 到账')"><iconify-icon class="mr-2" icon="solar:card-send-bold"></iconify-icon>提现</button>
 <button class="px-6 py-2 bg-primary text-[#382b1b] rounded-8 text-sm font-bold shadow-sm hover:opacity-90 flex items-center" onclick="showAlert('请选择充值方式：银行转账 / USDT')"><iconify-icon class="mr-2" icon="solar:add-circle-bold"></iconify-icon>充值</button>
 </div></div>
-<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4" id="acc-grid"></div>
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+<div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">美元账户 USD</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:dollar-bold"></iconify-icon></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">$86,420.30</p>
+<p class="text-xs text-gray-400 mt-2">可用余额 · 尾号 1024</p>
+</div>
+<div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">欧元账户 EUR</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:euro-bold"></iconify-icon></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">€24,180.55</p>
+<p class="text-xs text-gray-400 mt-2">可用余额 · IBAN 已绑定</p>
+</div>
+<div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">人民币账户 CNY</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><iconify-icon class="text-xl" icon="solar:yuan-bold"></iconify-icon></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">¥152,307.88</p>
+<p class="text-xs text-gray-400 mt-2">可用余额 · 尾号 8888</p>
+</div>
+<div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4">
+<span class="text-sm text-gray-500">港币账户 HKD</span>
+<div class="w-10 h-10 bg-yellow-50 text-gray-800 rounded-8 flex items-center justify-center"><svg class="text-xl" style="width:1em;height:1em;display:inline-block;vertical-align:-0.125em;flex:none" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" fill-rule="evenodd" d="M20.41 9.86a3 3 0 0 0-.175-.003H17.8c-1.992 0-3.698 1.581-3.698 3.643s1.706 3.643 3.699 3.643h2.433q.092.001.175-.004a1.7 1.7 0 0 0 1.586-1.581c.004-.059.004-.122.004-.18v-3.756c0-.058 0-.121-.004-.18a1.7 1.7 0 0 0-1.585-1.581m-2.823 4.611c.513 0 .93-.434.93-.971s-.417-.971-.93-.971s-.929.434-.929.971s.416.971.93.971" clip-rule="evenodd"/><path fill="currentColor" fill-rule="evenodd" d="M20.234 18.6a.214.214 0 0 1 .214.27c-.194.692-.501 1.282-.994 1.778c-.721.727-1.636 1.05-2.766 1.203c-1.098.149-2.5.149-4.272.149h-2.037c-1.771 0-3.174 0-4.272-.149c-1.13-.153-2.045-.476-2.766-1.203C2.62 19.923 2.3 19 2.148 17.862C2 16.754 2 15.34 2 13.555v-.11c0-1.785 0-3.2.148-4.306C2.3 8 2.62 7.08 3.34 6.351c.721-.726 1.636-1.05 2.766-1.202C7.205 5 8.608 5 10.379 5h2.037c1.771 0 3.174 0 4.272.149c1.13.153 2.045.476 2.766 1.202c.493.497.8 1.087.994 1.78a.214.214 0 0 1-.214.269h-2.433c-2.734 0-5.143 2.177-5.143 5.1s2.41 5.1 5.144 5.1zM5.614 8.886a.725.725 0 0 0-.722.728c0 .403.323.729.722.729H9.47c.4 0 .723-.326.723-.729a.726.726 0 0 0-.723-.728z" clip-rule="evenodd"/><path fill="currentColor" d="m7.777 4.024l1.958-1.443a2.97 2.97 0 0 1 3.53 0l1.969 1.451C14.41 4 13.49 4 12.483 4h-2.17c-.922 0-1.769 0-2.536.024"/></svg></div>
+</div>
+<p class="text-2xl font-bold text-gray-900">HK$9,860.00</p>
+<p class="text-xs text-gray-400 mt-2">可用余额 · FPS 已开通</p>
+</div>
+</div>
 <div class="bg-white rounded-8 custom-shadow p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
 <div class="flex items-center space-x-4">
 <div class="w-12 h-12 bg-primary rounded-8 flex items-center justify-center"><iconify-icon class="text-2xl" icon="solar:safe-2-bold"></iconify-icon></div>
@@ -86,18 +119,6 @@
 <div class="bg-white rounded-8 custom-shadow overflow-hidden"><div class="overflow-x-auto">
 <table class="w-full min-w-[720px]"><thead class="bg-gray-50/80"><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">摘要</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">时间</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">金额</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">状态</th></thead><tbody><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="font-medium text-gray-800">充值 - 银行转账</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">2026-08-05 14:22</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">+$12,500.00</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">已完成</span></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="font-medium text-gray-800">提现 - 招商银行 (8888)</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">2026-08-04 09:10</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">-¥35,000.00</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-600">处理中</span></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="font-medium text-gray-800">收单结算入账</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">2026-08-03 18:47</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">+€2,340.50</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">已完成</span></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="font-medium text-gray-800">货币兑换 USD → EUR</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">2026-08-02 11:05</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">-$1,000.00</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">已完成</span></td></tr><tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="font-medium text-gray-800">手续费扣款</span></td><td class="py-3.5 px-4 text-sm border-t border-gray-50">2026-08-01 00:00</td><td class="py-3.5 px-4 text-sm border-t border-gray-50">-$25.00</td><td class="py-3.5 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-600">已完成</span></td></tr></tbody></table></div></div>
 
-</div>
-<!-- 右侧滑出：账户收款转账规则 -->
-<div class="fixed inset-0 z-[90] hidden" id="acc-rules-wrap">
-<div class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300" id="acc-rules-mask"></div>
-<aside class="absolute inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl translate-x-full transition-transform duration-300 ease-out flex flex-col" id="acc-rules-drawer">
-<div class="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-<div><h3 class="text-lg font-bold text-gray-900" id="rd-title">收款转账规则</h3>
-<p class="text-xs text-gray-400 mt-0.5" id="rd-sub"></p></div>
-<button class="p-2 rounded-full hover:bg-gray-100 text-gray-500" id="rd-close"><iconify-icon class="text-xl" icon="solar:close-circle-bold"></iconify-icon></button>
-</div>
-<div class="flex-1 overflow-y-auto px-6 py-5 space-y-5" id="rd-body"></div>
-</aside>
 </div>
 </main>
 <div class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
@@ -112,87 +133,6 @@
 <button class="w-full py-3 bg-primary text-gray-900 font-bold rounded-8 hover:opacity-90 transition-opacity" onclick="closeAlert()">确定</button>
 </div>
 </div>
-<script>
-/* wire:wallet 主账户模型 */
-(function () {
-    var SYM = { EUR: '\u20ac', USD: '$', GBP: '\u00a3', CNY: '\u00a5', HKD: 'HK$', USDT: '\u20ae' };
-    var ACCTS = [
-        { id: 'lu', name: '卢森堡本地主账户', region: '卢森堡', cur: 'EUR', bals: [{ cur: 'EUR', bal: 24180.55 }, { cur: 'USD', bal: 5200.00 }], note: 'IBAN 已绑定 · 每地区唯一主账户',
-          rules: { channels: ['SEPA Instant', 'SWIFT', '速汇中国', 'Apple Pay'], payIn: 'SEPA 即时到账 · 跨境 SWIFT T+1', payOut: '本地出款当日 · 国际出款 T+2', curs: ['EUR', 'USD', 'GBP', 'CHF'], banned: ['俄罗斯', '白俄罗斯', '伊朗', '朝鲜'] } },
-        { id: 'us', name: '美国本地主账户', region: '美国', cur: 'USD', bals: [{ cur: 'USD', bal: 86420.30 }], note: '尾号 1024 · 每地区唯一主账户',
-          rules: { channels: ['ACH', 'FedWire', 'SWIFT', '独立站收单'], payIn: 'ACH 当日 · FedWire 即时 · SWIFT T+1', payOut: '本地出款当日 · 国际出款 T+2', curs: ['USD', 'EUR', 'GBP'], banned: ['俄罗斯', '白俄罗斯', '伊朗', '朝鲜'] } },
-        { id: 'cn', name: '中国内地结算主账户', region: '中国内地', cur: 'CNY', bals: [{ cur: 'CNY', bal: 152307.88 }], note: '尾号 8888 · 每地区唯一主账户',
-          rules: { channels: ['CNAPS 大额支付', '银联云闪付', '速汇中国'], payIn: '大额支付 2 小时内到账', payOut: '当日出款 · 节假日顺延', curs: ['CNY'], banned: ['俄罗斯', '白俄罗斯', '伊朗', '朝鲜'] } },
-        { id: 'hk', name: '中国香港本地主账户', region: '中国香港', cur: 'HKD', bals: [{ cur: 'HKD', bal: 9860.00 }], note: 'FPS 已开通 · 每地区唯一主账户',
-          rules: { channels: ['FPS 转数快', 'CHATS', 'SWIFT'], payIn: 'FPS 即时到账 · SWIFT T+1', payOut: '本地出款当日 · 国际出款 T+2', curs: ['HKD', 'USD', 'CNY'], banned: ['俄罗斯', '白俄罗斯', '伊朗', '朝鲜'] } }
-    ];
-    function fmt(n) { return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-    function render() {
-        var grid = document.getElementById('acc-grid');
-        grid.innerHTML = ACCTS.map(function (a) {
-            var pri = a.bals.filter(function (b) { return b.cur === a.cur; })[0];
-            var rows = a.bals.map(function (b) {
-                var isPri = b.cur === a.cur;
-                return '<div class="flex items-center justify-between' + (isPri ? '' : ' border-t border-gray-100 pt-3 mt-3') + '">' +
-                    '<span class="text-sm ' + (isPri ? 'text-gray-900 font-medium' : 'text-gray-500') + '">' + b.cur + (isPri ? ' <span class="text-[10px] font-bold text-yellow-700 bg-yellow-100 rounded-full px-2 py-0.5 align-middle">主币种</span>' : '') + '</span>' +
-                    '<span class="' + (isPri ? 'text-2xl font-bold text-gray-900' : 'text-base font-semibold text-gray-700') + '" style="font-variant-numeric:tabular-nums">' + (SYM[b.cur] || '') + fmt(b.bal) + '</span>' +
-                    (isPri ? '' : '<button class="text-xs font-semibold text-yellow-600 hover:text-yellow-700 rd-set" data-acc="' + a.id + '" data-cur="' + b.cur + '">设为主币种</button>') +
-                    '</div>';
-            }).join('');
-            return '<div class="bg-white rounded-8 custom-shadow p-6 cursor-pointer hover:shadow-md transition-shadow acc-card" data-acc="' + a.id + '">' +
-                '<div class="flex items-center justify-between mb-4">' +
-                '<span class="text-sm text-gray-500">' + a.name + '</span>' +
-                '<span class="text-[10px] font-bold text-gray-500 bg-gray-100 rounded-full px-2 py-0.5">主账户</span>' +
-                '</div>' + rows +
-                '<p class="text-xs text-gray-400 mt-3">' + a.note + '</p>' +
-                '</div>';
-        }).join('');
-        grid.querySelectorAll('.acc-card').forEach(function (card) {
-            card.addEventListener('click', function (e) {
-                if (e.target.closest('.rd-set')) return;
-                openRules(card.dataset.acc);
-            });
-        });
-        grid.querySelectorAll('.rd-set').forEach(function (b) {
-            b.addEventListener('click', function () {
-                var a = ACCTS.filter(function (x) { return x.id === b.dataset.acc; })[0];
-                var cur = b.dataset.cur;
-                var p = a.bals.filter(function (x) { return x.cur === a.cur; })[0];
-                var n = a.bals.filter(function (x) { return x.cur === cur; })[0];
-                var oc = a.cur, ob = p.bal;
-                a.cur = cur; p.cur = cur; p.bal = n.bal; n.cur = oc; n.bal = ob;
-                render();
-            });
-        });
-    }
-    var wrap, mask, drawer;
-    function openRules(id) {
-        var a = ACCTS.filter(function (x) { return x.id === id; })[0];
-        var r = a.rules;
-        document.getElementById('rd-title').textContent = a.name;
-        document.getElementById('rd-sub').textContent = a.region + ' · 主展示币种 ' + a.cur;
-        document.getElementById('rd-body').innerHTML =
-            '<div class="bg-gray-50 rounded-8 p-4"><h4 class="text-xs font-semibold text-gray-400 mb-2">支持支付通道</h4><div class="flex flex-wrap gap-2">' + r.channels.map(function (x) { return '<span class="text-xs font-semibold text-yellow-700 bg-yellow-100 rounded-full px-2.5 py-1">' + x + '</span>'; }).join('') + '</div></div>' +
-            '<div class="bg-gray-50 rounded-8 p-4"><h4 class="text-xs font-semibold text-gray-400 mb-2">收款时间</h4><p class="text-sm text-gray-800">' + r.payIn + '</p><h4 class="text-xs font-semibold text-gray-400 mb-2 mt-4">出款时间</h4><p class="text-sm text-gray-800">' + r.payOut + '</p></div>' +
-            '<div class="bg-gray-50 rounded-8 p-4"><h4 class="text-xs font-semibold text-gray-400 mb-2">支持币种</h4><div class="flex flex-wrap gap-2">' + r.curs.map(function (x) { return '<span class="text-xs font-semibold text-gray-700 bg-gray-200 rounded-full px-2.5 py-1">' + x + '</span>'; }).join('') + '</div></div>' +
-            '<div class="bg-gray-50 rounded-8 p-4"><h4 class="text-xs font-semibold text-gray-400 mb-2">禁止交易国家 / 地区</h4><div class="flex flex-wrap gap-2">' + r.banned.map(function (x) { return '<span class="text-xs font-semibold text-red-600 bg-red-50 rounded-full px-2.5 py-1">' + x + '</span>'; }).join('') + '</div></div>';
-        wrap.classList.remove('hidden');
-        requestAnimationFrame(function () { mask.classList.add('opacity-100'); drawer.classList.remove('translate-x-full'); });
-    }
-    function closeRules() {
-        mask.classList.remove('opacity-100'); drawer.classList.add('translate-x-full');
-        setTimeout(function () { wrap.classList.add('hidden'); }, 300);
-    }
-    document.addEventListener('DOMContentLoaded', function () {
-        wrap = document.getElementById('acc-rules-wrap');
-        mask = document.getElementById('acc-rules-mask');
-        drawer = document.getElementById('acc-rules-drawer');
-        mask.addEventListener('click', closeRules);
-        document.getElementById('rd-close').addEventListener('click', closeRules);
-        render();
-    });
-})();
-</script>
 <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -256,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
         DDUI.modal({
             title: '账户充值', width: '480px',
             body: '<div class="ddui-field"><label class="ddui-label">充值币种</label>' +
-                '<select class="ddui-select" id="dp-cur"><option>USD - 美国本地主账户</option><option>EUR - 卢森堡本地主账户</option><option>CNY - 中国内地结算主账户</option><option>HKD - 中国香港本地主账户</option></select></div>' +
+                '<select class="ddui-select" id="dp-cur"><option>USD - 美元账户</option><option>EUR - 欧元账户</option><option>CNY - 人民币账户</option><option>HKD - 港币账户</option></select></div>' +
                 '<div class="ddui-field"><label class="ddui-label">充值方式</label>' +
                 '<select class="ddui-select" id="dp-method"><option>银行转账（1-2 个工作日，免手续费）</option><option>USDT-TRC20（约 5 分钟到账，0.1% 手续费）</option></select></div>' +
                 '<div class="ddui-field"><label class="ddui-label">充值金额</label>' +
