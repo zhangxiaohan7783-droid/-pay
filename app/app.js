@@ -62,7 +62,7 @@
       { id: 't1', t: '付款给 Global Parts GmbH', k: 'out', amt: -3200, cur: 'EUR', d: '今天 10:24', st: 'ok', ch: 'SEPA Instant' },
       { id: 't2', t: 'Shopify 店铺结算', k: 'in', amt: 12450.6, cur: 'USD', d: '今天 08:02', st: 'ok', ch: '独立站收单' },
       { id: 't3', t: '速汇中国 · 深圳优品', k: 'out', amt: -5000, cur: 'EUR', d: '昨天 16:40', st: 'wait', ch: '速汇中国' },
-      { id: 't4', t: 'EUR → USD 兑换', k: 'fx', amt: -2000, cur: 'EUR', d: '昨天 11:15', st: 'ok', ch: '兑换' },
+      { id: 't4', t: 'EUR → USD 换汇', k: 'fx', amt: -2000, cur: 'EUR', d: '昨天 11:15', st: 'ok', ch: '换汇' },
       { id: 't5', t: '微信收单结算', k: 'in', amt: 6820.4, cur: 'EUR', d: '10月6日', st: 'ok', ch: '微信收单' },
       { id: 't6', t: '付款给 李明', k: 'out', amt: -800, cur: 'EUR', d: '10月5日', st: 'fail', ch: '速汇中国' },
       { id: 't7', t: 'Steam 游戏收单结算', k: 'in', amt: 3390, cur: 'USD', d: '10月4日', st: 'ok', ch: '游戏收单' }
@@ -145,7 +145,7 @@
   /* 动态文本片段英文化（模拟数据 / 拼接字符串，i18n 词典无法整句匹配） */
   var EN = localStorage.getItem('dd-lang') === 'en';
   var FR = [['付款给 ', 'Payment to '], ['速汇中国 · ', 'China Express · '], ['速汇中国', 'China Express'], ['深圳优品', 'Shenzhen Youpin'], ['李明', 'Li Ming'],
-    ['Shopify 店铺结算', 'Shopify store settlement'], ['Steam 游戏收单结算', 'Steam gaming settlement'], ['微信收单结算', 'WeChat Pay settlement'], [' 兑换', ' exchange'], ['兑换', 'Exchange'],
+    ['Shopify 店铺结算', 'Shopify store settlement'], ['Steam 游戏收单结算', 'Steam gaming settlement'], ['微信收单结算', 'WeChat Pay settlement'], [' 换汇', ' exchange'], ['换汇', 'Exchange'],
     ['独立站收单', 'Online store'], ['微信收单', 'WeChat Pay'], ['游戏收单', 'Gaming'], ['微信 · ', 'WeChat · '], ['今天 ', 'Today '], ['昨天 ', 'Yesterday '], ['昨天', 'Yesterday'], ['刚刚', 'Just now'],
     ['今日 ', 'Today '], [' 账户', ' account'], ['账户', ' Account'], ['已入账', 'credited'], ['预计 30 分钟内到账', 'expected within 30 min']];
   function L(s) {
@@ -317,7 +317,7 @@
       '<button class="row" data-go="tx"><span class="ri" style="background:#FF9500">' + ic('doc') + '</span><span class="rt"><b>交易记录</b></span>' + CHEV + '</button>' +
       '<button class="row" data-go="paylink"><span class="ri" style="background:#007AFF">' + ic('link') + '</span><span class="rt"><b>收款链接</b></span>' + CHEV + '</button>' +
       '<button class="row" data-go="acquire"><span class="ri" style="background:#FF6482">' + ic('store') + '</span><span class="rt"><b>收单</b></span>' + CHEV + '</button>' +
-      '<button class="row" data-go="exchange"><span class="ri" style="background:#AF52DE">' + ic('swap') + '</span><span class="rt"><b>货币兑换</b></span>' + CHEV + '</button>' +
+      '<button class="row" data-go="exchange"><span class="ri" style="background:#AF52DE">' + ic('swap') + '</span><span class="rt"><b>换汇</b><small>多币种 · 含稳定币 · 0 手续费</small></span>' + CHEV + '</button>' +
       '<button class="row" data-go="tax"><span class="ri" style="background:#00B7EC">' + ic('doc') + '</span><span class="rt"><b>税务申报</b></span>' + CHEV + '</button>' +
       '<button class="row" data-go="invoices"><span class="ri" style="background:#FF8106">' + ic('bill') + '</span><span class="rt"><b>营收发票</b></span>' + CHEV + '</button></div>',
       mount: function () { $('#a-add').onclick = addCurrency; } };
@@ -341,7 +341,7 @@
 
   /* 交易记录：筛选 + 搜索 + 骨架 + 空/搜索空 */
   R.tx = function () {
-    return { html: nav('交易记录') + '<div class="seg-wrap"><div class="dd-seg" id="tx-seg"><button class="on" data-k="all">全部</button><button data-k="in">收入</button><button data-k="out">支出</button><button data-k="fx">兑换</button></div></div>' +
+    return { html: nav('交易记录') + '<div class="seg-wrap"><div class="dd-seg" id="tx-seg"><button class="on" data-k="all">全部</button><button data-k="in">收入</button><button data-k="out">支出</button><button data-k="fx">换汇</button></div></div>' +
       '<div style="padding:0 16px 14px"><label style="display:flex;align-items:center;gap:8px;background:rgba(118,118,128,.12);border-radius:10px;padding:0 10px;height:38px;color:#8e8e93">' + ic('search') + '<input id="tx-q" placeholder="搜索交易" style="flex:1;border:0;background:transparent;outline:0;font-size:16px;box-shadow:none;padding:0"/></label></div>' +
       '<div id="tx-list">' + skel(5) + '</div>',
       mount: function () {
@@ -508,19 +508,43 @@
   };
 
   R.exchange = function () {
-    return { html: nav('货币兑换') + '<div class="list plain" style="margin-top:8px"><label class="row"><span class="rt"><b>卖出</b><small>可用 €' + fmt(S.accounts[0].bal) + '</small></span><input id="fx-a" inputmode="decimal" placeholder="0.00" style="width:140px;text-align:right;border:0;outline:0;font-size:22px;font-weight:700;background:transparent;box-shadow:none;padding:0"/><span style="font-weight:600;margin-left:6px">EUR</span></label>' +
-      '<label class="row"><span class="rt"><b>买入</b><small id="fx-r">1 EUR = ' + RATE.USD.toFixed(4) + ' USD</small></span><span id="fx-b" style="font-size:22px;font-weight:700">0.00</span><select id="fx-c" style="margin-left:6px;border:0;background:transparent;font-weight:600;box-shadow:none;padding:0"><option>USD</option><option>GBP</option><option>CNY</option><option>USDT</option></select></label></div>' +
-      '<p class="foot-note">汇率实时更新，锁定 30 秒 · 0 手续费</p><div style="padding:24px 16px 0"><button class="btn pri" id="fx-go" disabled>立即兑换</button></div>',
+    function balsHtml() {
+      return S.accounts.map(function (x) {
+        return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0"><span style="width:30px;height:30px;border-radius:50%;background:#f2f2f7;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">' + ddFlagImg(x.cur, 26) + '</span><span style="flex:1;min-width:0"><b style="font-size:15px">' + x.cur + '</b><small style="display:block;color:var(--dd-ink-2);font-size:12px">' + x.name + '</small></span><b style="font-size:16px;font-weight:650;font-variant-numeric:tabular-nums">' + (SYM[x.cur] || '') + fmt(x.bal) + '</b></div>';
+      }).join('');
+    }
+    var opts = S.accounts.map(function (x) { return '<option>' + x.cur + '</option>'; }).join('');
+    return { html: nav('换汇') +
+      '<div class="card" style="margin:8px 16px 0;padding:12px 16px 4px"><div style="font-size:13px;font-weight:600;color:var(--dd-ink-2)">我的余额</div><div id="fx-bals">' + balsHtml() + '</div></div>' +
+      '<div class="list plain" style="margin-top:8px">' +
+      '<label class="row"><span class="rt"><b>卖出</b><small id="fx-avail"></small></span><input id="fx-a" inputmode="decimal" placeholder="0.00" style="width:120px;text-align:right;border:0;outline:0;font-size:22px;font-weight:650;background:transparent;box-shadow:none;padding:0;font-variant-numeric:tabular-nums"/><select id="fx-from" style="margin-left:6px;border:0;background:transparent;font-weight:600;box-shadow:none;padding:0">' + opts + '</select></label>' +
+      '<label class="row"><span class="rt"><b>买入</b><small id="fx-r"></small></span><span id="fx-b" style="font-size:22px;font-weight:650;font-variant-numeric:tabular-nums">0.00</span><select id="fx-to" style="margin-left:6px;border:0;background:transparent;font-weight:600;box-shadow:none;padding:0"></select></label></div>' +
+      '<p class="foot-note">汇率实时更新，锁定 30 秒 · 0 手续费</p><div style="padding:24px 16px 0"><button class="btn pri" id="fx-go" disabled>立即换汇</button></div>',
       mount: function () {
-        var a = $('#fx-a'), c = $('#fx-c'), b = $('#fx-go');
-        function calc() { var v = parseFloat(a.value) || 0; $('#fx-b').textContent = fmt(v * RATE[c.value]); $('#fx-r').textContent = '1 EUR = ' + RATE[c.value].toFixed(4) + ' ' + c.value; b.disabled = !(v > 0 && v <= S.accounts[0].bal); }
-        a.oninput = function () { this.value = this.value.replace(/[^\d.]/g, ''); calc(); }; c.onchange = calc;
+        var a = $('#fx-a'), f = $('#fx-from'), t = $('#fx-to'), b = $('#fx-go');
+        function acc(cur) { return S.accounts.filter(function (x) { return x.cur === cur; })[0] || { bal: 0 }; }
+        function rate() { return (RATE[t.value] || 1) / (RATE[f.value] || 1); }
+        function rebuildTo() { t.innerHTML = S.accounts.filter(function (x) { return x.cur !== f.value; }).map(function (x) { return '<option>' + x.cur + '</option>'; }).join(''); calc(); }
+        function calc() {
+          var v = parseFloat(a.value) || 0, r = rate(), fa = acc(f.value);
+          $('#fx-b').textContent = fmt(v * r);
+          $('#fx-r').textContent = '1 ' + f.value + ' = ' + r.toFixed(4) + ' ' + t.value;
+          $('#fx-avail').textContent = '可用 ' + (SYM[f.value] || '') + fmt(fa.bal);
+          b.disabled = !(v > 0 && v <= fa.bal);
+        }
+        a.oninput = function () { this.value = this.value.replace(/[^\d.]/g, ''); calc(); };
+        f.onchange = rebuildTo; t.onchange = calc;
+        rebuildTo();
         b.onclick = function () {
-          var v = parseFloat(a.value);
-          DDUI.busy(b, 900, '兑换成功').then(function () {
-            S.accounts[0].bal -= v;
-            var t = S.accounts.filter(function (x) { return x.cur === c.value; })[0]; if (t) t.bal += v * RATE[c.value];
-            S.tx.unshift({ id: 't' + Date.now(), t: 'EUR → ' + c.value + ' 兑换', k: 'fx', amt: -v, cur: 'EUR', d: '刚刚', st: 'ok', ch: '兑换' }); save(); a.value = ''; calc();
+          var v = parseFloat(a.value), fr = acc(f.value);
+          if (!(v > 0 && v <= fr.bal)) { toast('请输入有效金额', 'error'); return; }
+          DDUI.busy(b, 900, '换汇成功').then(function () {
+            var to = acc(t.value), got = v * rate();
+            fr.bal -= v; to.bal += got;
+            S.tx.unshift({ id: 't' + Date.now(), t: f.value + ' → ' + t.value + ' 换汇', k: 'fx', amt: -v, cur: f.value, d: '刚刚', st: 'ok', ch: '换汇' });
+            save();
+            $('#fx-bals').innerHTML = balsHtml();
+            a.value = ''; calc();
           });
         };
       } };
