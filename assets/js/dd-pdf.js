@@ -30,20 +30,52 @@
         setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 800);
     }
 
-    /* 单据/发票 A4 预览 HTML（modal 内嵌）。d: {badge,no,date,seller,sellerSub,buyer,buyerSub,heads[],rows[][],foot[][],note,cur} */
+    /* 发票模板配置（发票模板管理页写入） */
+    var TPL_KEY = 'dd-inv-tpl-v1';
+    var TPL_THEMES = {
+        classic: { head: 'background:linear-gradient(90deg,#382b1b,#5a4a2f);color:#fff', sub: 'opacity:.7', name: '经典深棕' },
+        violet: { head: 'background:linear-gradient(90deg,#4c1d95,#7c3aed);color:#fff', sub: 'opacity:.75', name: '紫罗兰' },
+        minimal: { head: 'background:#fff;color:#382b1b;border-bottom:3px solid #FFD008', sub: 'color:#9ca3af', name: '极简白' }
+    };
+    function tpl() {
+        try {
+            var d = JSON.parse(localStorage.getItem(TPL_KEY) || 'null');
+            if (d && TPL_THEMES[d.tpl]) return d;
+        } catch (e) {}
+        return { tpl: 'classic', logo: '', intro: '' };
+    }
+
+    /* 单据/发票 A4 预览 HTML（modal 内嵌）。d: {badge,no,date,seller,sellerSub,buyer,buyerSub,heads[],rows[][],foot[][],note,account,shipTo,theme,logo,intro} */
     function docHtml(d) {
+        var t = d.theme ? (TPL_THEMES[d.theme] || TPL_THEMES.classic) : TPL_THEMES[tpl().tpl];
+        var logo = d.logo !== undefined ? d.logo : tpl().logo;
+        var intro = d.intro !== undefined ? d.intro : tpl().intro;
         var rows = d.rows.map(function (r) {
             return '<tr class="border-b border-gray-100">' + r.map(function (c, i) {
                 return '<td class="py-2.5 px-2 text-sm ' + (i === 0 ? 'text-left' : 'text-right') + ' text-[#382b1b]">' + c + '</td>';
             }).join('') + '</tr>';
         }).join('');
+        var brand = logo
+            ? '<img src="' + logo + '" style="height:34px;max-width:140px;object-fit:contain;border-radius:6px;' + (d.theme === 'minimal' || (!d.theme && tpl().tpl === 'minimal') ? '' : 'background:#fff;padding:2px 6px;') + '"/>'
+            : '<p class="font-bold text-sm">Dingdang Pay 叮当支付</p>';
+        var extra = '';
+        if (d.account) {
+            extra += '<div class="rounded-8 border border-gray-150 bg-gray-50 p-3 text-xs" style="border:1px solid #f3f4f6"><p class="font-bold text-gray-400 uppercase mb-1">收款账户 / Beneficiary</p>'
+                + '<p class="text-sm font-bold text-[#382b1b]">' + d.account.name + '</p>'
+                + '<p class="font-mono text-gray-500 mt-0.5">IBAN ' + d.account.iban + ' · BIC ' + d.account.bic + '</p></div>';
+        }
+        if (d.shipTo) {
+            extra += '<div class="rounded-8 p-3 text-xs" style="border:1px dashed #d1d5db"><p class="font-bold text-gray-400 uppercase mb-1">收货地址 / Ship To</p>'
+                + '<p class="text-sm text-[#382b1b] leading-relaxed">' + d.shipTo + '</p></div>';
+        }
         return '<div class="bg-white border border-gray-200 rounded-8 overflow-hidden shadow-sm">'
-            + '<div class="px-6 py-4 flex justify-between items-center" style="background:linear-gradient(90deg,#382b1b,#5a4a2f);color:#fff">'
-            + '<div><p class="font-bold text-sm">Dingdang Pay 叮当支付</p><p class="text-[10px] opacity-70">' + (d.sellerSub || 'MFSA Licensed Financial Platform') + '</p></div>'
-            + '<div class="text-right"><p class="text-lg font-bold tracking-wide">' + (d.badge || 'INVOICE') + '</p><p class="text-[11px] font-mono opacity-80">' + d.no + '</p></div></div>'
+            + '<div class="px-6 py-4 flex justify-between items-center" style="' + t.head + '">'
+            + '<div>' + brand + '<p class="text-[10px] mt-1" style="' + t.sub + '">' + (intro || d.sellerSub || 'MFSA Licensed Financial Platform') + '</p></div>'
+            + '<div class="text-right"><p class="text-lg font-bold tracking-wide">' + (d.badge || 'INVOICE') + '</p><p class="text-[11px] font-mono" style="' + t.sub + '">' + d.no + '</p></div></div>'
             + '<div class="p-6 space-y-4">'
             + '<div class="grid grid-cols-2 gap-6 text-xs"><div><p class="font-bold text-gray-400 uppercase mb-1">开票方 / From</p><p class="font-bold text-sm text-[#382b1b]">' + d.seller + '</p></div>'
             + '<div class="text-right"><p class="font-bold text-gray-400 uppercase mb-1">客户 / To</p><p class="font-bold text-sm text-[#382b1b]">' + d.buyer + '</p>' + (d.buyerSub ? '<p class="text-gray-400 mt-0.5">' + d.buyerSub + '</p>' : '') + '</div></div>'
+            + extra
             + '<table class="w-full"><thead><tr class="border-b-2 border-gray-200">' + d.heads.map(function (hd, i) {
                 return '<th class="py-2 px-2 text-[10px] font-bold text-gray-400 uppercase ' + (i === 0 ? 'text-left' : 'text-right') + '">' + hd + '</th>';
             }).join('') + '</tr></thead><tbody>' + rows + '</tbody></table>'
@@ -62,5 +94,5 @@
         makePdf(lines, filename);
     }
 
-    window.DDPdf = { make: makePdf, docHtml: docHtml, kv: kvPdf };
+    window.DDPdf = { make: makePdf, docHtml: docHtml, kv: kvPdf, tpl: tpl, themes: TPL_THEMES };
 })();

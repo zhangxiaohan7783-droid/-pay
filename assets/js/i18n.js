@@ -8,7 +8,7 @@
     '叮当支付': 'Dingdang Pay', '控制面板': 'Dashboard', '我的钱包': 'My Wallet',
     '资金与汇款': 'FUNDS & REMITTANCE', '我的账户': 'My Accounts', '转账': 'Transfer',
     '全球即时付款': 'Instant Payout', '速汇中国': 'Express China', 'IBAN 账户': 'IBAN Accounts',
-    '法币交易记录': 'Fiat Transactions', '收款人': 'Recipients',
+    '银行流水': 'Fiat Transactions', '收款人': 'Recipients',
     '数字资产': 'DIGITAL ASSETS', '数字资产兑换': 'Exchange', 'USDT 钱包': 'USDT Wallet', '加密钱包': 'Crypto Wallet',
     '收单管理': 'ACQUIRING', '线上收单': 'Online Acquiring', '线上加密币收单': 'Crypto Acquiring',
     '线下收单': 'Offline Acquiring', '收款链接': 'Payment Links', '营收发票': 'Invoices',
@@ -357,8 +357,8 @@
     '意大利 IT': 'Italy IT', '德国 DE': 'Germany DE', '法国 FR': 'France FR', '西班牙 ES': 'Spain ES',
     'IT €106,964 + DE €24,396': 'IT €106,964 + DE €24,396',
     '小贴士：固定金额链接适合商品售卖；"顾客输入金额"链接适合打赏、活动收款等场景。链接支持微信、支付宝、银行卡与加密币支付。': 'Tip: fixed-amount links suit product sales; customer-defined links suit tips and events. Links support WeChat, Alipay, cards and crypto.',
-    /* 法币交易记录 / 速汇中国 / 全球即时付款 */
-    '法币交易记录': 'Fiat Transactions', '仅展示法币（EUR / GBP / USD / CNY 等）资金往来流水，数字资产记录请前往对应钱包查看': 'Fiat (EUR / GBP / USD / CNY) flows only. For digital assets, see the wallets.',
+    /* 银行流水 / 速汇中国 / 全球即时付款 */
+    '银行流水': 'Fiat Transactions', '仅展示法币（EUR / GBP / USD / CNY 等）资金往来流水，数字资产记录请前往对应钱包查看': 'Fiat (EUR / GBP / USD / CNY) flows only. For digital assets, see the wallets.',
     '国际电汇': 'Wire Transfer', 'EUR 电汇至 GBP 账户': 'EUR wire to GBP account',
     '速汇中国': 'Express China', '即时付款到微信、支付宝、银联卡，分钟级到账，透明费率': 'Instant payout to WeChat, Alipay or UnionPay. Arrives in minutes with transparent fees.',
     '速汇中国通道': 'Express China Channel', '使用速汇中国通道付款至微信、支付宝或银联卡，最快可实现 5 分钟内到账。': 'Pay to WeChat, Alipay or UnionPay via Express China — as fast as 5 minutes.',
