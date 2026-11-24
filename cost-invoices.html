@@ -111,6 +111,7 @@
 </main>
 <div class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
 </div>
+<script src="assets/js/dd-pdf.js"></script>
 <script src="assets/js/ui.js"></script>
 <script src="assets/js/entity.js"></script>
 <script>
@@ -221,6 +222,77 @@ function ciRenderCatCards() {
 }
 document.addEventListener('DOMContentLoaded', ciRenderCatCards);
 
+</script>
+
+<script>
+/* 成本发票：查看改 PDF 版式；凭证改上传/下载 */
+(function () {
+    var CI_DOCS_KEY = 'dd-ci-docs-v1';
+    function ciDocs() { try { return JSON.parse(localStorage.getItem(CI_DOCS_KEY) || '{}'); } catch (e) { return {}; } }
+    function ciDocsSave(d) { try { localStorage.setItem(CI_DOCS_KEY, JSON.stringify(d)); } catch (e) {} }
+    function taxOf(amtTxt) { var v = parseFloat(String(amtTxt).replace(/[^0-9.\-]/g, '')) || 0; var net = v / 1.22; return { net: net, vat: v - net }; }
+    function fmt(n) { return '€' + n.toLocaleString('en-US', { minimumFractionDigits: 2 }); }
+    function eur(s) { return String(s).replace(/€/g, 'EUR '); }
+
+    window.ciDetail = function (no, sup, amt, st) {
+        var t = taxOf(amt);
+        var d = { badge: 'FATTURA', no: no, date: '2026-09-20', seller: sup, sellerSub: 'Fornitore · Italia',
+            buyer: 'Flash Commerce srl', buyerSub: 'P.IVA IT09876543210',
+            heads: ['描述', '金额'], rows: [['成本采购 · ' + sup, amt]],
+            foot: [['小计(不含税)', fmt(t.net)], ['IVA 22%', fmt(t.vat)], ['合计', amt]],
+            note: '认证状态: ' + st + ' · 出口退税申报批次 2026-Q3' };
+        DDUI.modal({ title: '成本发票 · ' + no, width: '640px', body: DDPdf.docHtml(d),
+            actions: [{ text: '下载 PDF', onClick: function () {
+                DDPdf.kv('FATTURA', no, [['Date', '2026-09-20'], ['From', sup], ['To', 'Flash Commerce srl'], ['Net', 'EUR ' + t.net.toFixed(2)], ['IVA 22%', 'EUR ' + t.vat.toFixed(2)], ['Total', eur(amt)], ['Status', st]], no + '.pdf');
+                DDUI.toast('发票 PDF 已下载', 'success');
+            } }, { text: '关闭', type: 'primary' }] });
+    };
+
+    function docPairHtml(no) {
+        var up = ciDocs()[no];
+        return '<button class="text-xs font-bold px-1 py-1.5 rounded-8 transition-all ' + (up ? 'text-green-600' : 'text-blue-600') + ' hover:underline inline-flex items-center" onclick="ciDocUpload(\'' + no + '\',this)">' + (up ? '✓ 已传' : '上传') + '</button>'
+            + '<button class="text-xs font-bold px-1 py-1.5 rounded-8 transition-all text-blue-600 hover:underline inline-flex items-center" onclick="ciDocDownload(\'' + no + '\')">下载</button>';
+    }
+    function replaceVoucherButtons() {
+        document.querySelectorAll('button[onclick*="ciVoucher"]').forEach(function (b) {
+            var tr = b.closest('tr');
+            var no = tr.querySelector('td').textContent.trim();
+            var span = document.createElement('span');
+            span.innerHTML = docPairHtml(no);
+            b.replaceWith.apply(b, Array.from(span.children));
+        });
+    }
+    window.ciDocUpload = function (no, btn) {
+        var inp = document.getElementById('ci-doc-inp');
+        if (!inp) {
+            inp = document.createElement('input'); inp.type = 'file'; inp.id = 'ci-doc-inp'; inp.style.display = 'none';
+            inp.accept = '.pdf,.jpg,.jpeg,.png'; document.body.appendChild(inp);
+        }
+        inp.onchange = function () {
+            var fname = (inp.files && inp.files[0]) ? inp.files[0].name : 'voucher.pdf';
+            var d = ciDocs(); d[no] = fname; ciDocsSave(d); inp.value = '';
+            DDUI.toast('认证凭证「' + fname + '」已上传', 'success');
+            btn.outerHTML = '<button class="text-xs font-bold px-1 py-1.5 rounded-8 transition-all text-green-600 hover:underline inline-flex items-center" onclick="ciDocUpload(\'' + no + '\',this)">✓ 已传</button>';
+        };
+        inp.click();
+    };
+    window.ciDocDownload = function (no) {
+        var d = ciDocs()[no];
+        DDPdf.kv('VOUCHER', no, [['Type', 'Certification Voucher'], ['Invoice', no], ['File', d || 'auto-generated'], ['Company', 'Flash Commerce srl'], ['Batch', '2026-Q3 Export Rebate']], no + '-voucher.pdf');
+        DDUI.toast('凭证已下载', 'success');
+    };
+    window.ciVerify = function (b) {
+        var tr = b.closest('tr');
+        var no = tr.querySelector('td').textContent.trim();
+        DDUI.confirm('确认认证该发票？认证后计入当期进项税。', function () {
+            tr.querySelectorAll('td')[6].innerHTML = '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-600">已认证</span>';
+            b.outerHTML = docPairHtml(no);
+            if (window.ciRenderCatCards) ciRenderCatCards();
+            DDUI.toast('发票已认证，进项税已同步计入税务申报', 'success');
+        });
+    };
+    document.addEventListener('DOMContentLoaded', replaceVoucherButtons);
+})();
 </script>
 <script src="assets/js/i18n.js"></script>
 </body>

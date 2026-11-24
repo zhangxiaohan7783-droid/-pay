@@ -782,6 +782,7 @@
         }
     </script>
 <div class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+<script src="assets/js/dd-pdf.js"></script>
 <script src="assets/js/ui.js"></script>
 <script src="assets/js/entity.js"></script>
 <script>
@@ -831,9 +832,19 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
         if (t === '导出数据') { b.dataset.wired = 1; b.addEventListener('click', function () { ddCsv('table', 'invoices.csv'); }); }
-        if (t === '查看') {
+        if (!t && b.closest('#invoiceTableBody') && b.querySelector('iconify-icon[icon="solar:download-bold"]')) {
             b.dataset.wired = 1;
-            b.addEventListener('click', function () { ddRowDetail('发票详情', b, ['发票号码', '抬头', '金额', '类型', '状态', '开票日期', '操作']); });
+            b.addEventListener('click', function () {
+                var td = b.closest('tr').querySelectorAll('td');
+                invPdfDl({ no: td[0].textContent.trim(), client: td[1].textContent.trim(), amt: td[2].textContent.trim(), type: td[3].textContent.trim(), date: td[4].textContent.trim() });
+            });
+        }
+        if (t === '查看' && b.closest('#invoiceTableBody')) {
+            b.dataset.wired = 1;
+            b.addEventListener('click', function () {
+                var td = b.closest('tr').querySelectorAll('td');
+                invPdfView({ no: td[0].textContent.trim(), client: td[1].textContent.trim(), amt: td[2].textContent.trim(), type: td[3].textContent.trim(), date: td[4].textContent.trim() });
+            });
         }
         if (t === '编辑') {
             b.dataset.wired = 1;
@@ -850,15 +861,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (t === '开票') {
             b.dataset.wired = 1;
             b.addEventListener('click', function () {
-                DDUI.confirm('申请开票', '确认为该笔营收开具增值税电子普通发票？开票后将发送至财务邮箱。', function () {
-                    var tr = b.closest('tr');
-                    if (tr) {
-                        var st = tr.querySelectorAll('td')[4];
-                        if (st) st.innerHTML = '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-50 text-yellow-600">开票中</span>';
-                        b.style.display = 'none';
-                    }
-                    DDUI.toast('开票申请已提交，预计 1 个工作日内开出', 'success');
-                }, '确认开票');
+                var td = b.closest('tr').querySelectorAll('td');
+                var q = new URLSearchParams({ src: td[1].textContent.trim(), amt: td[2].textContent.trim(), type: td[3].textContent.trim(), tx: td[0].textContent.trim() });
+                location.href = 'invoice-create.html?' + q.toString();
             });
         }
     });
@@ -893,17 +898,38 @@ function invRowHtml(invNo, t, linked) {
         '<td class="px-6 py-4"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-700">已开票</span></td>' +
         '<td class="px-6 py-4 text-center"><div class="flex items-center justify-center gap-3">' +
         '<button class="text-[#00B7EC] hover:underline text-xs font-bold" onclick="invView(\'' + invNo + '\',\'' + t.source + '\',\'' + invM(t) + '\',\'' + t.id + '\')">查看</button>' +
-        '<button class="text-gray-400 hover:text-[#382b1b]" onclick="DDUI.toast(\'发票 PDF 已开始下载\',\'success\')"><iconify-icon icon="solar:download-bold"></iconify-icon></button>' +
+        '<button class="text-gray-400 hover:text-[#382b1b]" onclick="invPdfDl({no:\'' + invNo + '\',client:\'' + t.source + '\',amt:\'' + invM(t) + '\',type:\'' + t.type + '\',date:\'' + t.date + '\',tx:\'' + t.id + '\'})"><iconify-icon icon="solar:download-bold"></iconify-icon></button>' +
         '</div></td></tr>';
 }
-function invView(no, src, amt, txId) {
-    DDUI.modal({ title: '发票详情 · ' + no, body:
-        '<div class="ddui-kv"><span>发票号</span><b>' + no + '</b></div>' +
-        '<div class="ddui-kv"><span>客户/来源</span><b>' + src + '</b></div>' +
-        '<div class="ddui-kv"><span>金额</span><b>' + amt + '</b></div>' +
-        '<div class="ddui-kv"><span>关联流水</span><b>' + txId + '</b></div>' +
-        '<div class="ddui-kv"><span>状态</span><b>已开票 · 已关联入账</b></div>',
-        actions: [{ text: '下载 PDF', onClick: function (c) { c(); DDUI.toast('发票 PDF 已开始下载', 'success'); } }, { text: '关闭', type: 'primary' }] });
+function invView(no, src, amt, txId) { invPdfView({ no: no, client: src, amt: amt, type: '收单收入', date: new Date().toISOString().slice(0, 10), tx: txId }); }
+
+/* ---- PDF 版式预览 + 下载（优先读取 dd-inv-docs-v1 完整明细） ---- */
+var INV_DOCS_KEY = 'dd-inv-docs-v1';
+function invDocs() { try { return JSON.parse(localStorage.getItem(INV_DOCS_KEY) || '{}'); } catch (e) { return {}; } }
+function invParseAmt(s) { var v = parseFloat(String(s).replace(/[^0-9.\-]/g, '')); return isNaN(v) ? 0 : v; }
+function invMoney(n) { return '€' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+function invDocData(o) {
+    var docs = invDocs();
+    if (docs[o.no] && docs[o.no].items) return docs[o.no];
+    var amt = invParseAmt(o.amt), net = amt / 1.22, vat = amt - net;
+    return { badge: 'INVOICE', no: o.no, date: o.date || '2026-11-25', seller: 'Dingdang Pay Ltd', sellerSub: 'MFSA License C-123456 · Malta',
+        buyer: o.client, buyerSub: o.tx ? '关联流水 ' + o.tx : '企业客户',
+        heads: ['描述', '件数', '单价', '折扣', 'VAT', '金额'],
+        rows: [[(o.type || '营收') + ' · ' + o.client, '1', invMoney(net), '0%', '22%', o.amt]],
+        foot: [['小计(不含税)', invMoney(net)], ['VAT 22%', invMoney(vat)], ['合计', o.amt]] };
+}
+function invPdfView(o) {
+    var d = invDocData(o);
+    DDUI.modal({ title: '发票 · ' + o.no, width: '680px', body: DDPdf.docHtml(d),
+        actions: [{ text: '下载 PDF', onClick: function () { invPdfDl(o); } }, { text: '关闭', type: 'primary' }] });
+}
+function invPdfDl(o) {
+    var d = invDocData(o);
+    var kvs = [['Date', d.date], ['From', 'Dingdang Pay Ltd'], ['To', d.buyer]];
+    d.rows.forEach(function (r) { kvs.push([String(r[0]).slice(0, 40), String(r[r.length - 1]).replace(/\u20ac/g, 'EUR ')]); });
+    d.foot.forEach(function (f) { kvs.push([f[0], String(f[1]).replace(/\u20ac/g, 'EUR ')]); });
+    DDPdf.kv('INVOICE', o.no, kvs, o.no + '.pdf');
+    DDUI.toast('发票 PDF 已下载', 'success');
 }
 
 /* 从流水开票：勾选未开票流水，一键批量开票并自动关联 */
@@ -984,10 +1010,15 @@ function invRefreshStats() {}
 document.addEventListener('DOMContentLoaded', function () {
     var st = invState();
     var tbody = document.getElementById('invoiceTableBody');
+    var created = [];
+    try { created = JSON.parse(localStorage.getItem('dd-inv-created-v1') || '[]'); } catch (e) {}
     Object.keys(st.billed).forEach(function (txId) {
-        var t = INV_TX.filter(function (x) { return x.id === txId; })[0];
+        var t = INV_TX.filter(function (x) { return x.id === txId; })[0]
+            || created.filter(function (x) { return x.id === txId; })[0];
         if (t) tbody.insertAdjacentHTML('afterbegin', invRowHtml(st.billed[txId], t, true));
     });
+    var billedNo = new URLSearchParams(location.search).get('billed');
+    if (billedNo) DDUI.toast('发票 ' + billedNo + ' 已开具并关联入账', 'success');
     /* 恢复手工关联标记 */
     document.querySelectorAll('#invoiceTableBody tr').forEach(function (tr) {
         var invNo = tr.querySelector('td').textContent.trim();
