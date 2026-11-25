@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>卡费定价 - 叮当支付内部运营后台</title>
+<script src="../assets/vendor/tailwindcss.js"></script>
+<script>tailwind.config = { theme: { extend: { colors: { primary: '#FFD008', dark: '#382b1b', accent1: '#FF8106', accent2: '#00B7EC', accent3: '#B786D6' }, borderRadius: { '8': '8px' } } } }</script>
+<script src="../assets/vendor/iconify-icon.min.js"></script>
+<style>
+body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #382b1b; background-color: #f5f4f0; }
+.custom-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
+.rounded-8 { border-radius: 8px; }
+</style>
+<link rel="stylesheet" href="../assets/css/apple.css" data-dd-apple="1"/>
+</head>
+<body class="bg-gray-50">
+<div class="flex min-h-screen">
+<style>
+.ad-sidenav-link{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;color:#9ca3af;font-size:14px;line-height:1.4;transition:background .15s,color .15s;text-decoration:none}
+.ad-sidenav-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.ad-sidenav-active,.ad-sidenav-active:hover{background:#FFD008;color:#382b1b;font-weight:600}
+.ad-sidenav-sec{padding:16px 12px 6px;font-size:11px;font-weight:600;color:#6b7280;letter-spacing:.05em}
+.ad-noscroll{scrollbar-width:none;-ms-overflow-style:none}
+.ad-noscroll::-webkit-scrollbar{display:none}
+</style>
+<aside class="w-64 flex-none hidden lg:flex flex-col" id="sidebar" style="background:#241d12"><div class="p-6 flex items-center space-x-3"><a class="flex items-center space-x-3" href="index.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="../assets/img/logo-h-rev.png"/></a></div><div class="flex-1 overflow-y-auto px-4 py-2 ad-noscroll"><nav class="space-y-1"><a class="ad-sidenav-link" href="index.html"><iconify-icon class="text-xl" icon="solar:widget-bold"></iconify-icon><span>运营总览</span></a><div class="ad-sidenav-sec">平台运营</div><a class="ad-sidenav-link" href="op-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>平台运营总看板</span></a><a class="ad-sidenav-link" href="op-customers.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>客户主体总览</span></a><a class="ad-sidenav-link" href="op-channels.html"><iconify-icon class="text-xl" icon="solar:globus-bold"></iconify-icon><span>渠道管理</span></a><a class="ad-sidenav-link" href="op-roles.html"><iconify-icon class="text-xl" icon="solar:lock-password-bold"></iconify-icon><span>角色权限配置</span></a><a class="ad-sidenav-link" href="op-export.html"><iconify-icon class="text-xl" icon="solar:download-square-bold"></iconify-icon><span>监管数据包导出</span></a><div class="ad-sidenav-sec">卡中台</div><a class="ad-sidenav-link ad-sidenav-active" href="card-pricing.html"><iconify-icon class="text-xl" icon="solar:card-transfer-bold"></iconify-icon><span>卡费定价</span></a><a class="ad-sidenav-link" href="card-recon.html"><iconify-icon class="text-xl" icon="solar:calculator-bold"></iconify-icon><span>卡费对账</span></a><div class="ad-sidenav-sec">客户与开户</div><div class="ad-sidenav-sec">个人开户管理</div><a class="ad-sidenav-link" href="ob-personal-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>个人开户总看板</span></a><a class="ad-sidenav-link" href="ob-personal.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>个人开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-personal-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>个人开户资料归档</span></a><a class="ad-sidenav-link" href="ob-personal-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-personal-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-personal-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>个人开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-personal-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>个人批量处理</span></a><a class="ad-sidenav-link" href="ob-personal-templates.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>驳回话术模板</span></a><a class="ad-sidenav-link" href="ob-personal-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>个人复审台账</span></a><div class="ad-sidenav-sec">商业开户管理</div><a class="ad-sidenav-link" href="ob-business-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>商业开户总看板</span></a><a class="ad-sidenav-link" href="ob-business.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>商业开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-business-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>商业开户资料归档</span></a><a class="ad-sidenav-link" href="ob-business-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-business-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-business-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>商业开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-business-xgd.html"><iconify-icon class="text-xl" icon="solar:globus-bold"></iconify-icon><span>XGD 开户管理</span></a><a class="ad-sidenav-link" href="ob-business-xgd-form.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>XGD 开户表单</span></a><a class="ad-sidenav-link" href="ob-business-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>商业 EDD 工单</span></a><a class="ad-sidenav-link" href="ob-business-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>商业批量处理</span></a><a class="ad-sidenav-link" href="ob-business-reject.html"><iconify-icon class="text-xl" icon="solar:shield-cross-bold"></iconify-icon><span>拒户原因库</span></a><a class="ad-sidenav-link" href="ob-business-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>商业复审台账</span></a><a class="ad-sidenav-link" href="ob-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>开户配置</span></a><a class="ad-sidenav-link" href="business.html"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon><span>商业客户管理</span></a><a class="ad-sidenav-link" href="personal.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>个人客户管理</span></a><div class="ad-sidenav-sec">风控与合规</div><a class="ad-sidenav-link" href="risk.html"><iconify-icon class="text-xl" icon="solar:shield-warning-bold"></iconify-icon><span>风控总览</span></a><a class="ad-sidenav-link" href="risk-kyc.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>商户KYC档案</span></a><a class="ad-sidenav-link" href="risk-score.html"><iconify-icon class="text-xl" icon="solar:slider-minimalistic-horizontal-bold"></iconify-icon><span>风险评分配置</span></a><a class="ad-sidenav-link" href="risk-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>EDD 强化尽调</span></a><a class="ad-sidenav-link" href="risk-alerts.html"><iconify-icon class="text-xl" icon="solar:bell-bing-bold"></iconify-icon><span>交易风控告警</span></a><a class="ad-sidenav-link" href="risk-screening.html"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon><span>名单筛查</span></a><a class="ad-sidenav-link" href="risk-ledger.html"><iconify-icon class="text-xl" icon="solar:notebook-bold"></iconify-icon><span>商户风险台账</span></a><a class="ad-sidenav-link" href="risk-controls.html"><iconify-icon class="text-xl" icon="solar:lock-bold"></iconify-icon><span>账户管控中心</span></a><a class="ad-sidenav-link" href="risk-str.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>STR 可疑上报</span></a><a class="ad-sidenav-link" href="risk-audit.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审计日志</span></a><a class="ad-sidenav-link" href="risk-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>合规配置</span></a><a class="ad-sidenav-link" href="risk-review.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>审核工作台</span></a><a class="ad-sidenav-link" href="risk-cases.html"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon><span>案件管理</span></a><a class="ad-sidenav-link" href="risk-learn.html"><iconify-icon class="text-xl" icon="solar:square-academic-cap-bold"></iconify-icon><span>学习中心</span></a><div class="ad-sidenav-sec">安全与服务</div><a class="ad-sidenav-link" href="cs.html"><iconify-icon class="text-xl" icon="solar:headphones-round-sound-bold"></iconify-icon><span>客服管理</span></a><div class="ad-sidenav-sec">团队与账务</div><a class="ad-sidenav-link" href="managers.html"><iconify-icon class="text-xl" icon="solar:user-speak-bold"></iconify-icon><span>客户经理管理</span></a><a class="ad-sidenav-link" href="staff.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>员工管理</span></a><a class="ad-sidenav-link" href="bills.html"><iconify-icon class="text-xl" icon="solar:bill-list-bold"></iconify-icon><span>账单管理</span></a><a class="ad-sidenav-link" href="licenses.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>牌照管理</span></a></nav></div><div class="p-4" style="border-top:1px solid rgba(255,255,255,.08)"><div class="flex items-center space-x-3 p-2 rounded-lg" style="background:rgba(255,255,255,.05)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:#FFD008;color:#382b1b">涵</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold truncate text-white">运营-小涵</p><p class="text-xs text-gray-500 truncate" id="rc-side-role">—</p></div><a href="login.html" class="text-gray-500 hover:text-red-400" title="退出登录"><iconify-icon icon="solar:logout-3-bold"></iconify-icon></a></div></div></aside>
+<main class="flex-1 flex flex-col min-w-0">
+<header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 flex-none">
+<div class="flex items-center">
+<button class="lg:hidden p-2 -ml-2 text-gray-500" onclick="toggleSidebar()"><iconify-icon class="text-2xl" icon="solar:hamburger-menu-bold"></iconify-icon></button>
+<h1 class="text-lg font-bold ml-2">卡费定价</h1>
+</div>
+<div class="flex items-center space-x-4">
+<div id="rc-role-slot"></div>
+<span class="text-xs text-gray-400 hidden md:block">卡中台 · 金额单位 USD · 操作全程留痕</span>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6" id="rc-body">
+
+<div class="bg-white rounded-8 custom-shadow p-6" id="cp-sup"></div>
+<div class="grid grid-cols-2 xl:grid-cols-5 gap-4" id="cp-kpi"></div>
+
+<div class="bg-white rounded-8 custom-shadow overflow-hidden" id="cp-matrix">
+<div class="px-6 pt-5 flex flex-wrap items-center justify-between gap-3">
+<div><h3 class="font-bold">费率配置</h3><p class="text-xs text-gray-400 mt-0.5">左：供应商报价成本 · 中：我方卖价（可调） · 右：调整后利润（按本月用量实时测算）</p></div>
+<div class="flex flex-wrap items-center gap-2"><label class="text-xs text-gray-400">适用对象</label><select class="ddui-input !w-auto min-w-[300px] !py-2 text-sm font-bold" id="cp-scope"></select></div>
+</div>
+<div class="px-6 border-b border-gray-100 flex flex-wrap items-end justify-between gap-2"><div class="flex gap-4 overflow-x-auto" id="cp-prod"></div></div>
+<p class="px-6 py-2.5 text-xs text-gray-500 bg-gray-50/60 border-b border-gray-100" id="cp-pinfo"></p>
+<div class="grid lg:grid-cols-3">
+<div class="border-r border-gray-100 bg-gray-50/40">
+<div class="h-[68px] px-5 flex items-center justify-between border-b border-gray-100"><div><p class="font-bold text-sm flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-gray-400"></span>供应商报价 · WasabiCard</p><p class="text-xs text-gray-400 mt-0.5">我方采购成本（USD）</p></div><button class="text-xs font-bold text-gray-500 hover:text-dark border border-gray-200 rounded-8 px-2.5 py-1.5" id="cp-ecost" type="button">更新报价</button></div>
+<div id="col-cost"></div>
+</div>
+<div class="border-r border-gray-100">
+<div class="h-[68px] px-5 flex items-center justify-between border-b border-gray-100 bg-yellow-50/60"><div class="min-w-0"><p class="font-bold text-sm flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary"></span>我方卖价 · 向客户收取</p><p class="text-xs text-gray-400 mt-0.5 truncate" id="col-sell-sub"></p></div><button class="text-xs font-bold text-dark border border-gray-200 bg-white rounded-8 px-2.5 py-1.5 flex-none" id="cp-bulk" type="button">按成本批量加价</button></div>
+<div id="col-sell"></div>
+<div class="px-5 py-4 flex justify-end gap-2 border-t border-gray-100" id="col-sell-foot"><button class="px-4 py-2 rounded-8 border border-gray-200 text-sm font-bold hover:border-dark" id="cp-reset" type="button">撤销修改</button><button class="px-5 py-2 rounded-8 bg-primary text-dark text-sm font-bold ring-accent1 hover:shadow" id="cp-save" type="button">保存费率</button></div>
+</div>
+<div class="bg-green-50/20">
+<div class="h-[68px] px-5 flex items-center justify-between border-b border-gray-100"><div><p class="font-bold text-sm flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-500"></span>调整后利润</p><p class="text-xs text-gray-400 mt-0.5" id="col-profit-sub"></p></div></div>
+<div id="col-profit"></div>
+<div class="px-5 py-4 flex items-center justify-between border-t border-gray-100" id="col-profit-tot"></div>
+</div>
+</div>
+</div>
+
+<div class="bg-white rounded-8 custom-shadow overflow-hidden">
+<div class="p-6 border-b border-gray-100 flex flex-wrap justify-between items-center gap-3"><div><h3 class="font-bold">客户虚拟卡开通与定价</h3><p class="text-xs text-gray-400 mt-0.5">开通 / 下线即时同步 Web 客户端；本月数据截至 11-25</p></div><input class="ddui-input !w-64 !py-2 text-sm" id="cp-cq" placeholder="搜索客户名称 / 国家"/></div>
+<div class="overflow-x-auto"><table class="w-full min-w-[1180px]"><thead class="bg-gray-50/80"><tr>
+<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">客户</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">虚拟卡功能</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">开通卡种</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">费率</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400">本月交易额</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400">净应收</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400">净成本</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400">手续费利润</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400">利润率</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">操作</th>
+</tr></thead><tbody id="cp-cust"></tbody></table></div>
+</div>
+
+<div class="bg-white rounded-8 custom-shadow p-6"><div class="flex justify-between items-center mb-2"><h3 class="font-bold">卡中台操作记录</h3><span class="text-xs text-gray-400">最近 12 条 · 全量见审计日志</span></div><div id="cp-log"></div></div>
+
+</div>
+</main>
+<div class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+</div>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/rc-data.js"></script>
+<script src="../assets/js/ob-data.js"></script>
+<script src="../assets/js/card-hub.js"></script>
+<script>
+function toggleSidebar(){var s=document.getElementById('sidebar'),b=document.getElementById('sidebar-backdrop');if(!s)return;s.classList.toggle('hidden');s.classList.toggle('fixed');s.classList.toggle('inset-y-0');s.classList.toggle('left-0');s.classList.toggle('z-50');if(b)b.classList.toggle('hidden');}
+RC.renderSwitcher(document.getElementById('rc-role-slot'));
+var sr=document.getElementById('rc-side-role');if(sr)sr.textContent=RC.ROLES[RC.role()].name;
+function rcDeny(){DDUI.toast('当前角色（'+RC.ROLES[RC.role()].name+'）无此操作权限','error');}
+function rcNeed(act){if(!RC.can(act)){rcDeny();return false;}return true;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function rcNoPerm(){document.getElementById('rc-body').innerHTML='<div class="bg-white rounded-8 custom-shadow p-16 text-center"><iconify-icon class="text-5xl text-gray-300" icon="solar:lock-bold"></iconify-icon><p class="mt-4 font-bold text-gray-700">当前角色无权访问本页面</p><p class="text-sm text-gray-400 mt-1">请联系合规负责人或切换角色查看（右上角可切换演示角色）</p></div>';}
+
+(function () {
+    var H = DDCardHub, D = H.load(), M = H.MONTHS[H.MONTHS.length - 1].id;
+    var P = 'vsg', SCOPE = 'base';
+    var qs = new URLSearchParams(location.search);
+    if (qs.get('cust') && H.cust(D, qs.get('cust'))) SCOPE = qs.get('cust');
+    if (qs.get('p') && D.cost[qs.get('p')]) P = qs.get('p');
+    var RO = !RC.can('config_edit');
+    var mny = H.money;
+    function pname(id) { var x = D.products.filter(function (p) { return p.id === id; })[0]; return x ? x.name : id; }
+    function reload() { D = H.load(); }
+    function stChip(c) {
+        var m = { on: ['bg-green-50 text-green-600', '已开通'], off: ['bg-red-50 text-red-500', c.mode === 'freeze' ? '已下线 · 冻结' : '已下线 · 停新增'], pending: ['bg-blue-50 text-accent2', '待审批'], none: ['bg-gray-100 text-gray-400', '未开通'] }[c.status] || ['bg-gray-100 text-gray-400', c.status];
+        return '<span class="inline-block px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap ' + m[0] + '">' + m[1] + '</span>';
+    }
+    function ownCount(c) { var n = 0; Object.keys(c.ovr || {}).forEach(function (p) { n += Object.keys(c.ovr[p] || {}).length; }); return n; }
+    function belowList(c) {
+        var out = [];
+        (c ? (c.products.length ? c.products : []) : D.products.map(function (x) { return x.id; })).forEach(function (p) {
+            H.ITEMS.forEach(function (it) { if (H.belowCost(D, c ? c.id : null, p, it.k, M)) out.push(pname(p) + ' · ' + it.label); });
+        });
+        return out;
+    }
+
+    /* ---------- 供应商卡 + KPI ---------- */
+    function renderHead() {
+        var s = D.supplier, T = { spend: 0, cost: 0, rev: 0, profit: 0 }, on = 0, bl = belowList(null).length;
+        D.customers.forEach(function (c) { var b = H.monthBill(D, c.id, M); T.spend += b.spend; T.cost += b.cost; T.rev += b.rev; T.profit += b.profit; if (c.status === 'on') on++; bl += belowList(c).length; });
+        document.getElementById('cp-sup').innerHTML =
+            '<div class="flex flex-wrap items-start gap-5"><div class="w-12 h-12 rounded-8 bg-dark text-primary flex items-center justify-center flex-none"><iconify-icon class="text-2xl" icon="solar:card-transfer-bold"></iconify-icon></div>'
+            + '<div class="flex-1 min-w-[260px]"><div class="flex flex-wrap items-center gap-2"><p class="text-lg font-extrabold">' + esc(s.name) + '</p><span class="px-2 py-0.5 rounded-full bg-green-50 text-green-600 text-xs font-bold">合作中</span><span class="px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 text-xs">' + esc(s.svc) + '</span></div>'
+            + '<p class="text-xs text-gray-400 mt-1">报价单《' + esc(s.quote) + '》 · 版本 ' + s.ver + ' · ' + s.eff + ' 生效 · 结算币种 ' + s.ccy + ' · ' + D.products.length + ' 个卡种</p>'
+            + '<div class="flex flex-wrap gap-1.5 mt-3">' + D.products.map(function (p) { return '<span class="px-2.5 py-1 rounded-8 border border-gray-100 text-xs"><b>' + p.name + '</b> <span class="text-gray-400">' + p.scheme + ' · ' + p.ccy + '</span></span>'; }).join('') + '</div></div>'
+            + '<div class="flex gap-2 flex-none"><button class="px-4 py-2 rounded-8 border border-gray-200 text-sm font-bold hover:border-dark" id="cp-proj" type="button">项目费用与品牌定制</button><a class="px-4 py-2 rounded-8 bg-dark text-white text-sm font-bold hover:opacity-90" href="card-recon.html">去对账</a></div></div>';
+        function k(l, v, sub, cls) { return '<div class="bg-white rounded-8 custom-shadow p-5"><p class="text-xs text-gray-400">' + l + '</p><p class="text-xl font-extrabold mt-1 ' + (cls || '') + '">' + v + '</p><p class="text-xs text-gray-400 mt-1">' + sub + '</p></div>'; }
+        document.getElementById('cp-kpi').innerHTML =
+            k('本月平台卡交易额', mny(T.spend), '11 月 · 截至 11-25 实时测算')
+            + k('本月客户净应收', mny(T.rev), '手续费 − 返还客户返现')
+            + k('本月供应商净成本', mny(T.cost), '负数 = Wasabi 返现大于手续费', T.cost < 0 ? 'text-green-600' : '')
+            + k('本月卡费利润', mny(T.profit), '利润 = 净应收 − 净成本', 'text-accent1')
+            + k('开通客户 / 低于成本项', on + ' 家 / ' + bl + ' 项', bl ? '有卖价低于成本，请检查' : '全部卖价不低于成本', bl ? 'text-red-500' : '');
+        document.getElementById('cp-proj').onclick = function () {
+            function list(a) { return a.map(function (x) { return '<div class="ddui-kv"><span>' + esc(x.label) + '</span><b>' + esc(x.v) + '</b></div>'; }).join(''); }
+            DDUI.modal({ title: 'WasabiCard 项目费用与品牌定制', width: 640, body: '<p class="font-bold text-sm mb-1">一、项目服务费（Project Service Charge）</p><p class="text-xs text-gray-400 mb-2">以下费用 Wasabi 全部免收，不计入卡费成本</p>' + list(s.project) + '<p class="font-bold text-sm mt-5 mb-1">二、品牌定制与卡体（Branding Fee &amp; Policy）</p><p class="text-xs text-gray-400 mb-2">一次性项目，按需单独报价给客户，不进入月度卡费对账</p>' + list(s.branding), actions: [{ text: '关闭', type: 'primary' }] });
+        };
+    }
+
+    /* ---------- 工具栏 ---------- */
+    function renderBar() {
+        document.getElementById('cp-prod').innerHTML = D.products.map(function (p) {
+            var on = p.id === P;
+            return '<button class="px-3 py-3.5 text-sm border-b-2 -mb-px ' + (on ? 'border-dark font-bold text-dark' : 'border-transparent text-gray-400 hover:text-gray-600') + '" data-p="' + p.id + '" type="button">' + p.name + ' <span class="text-xs font-normal text-gray-400">' + p.scheme + '</span></button>';
+        }).join('');
+        document.querySelectorAll('#cp-prod [data-p]').forEach(function (b) { b.onclick = function () { if (dirty() && !confirm('当前卖价有未保存修改，切换将放弃，继续？')) return; P = b.dataset.p; renderAll(); }; });
+        var sel = document.getElementById('cp-scope');
+        sel.innerHTML = '<option value="base">平台基础费率（默认适用全部客户）</option><optgroup label="客户单独费率">' + D.customers.map(function (c) { var n = ownCount(c); return '<option value="' + c.id + '"' + (SCOPE === c.id ? ' selected' : '') + '>' + esc(c.name) + (n ? '（已单独设置 ' + n + ' 项）' : '（跟随基础）') + '</option>'; }).join('') + '</optgroup>';
+        sel.value = SCOPE;
+        sel.onchange = function () { if (dirty() && !confirm('当前卖价有未保存修改，切换将放弃，继续？')) { sel.value = SCOPE; return; } SCOPE = sel.value; renderAll(); };
+        var p = D.products.filter(function (x) { return x.id === P; })[0], c = SCOPE === 'base' ? null : H.cust(D, SCOPE);
+        document.getElementById('cp-pinfo').innerHTML = '<iconify-icon class="text-accent2 align-middle" icon="solar:info-circle-bold"></iconify-icon> ' + esc(p.en) + ' · ' + esc(p.wallet) + ' · ' + esc(p.note)
+            + (c && c.products.indexOf(P) < 0 ? ' · <b class="text-accent1">该客户未开通此卡种，可预先设置费率</b>' : '');
+    }
+
+    /* ---------- 三栏 ---------- */
+    var ROW = 'h-[76px] px-5 flex items-center gap-3 border-b border-gray-50';
+    function items() { return H.ITEMS.filter(function (it) { return H.applies(D, P, it.k); }); }
+    function unitTxt(it) { return it.unit === 'pct' ? '%' : '$'; }
+    function qtyFor(it) {
+        /* 基础费率口径：本月所有「该项跟随基础」的客户用量合计；客户口径：该客户用量 */
+        var q = 0;
+        if (SCOPE !== 'base') return H.usage(D, SCOPE, M, P)[it.base] || 0;
+        D.customers.forEach(function (c) { if (c.products.indexOf(P) > -1 && !(c.ovr && c.ovr[P] && c.ovr[P][it.k] != null)) q += H.usage(D, c.id, M, P)[it.base] || 0; });
+        return q;
+    }
+    function qtyTxt(it, q) { return it.unit === 'pct' ? mny(q) : q.toLocaleString('en-US') + ' ' + (it.per || ''); }
+    function renderCols() {
+        var list = items(), c = SCOPE === 'base' ? null : H.cust(D, SCOPE), tiers = D.cost[P].tiers || [], curTier = H.tierRate(D, P, M);
+        /* 左：供应商报价 */
+        var note = H.COST_NOTE[P] || {};
+        document.getElementById('col-cost').innerHTML = list.map(function (it) {
+            var v = H.costOf(D, P, it.k, M), extra = note[it.k] || (it.dir === 'rebate' ? '按平台该卡种月交易额分档' : '');
+            if (it.dir === 'rebate' && tiers.length > 1) extra = tiers.map(function (t) { return (t.rate === curTier ? '<b class="text-dark">' : '') + (t.from ? '≥$' + (t.from / 1e6) + 'M ' : '起 ') + t.rate + '%' + (t.rate === curTier ? '</b>' : ''); }).join(' · ');
+            return '<div class="' + ROW + '"><div class="flex-1 min-w-0"><p class="text-sm font-bold truncate">' + it.label + '</p><p class="text-xs text-gray-400 truncate" title="' + esc(String(extra).replace(/<[^>]+>/g, '')) + '">' + (extra || it.en) + '</p></div>'
+                + '<div class="text-right flex-none"><p class="text-base font-extrabold ' + (it.dir === 'rebate' ? 'text-green-600' : '') + '">' + (it.dir === 'rebate' ? '返 ' : '') + H.fmtRate(it, v) + '</p><p class="text-[11px] text-gray-400">' + (it.unit === 'pct' ? '按金额' : '每' + it.per) + '</p></div></div>';
+        }).join('');
+        /* 中：卖价 */
+        document.getElementById('col-sell').innerHTML = list.map(function (it) {
+            var s = H.sell(D, c ? c.id : null, P, it.k), base = +(D.base[P][it.k] || 0);
+            var tag = c ? (s.own ? '<span class="px-1.5 py-0.5 rounded bg-yellow-50 text-[11px] font-bold text-dark">单独</span>' : '<span class="px-1.5 py-0.5 rounded bg-gray-100 text-[11px] text-gray-400">跟随基础</span>') : '';
+            return '<div class="' + ROW + '" data-row="' + it.k + '"><div class="flex-1 min-w-0"><p class="text-sm font-bold truncate">' + (it.dir === 'rebate' ? '返客户比例' : it.label) + ' ' + tag + '</p><p class="text-xs text-gray-400 truncate" data-mk="' + it.k + '"></p></div>'
+                + '<div class="flex items-center gap-1.5 flex-none">' + (c && s.own && !RO ? '<button class="w-7 h-7 rounded-8 text-gray-300 hover:text-dark hover:bg-gray-50" data-rs="' + it.k + '" title="恢复为基础费率 ' + H.fmtRate(it, base) + '" type="button"><iconify-icon icon="solar:restart-linear"></iconify-icon></button>' : '')
+                + '<div class="relative"><span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400">' + (it.unit === 'pct' ? '' : '$') + '</span><input class="w-28 pl-6 pr-7 py-2 rounded-8 border border-gray-200 bg-gray-50 text-right text-sm font-bold focus:border-primary focus:bg-white outline-none" data-in="' + it.k + '" data-base="' + base + '" type="number" min="0" step="' + (it.unit === 'pct' ? '0.01' : '0.01') + '" value="' + s.v + '"' + (RO ? ' disabled' : '') + '/><span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400">' + (it.unit === 'pct' ? '%' : '') + '</span></div></div></div>';
+        }).join('');
+        document.querySelectorAll('#col-sell [data-in]').forEach(function (i) { i.oninput = calc; });
+        document.querySelectorAll('#col-sell [data-rs]').forEach(function (b) { b.onclick = function () { var i = document.querySelector('#col-sell [data-in="' + b.dataset.rs + '"]'); i.value = i.dataset.base; calc(); DDUI.toast('已恢复为基础费率，保存后生效'); }; });
+        document.getElementById('col-sell-sub').textContent = c ? '「' + c.name + '」单独费率 · 未单独设置的项跟随平台基础费率' : '平台基础费率 · 适用全部未单独设置的客户';
+        document.getElementById('col-sell-foot').classList.toggle('hidden', RO);
+        calc();
+    }
+    function curVals() { var o = {}; document.querySelectorAll('#col-sell [data-in]').forEach(function (i) { o[i.dataset.in] = i.value === '' ? NaN : +i.value; }); return o; }
+    function dirty() {
+        if (!document.querySelector('#col-sell [data-in]')) return false;
+        var v = curVals(), c = SCOPE === 'base' ? null : SCOPE;
+        return Object.keys(v).some(function (k) { return Math.abs((v[k] || 0) - H.sell(D, c, P, k).v) > 1e-9; });
+    }
+    function calc() {
+        var v = curVals(), tot = 0, totRev = 0, html = '';
+        items().forEach(function (it) {
+            var cr = H.costOf(D, P, it.k, M), sv = v[it.k], bad = isNaN(sv) || sv < 0;
+            var spread = bad ? 0 : (it.dir === 'rebate' ? cr - sv : sv - cr), q = qtyFor(it);
+            var prof = it.unit === 'pct' ? q * spread / 100 : q * spread, rev = it.unit === 'pct' ? q * (sv || 0) / 100 : q * (sv || 0);
+            tot += prof; totRev += it.dir === 'rebate' ? 0 : rev;
+            var neg = spread < -1e-9, mk = document.querySelector('#col-sell [data-mk="' + it.k + '"]');
+            if (mk) mk.innerHTML = bad ? '<span class="text-red-500">请输入 ≥ 0 的数值</span>' : (it.dir === 'rebate' ? '平台留存 ' + spread.toFixed(2) + '%' : (cr > 0 ? '成本 ×' + (sv / cr).toFixed(2) + ' · ' : '成本为 0 · ') + (spread < 0 ? '亏损 ' : '加价 ') + (it.unit === 'pct' ? Math.abs(spread).toFixed(2) + '%' : '$' + Math.abs(spread).toFixed(2)));
+            var inp = document.querySelector('#col-sell [data-in="' + it.k + '"]');
+            if (inp) { inp.classList.toggle('border-red-300', neg || bad); inp.classList.toggle('text-red-500', neg || bad); }
+            html += '<div class="' + ROW + '"><div class="flex-1 min-w-0"><p class="text-sm font-bold ' + (neg ? 'text-red-500' : '') + '">' + (neg ? '低于成本 ' : '') + (it.unit === 'pct' ? (spread >= 0 ? '+' : '') + spread.toFixed(2) + '%' : (spread >= 0 ? '+$' : '-$') + Math.abs(spread).toFixed(2) + ' / ' + it.per) + '</p><p class="text-xs text-gray-400 truncate">本月' + it.baseLabel + ' ' + qtyTxt(it, q) + '</p></div>'
+                + '<p class="text-base font-extrabold flex-none ' + (prof < 0 ? 'text-red-500' : (prof > 0 ? 'text-green-600' : 'text-gray-300')) + '">' + (prof ? mny(prof) : '$0.00') + '</p></div>';
+        });
+        document.getElementById('col-profit').innerHTML = html;
+        document.getElementById('col-profit-tot').innerHTML = '<span class="text-xs text-gray-400">本月预估利润合计</span><b class="text-lg ' + (tot < 0 ? 'text-red-500' : 'text-accent1') + '">' + mny(tot) + '</b>';
+        document.getElementById('col-profit-sub').textContent = SCOPE === 'base' ? '按本月跟随基础费率的客户用量测算' : '按该客户本月实际用量测算';
+        var sb = document.getElementById('cp-save'); if (sb) sb.classList.toggle('ring-2', dirty());
+    }
+    function save() {
+        if (!rcNeed('config_edit')) return;
+        var v = curVals(), keys = Object.keys(v), bad = keys.filter(function (k) { return isNaN(v[k]) || v[k] < 0; });
+        if (bad.length) { DDUI.toast('「' + H.item(bad[0]).label + '」请输入 ≥ 0 的数值', 'error'); return; }
+        if (!dirty()) { DDUI.toast('费率未修改'); return; }
+        var below = keys.filter(function (k) { var it = H.item(k), cr = H.costOf(D, P, k, M); return it.dir === 'rebate' ? v[k] > cr : v[k] < cr; });
+        var go = function () {
+            reload(); var c = SCOPE === 'base' ? null : H.cust(D, SCOPE), chg = [];
+            keys.forEach(function (k) {
+                var old = H.sell(D, c ? c.id : null, P, k).v, it = H.item(k);
+                if (Math.abs(old - v[k]) > 1e-9) chg.push(it.label + ' ' + H.fmtRate(it, old) + ' → ' + H.fmtRate(it, v[k]));
+                if (!c) D.base[P][k] = v[k];
+                else { c.ovr = c.ovr || {}; c.ovr[P] = c.ovr[P] || {}; if (Math.abs(v[k] - D.base[P][k]) < 1e-9) delete c.ovr[P][k]; else c.ovr[P][k] = v[k]; if (!Object.keys(c.ovr[P]).length) delete c.ovr[P]; }
+            });
+            H.log(D, c ? '客户单独定价' : '调整基础费率', c ? c.name : '平台基础费率', pname(P) + '：' + chg.join('，'));
+            H.save(D); RC.log(c ? '卡中台·客户单独定价' : '卡中台·调整基础费率', c ? c.name : pname(P), chg.join('，'));
+            DDUI.toast('已保存 ' + chg.length + ' 项费率，' + (c ? '该客户' : '全部跟随基础的客户') + '下一笔交易起生效', 'success'); renderAll();
+        };
+        if (below.length) DDUI.confirm('有 ' + below.length + ' 项卖价低于供应商成本', below.map(function (k) { return H.item(k).label; }).join('、') + ' 将产生亏损，确定保存吗？', go, '仍然保存');
+        else go();
+    }
+    function bulk() {
+        if (!rcNeed('config_edit')) return;
+        DDUI.modal({
+            title: '按成本批量加价 · ' + pname(P), width: 520,
+            body: '<p class="text-xs text-gray-400 mb-4">基于 WasabiCard 成本一次性生成卖价，生成后仍可逐项微调，点击「保存费率」才生效。</p>'
+                + '<div class="ddui-field"><label class="ddui-label">百分比类费率：成本 + 加点 (%)</label><input class="ddui-input" id="bk-pct" type="number" step="0.01" min="0" value="0.40"/></div>'
+                + '<div class="ddui-field"><label class="ddui-label">按笔 / 按张费用：成本 × 倍数</label><input class="ddui-input" id="bk-mul" type="number" step="0.1" min="1" value="1.5"/><p class="text-xs text-gray-400 mt-1">成本为 $0 的项目保持现值不变</p></div>'
+                + '<div class="ddui-field"><label class="ddui-label">交易返现：平台留存 (%)</label><input class="ddui-input" id="bk-cb" type="number" step="0.05" min="0" value="0.60"/><p class="ddui-err" id="bk-err" style="display:none"></p></div>',
+            actions: [{ text: '取消' }, { text: '生成卖价', type: 'primary', onClick: function (close, body) {
+                var a = +body.querySelector('#bk-pct').value, m = +body.querySelector('#bk-mul').value, cb = +body.querySelector('#bk-cb').value, e = body.querySelector('#bk-err');
+                var msg = !(a >= 0) ? '加点需 ≥ 0' : (!(m >= 1) ? '倍数需 ≥ 1，否则低于成本' : (!(cb >= 0) ? '留存需 ≥ 0' : ''));
+                e.textContent = msg; e.style.display = msg ? 'block' : 'none'; if (msg) return;
+                items().forEach(function (it) {
+                    var i = document.querySelector('#col-sell [data-in="' + it.k + '"]'), cr = H.costOf(D, P, it.k, M);
+                    if (it.dir === 'rebate') i.value = Math.max(0, +(cr - cb).toFixed(2));
+                    else if (it.unit === 'pct') i.value = +(cr + a).toFixed(2);
+                    else if (cr > 0) i.value = +(cr * m).toFixed(2);
+                });
+                calc(); close(); DDUI.toast('已生成卖价，请核对后保存', 'success');
+            } }]
+        });
+    }
+    function editCost() {
+        if (!rcNeed('config_edit')) return;
+        var list = items();
+        DDUI.modal({
+            title: '更新供应商报价 · ' + pname(P), width: 560,
+            body: '<p class="text-xs text-gray-400 mb-3">WasabiCard 调价时在此更新成本；已出账月份的账单不受影响。</p><div class="grid grid-cols-2 gap-x-4">' + list.map(function (it) {
+                return '<div class="ddui-field"><label class="ddui-label">' + it.label + '（' + (it.unit === 'pct' ? '%' : '$/' + it.per) + '）</label><input class="ddui-input" data-ec="' + it.k + '" type="number" step="0.01" min="0" value="' + D.cost[P][it.k] + '"/></div>';
+            }).join('') + '</div><div class="ddui-field"><label class="ddui-label">报价版本</label><input class="ddui-input" id="ec-ver" value="' + esc(D.supplier.ver) + '"/></div><p class="ddui-err" id="ec-err" style="display:none"></p>',
+            actions: [{ text: '取消' }, { text: '保存报价', type: 'primary', onClick: function (close, body) {
+                var chg = [], err = '';
+                body.querySelectorAll('[data-ec]').forEach(function (i) { var v = +i.value; if (i.value === '' || v < 0) err = '「' + H.item(i.dataset.ec).label + '」需 ≥ 0'; });
+                var ev = body.querySelector('#ec-err'); ev.textContent = err; ev.style.display = err ? 'block' : 'none'; if (err) return;
+                reload();
+                body.querySelectorAll('[data-ec]').forEach(function (i) {
+                    var k = i.dataset.ec, v = +i.value, it = H.item(k);
+                    if (Math.abs(v - D.cost[P][k]) > 1e-9) { chg.push(it.label + ' ' + H.fmtRate(it, D.cost[P][k]) + ' → ' + H.fmtRate(it, v)); D.cost[P][k] = v; if (k === 'cashback' && D.cost[P].tiers) D.cost[P].tiers[0].rate = v; }
+                });
+                D.supplier.ver = body.querySelector('#ec-ver').value.trim() || D.supplier.ver;
+                if (!chg.length) { close(); DDUI.toast('报价未修改'); return; }
+                H.log(D, '更新供应商报价', 'WasabiCard ' + D.supplier.ver, pname(P) + '：' + chg.join('，')); H.save(D); RC.log('卡中台·更新供应商报价', pname(P), chg.join('，'));
+                close(); DDUI.toast('供应商报价已更新，利润已重新测算', 'success'); renderAll();
+            } }]
+        });
+    }
+
+    /* ---------- 客户表 ---------- */
+    function renderCust() {
+        var q = (document.getElementById('cp-cq').value || '').trim().toLowerCase();
+        var rows = D.customers.filter(function (c) { return !q || c.name.toLowerCase().indexOf(q) > -1 || c.country.indexOf(q) > -1; });
+        document.getElementById('cp-cust').innerHTML = rows.map(function (c) {
+            var b = H.monthBill(D, c.id, M), n = ownCount(c), bl = belowList(c).length, rate = b.rev ? b.profit / Math.abs(b.rev) : 0;
+            var act = [];
+            act.push('<button class="text-xs font-bold text-dark hover:underline" data-ca="price" data-id="' + c.id + '" type="button">定价</button>');
+            if (c.status === 'on') act.push('<button class="text-xs font-bold text-red-500 hover:underline" data-ca="off" data-id="' + c.id + '" type="button">下线</button>');
+            if (c.status === 'off') act.push('<button class="text-xs font-bold text-green-600 hover:underline" data-ca="restore" data-id="' + c.id + '" type="button">恢复</button>');
+            if (c.status === 'pending') act.push('<button class="text-xs font-bold text-accent2 hover:underline" data-ca="approve" data-id="' + c.id + '" type="button">审批</button>');
+            if (c.status === 'none') act.push('<button class="text-xs font-bold text-accent2 hover:underline" data-ca="approve" data-id="' + c.id + '" type="button">开通</button>');
+            if (c.status === 'on' || c.status === 'off') act.push('<button class="text-xs font-bold text-gray-500 hover:underline" data-ca="cfg" data-id="' + c.id + '" type="button">卡种/额度</button>');
+            return '<tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 border-t border-gray-50"><p class="text-sm font-bold">' + esc(c.name) + '</p><p class="text-xs text-gray-400">' + esc(c.country) + ' · 客户经理 ' + esc(c.mgr) + '</p></td>'
+                + '<td class="py-3.5 px-4 border-t border-gray-50">' + stChip(c) + (c.status === 'off' && c.reason ? '<p class="text-[11px] text-gray-400 mt-1 max-w-[180px] truncate" title="' + esc(c.reason) + '">' + esc(c.reason) + '</p>' : '') + (c.status === 'pending' ? '<p class="text-[11px] text-gray-400 mt-1">' + esc(c.applied) + ' 申请</p>' : '') + '</td>'
+                + '<td class="py-3.5 px-4 border-t border-gray-50 text-xs whitespace-nowrap">' + (c.products.length ? c.products.map(pname).join('<br>') : '<span class="text-gray-300">—</span>') + '</td>'
+                + '<td class="py-3.5 px-4 border-t border-gray-50 text-xs">' + (n ? '<span class="px-2 py-0.5 rounded-full bg-yellow-50 font-bold">单独 ' + n + ' 项</span>' : '<span class="text-gray-400">基础费率</span>') + (bl ? '<p class="text-[11px] text-red-500 mt-1">' + bl + ' 项低于成本</p>' : '') + '</td>'
+                + '<td class="py-3.5 px-4 border-t border-gray-50 text-sm text-right">' + mny(b.spend) + '</td>'
+                + '<td class="py-3.5 px-4 border-t border-gray-50 text-sm text-right">' + mny(b.rev) + '</td>'
+                + '<td class="py-3.5 px-4 border-t border-gray-50 text-sm text-right">' + mny(b.cost) + '</td>'
+                + '<td class="py-3.5 px-4 border-t border-gray-50 text-sm text-right font-bold ' + (b.profit < 0 ? 'text-red-500' : (b.profit ? 'text-green-600' : 'text-gray-300')) + '">' + mny(b.profit) + '</td>'
+                + '<td class="py-3.5 px-4 border-t border-gray-50 text-xs text-right text-gray-500">' + (b.spend ? (b.profit / b.spend * 100).toFixed(2) + '%' : '—') + '</td>'
+                + '<td class="py-3.5 px-4 border-t border-gray-50"><div class="flex flex-wrap gap-x-3 gap-y-1">' + (RO ? act[0] : act.join('')) + '</div></td></tr>';
+        }).join('') || '<tr><td colspan="10" class="py-12 text-center text-sm text-gray-400">无匹配客户</td></tr>';
+        document.querySelectorAll('#cp-cust [data-ca]').forEach(function (b) { b.onclick = function () { custAct(b.dataset.ca, b.dataset.id); }; });
+        if (window.DDTableKit) DDTableKit.refresh(document.getElementById('cp-cust').closest('table'));
+        document.querySelectorAll('#cp-cust .dd-search-empty').forEach(function (r) { r.remove(); });
+    }
+    function custAct(a, id) {
+        var c = H.cust(D, id); if (!c) return;
+        if (a === 'price') { if (dirty() && !confirm('当前卖价有未保存修改，切换将放弃，继续？')) return; SCOPE = id; if (c.products.length && c.products.indexOf(P) < 0) P = c.products[0]; renderAll(); document.getElementById('cp-matrix').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+        if (!rcNeed('config_edit')) return;
+        if (a === 'off') {
+            DDUI.modal({
+                title: '下线虚拟卡功能 · ' + c.name, width: 520,
+                body: '<div class="ddui-field"><label class="ddui-label">下线方式</label>'
+                    + '<label class="flex gap-3 p-3 rounded-8 border border-gray-200 mb-2 cursor-pointer"><input type="radio" name="off-m" value="stop" checked/><span><b class="text-sm">停止新增</b><br><span class="text-xs text-gray-400">不能开新卡、建资金池、充值；存量卡可继续消费至余额用完</span></span></label>'
+                    + '<label class="flex gap-3 p-3 rounded-8 border border-gray-200 cursor-pointer"><input type="radio" name="off-m" value="freeze"/><span><b class="text-sm">立即冻结</b><br><span class="text-xs text-gray-400">全部卡交易即时拒绝，资金池余额保留可转回子账户</span></span></label></div>'
+                    + '<div class="ddui-field"><label class="ddui-label">下线原因（客户可见）</label><textarea class="ddui-textarea" id="off-r" rows="3" placeholder="如：风控复核、合同到期、客户主动申请"></textarea><p class="ddui-err" id="off-e" style="display:none">请填写下线原因</p></div>',
+                actions: [{ text: '取消' }, { text: '确认下线', type: 'primary', onClick: function (close, body) {
+                    var r = body.querySelector('#off-r').value.trim(), m = body.querySelector('[name=off-m]:checked').value;
+                    body.querySelector('#off-e').style.display = r ? 'none' : 'block'; if (!r) return;
+                    reload(); c = H.cust(D, id); c.status = 'off'; c.mode = m; c.reason = r; c.offAt = new Date().toISOString().slice(0, 10);
+                    H.log(D, '下线虚拟卡', c.name, (m === 'freeze' ? '立即冻结' : '停止新增') + '：' + r); H.save(D); RC.log('卡中台·下线虚拟卡', c.name, r);
+                    close(); DDUI.toast('已下线「' + c.name + '」的虚拟卡功能，Web 端即时生效', 'success'); renderAll();
+                } }]
+            });
+        } else if (a === 'restore') {
+            DDUI.confirm('恢复虚拟卡功能', '恢复后「' + c.name + '」可正常开卡、充值与交易。', function () {
+                reload(); c = H.cust(D, id); c.status = 'on'; c.mode = ''; c.reason = '';
+                H.log(D, '恢复虚拟卡', c.name, ''); H.save(D); RC.log('卡中台·恢复虚拟卡', c.name, '');
+                DDUI.toast('已恢复', 'success'); renderAll();
+            }, '确认恢复');
+        } else if (a === 'approve' || a === 'cfg') {
+            var isCfg = a === 'cfg';
+            DDUI.modal({
+                title: (isCfg ? '卡种与额度 · ' : (c.status === 'pending' ? '审批开通申请 · ' : '为客户开通虚拟卡 · ')) + c.name, width: 560,
+                body: (c.applyNote && !isCfg ? '<div class="rounded-8 bg-gray-50 p-3 text-xs text-gray-500 mb-4"><b class="text-dark">客户申请说明：</b>' + esc(c.applyNote) + '</div>' : '')
+                    + '<div class="ddui-field"><label class="ddui-label">开通卡种</label>' + D.products.map(function (p) { return '<label class="flex items-center gap-3 p-3 rounded-8 border border-gray-200 mb-2 cursor-pointer"><input type="checkbox" data-ap="' + p.id + '"' + (c.products.indexOf(p.id) > -1 || (!c.products.length && p.id === 'vsg') ? ' checked' : '') + '/><span class="flex-1"><b class="text-sm">' + p.name + '</b> <span class="text-xs text-gray-400">' + p.scheme + ' · ' + p.ccy + '</span><br><span class="text-xs text-gray-400">' + esc(p.note) + '</span></span></label>'; }).join('') + '</div>'
+                    + '<div class="ddui-field"><label class="ddui-label">最多可开卡数</label><input class="ddui-input" id="ap-max" type="number" min="1" value="' + c.maxCards + '"/></div>'
+                    + (isCfg ? '' : '<p class="text-xs text-gray-400">开通后默认使用平台基础费率，可在上方「卖价」栏为该客户单独设置。</p>') + '<p class="ddui-err" id="ap-e" style="display:none"></p>',
+                actions: (isCfg || c.status !== 'pending' ? [{ text: '取消' }] : [{ text: '驳回', onClick: function (close) { close(); reject(c); } }]).concat([{ text: isCfg ? '保存' : '通过并开通', type: 'primary', onClick: function (close, body) {
+                    var ps = [].slice.call(body.querySelectorAll('[data-ap]:checked')).map(function (i) { return i.dataset.ap; }), mx = parseInt(body.querySelector('#ap-max').value, 10), e = body.querySelector('#ap-e');
+                    var msg = !ps.length ? '请至少选择一个卡种' : (!(mx > 0) ? '开卡数需大于 0' : ''); e.textContent = msg; e.style.display = msg ? 'block' : 'none'; if (msg) return;
+                    reload(); c = H.cust(D, id); c.products = ps; c.maxCards = mx;
+                    if (!isCfg) { c.status = 'on'; c.since = new Date().toISOString().slice(0, 10); c.mode = ''; c.reason = ''; }
+                    H.log(D, isCfg ? '调整卡种与额度' : '开通虚拟卡', c.name, ps.map(pname).join('、') + ' · 上限 ' + mx + ' 张'); H.save(D); RC.log(isCfg ? '卡中台·调整卡种' : '卡中台·开通虚拟卡', c.name, ps.map(pname).join('、'));
+                    close(); DDUI.toast(isCfg ? '已保存' : '已开通，客户 Web 端即可开卡', 'success'); renderAll();
+                } }])
+            });
+        }
+    }
+    function reject(c) {
+        DDUI.modal({ title: '驳回开通申请 · ' + c.name, body: '<div class="ddui-field"><label class="ddui-label">驳回原因（客户可见）</label><textarea class="ddui-textarea" id="rj-r" rows="3"></textarea><p class="ddui-err" id="rj-e" style="display:none">请填写驳回原因</p></div>',
+            actions: [{ text: '取消' }, { text: '确认驳回', type: 'primary', onClick: function (close, body) {
+                var r = body.querySelector('#rj-r').value.trim(); body.querySelector('#rj-e').style.display = r ? 'none' : 'block'; if (!r) return;
+                reload(); var x = H.cust(D, c.id); x.status = 'none'; x.reason = r; H.log(D, '驳回开通申请', x.name, r); H.save(D); RC.log('卡中台·驳回开通', x.name, r);
+                close(); DDUI.toast('已驳回', 'success'); renderAll();
+            } }] });
+    }
+    function renderLog() {
+        document.getElementById('cp-log').innerHTML = D.log.slice(0, 12).map(function (l) {
+            return '<div class="flex gap-4 py-3 border-b border-gray-50 text-sm"><span class="text-xs text-gray-400 w-32 flex-none">' + l.t + '</span><span class="font-bold w-28 flex-none">' + esc(l.act) + '</span><span class="flex-1 min-w-0"><b class="font-semibold">' + esc(l.target) + '</b><span class="text-gray-500"> ' + esc(l.detail) + '</span></span><span class="text-xs text-gray-400 flex-none">' + esc(l.who) + '</span></div>';
+        }).join('') || '<p class="py-8 text-center text-sm text-gray-400">暂无记录</p>';
+    }
+    function renderAll() { reload(); renderHead(); renderBar(); renderCols(); renderCust(); renderLog(); }
+
+    document.getElementById('cp-save').onclick = save;
+    document.getElementById('cp-bulk').onclick = bulk;
+    document.getElementById('cp-reset').onclick = function () { renderCols(); DDUI.toast('已撤销未保存的修改'); };
+    document.getElementById('cp-ecost').onclick = editCost;
+    document.getElementById('cp-cq').oninput = renderCust;
+    if (RO) ['cp-ecost'].forEach(function (id) { document.getElementById(id).classList.add('hidden'); });
+    window.addEventListener('beforeunload', function (e) { if (dirty()) { e.preventDefault(); e.returnValue = ''; } });
+    renderAll();
+    window.DDCardPricing = { renderAll: renderAll, setScope: function (s) { SCOPE = s; renderAll(); }, setProduct: function (p) { P = p; renderAll(); }, save: save, bulk: bulk, editCost: editCost, custAct: custAct, dirty: dirty };
+})();
+
+</script>
+</body>
+</html>

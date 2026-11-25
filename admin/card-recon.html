@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>卡费对账 - 叮当支付内部运营后台</title>
+<script src="../assets/vendor/tailwindcss.js"></script>
+<script>tailwind.config = { theme: { extend: { colors: { primary: '#FFD008', dark: '#382b1b', accent1: '#FF8106', accent2: '#00B7EC', accent3: '#B786D6' }, borderRadius: { '8': '8px' } } } }</script>
+<script src="../assets/vendor/iconify-icon.min.js"></script>
+<style>
+body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #382b1b; background-color: #f5f4f0; }
+.custom-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
+.rounded-8 { border-radius: 8px; }
+</style>
+<link rel="stylesheet" href="../assets/css/apple.css" data-dd-apple="1"/>
+</head>
+<body class="bg-gray-50">
+<div class="flex min-h-screen">
+<style>
+.ad-sidenav-link{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;color:#9ca3af;font-size:14px;line-height:1.4;transition:background .15s,color .15s;text-decoration:none}
+.ad-sidenav-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.ad-sidenav-active,.ad-sidenav-active:hover{background:#FFD008;color:#382b1b;font-weight:600}
+.ad-sidenav-sec{padding:16px 12px 6px;font-size:11px;font-weight:600;color:#6b7280;letter-spacing:.05em}
+.ad-noscroll{scrollbar-width:none;-ms-overflow-style:none}
+.ad-noscroll::-webkit-scrollbar{display:none}
+</style>
+<aside class="w-64 flex-none hidden lg:flex flex-col" id="sidebar" style="background:#241d12"><div class="p-6 flex items-center space-x-3"><a class="flex items-center space-x-3" href="index.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="../assets/img/logo-h-rev.png"/></a></div><div class="flex-1 overflow-y-auto px-4 py-2 ad-noscroll"><nav class="space-y-1"><a class="ad-sidenav-link" href="index.html"><iconify-icon class="text-xl" icon="solar:widget-bold"></iconify-icon><span>运营总览</span></a><div class="ad-sidenav-sec">平台运营</div><a class="ad-sidenav-link" href="op-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>平台运营总看板</span></a><a class="ad-sidenav-link" href="op-customers.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>客户主体总览</span></a><a class="ad-sidenav-link" href="op-channels.html"><iconify-icon class="text-xl" icon="solar:globus-bold"></iconify-icon><span>渠道管理</span></a><a class="ad-sidenav-link" href="op-roles.html"><iconify-icon class="text-xl" icon="solar:lock-password-bold"></iconify-icon><span>角色权限配置</span></a><a class="ad-sidenav-link" href="op-export.html"><iconify-icon class="text-xl" icon="solar:download-square-bold"></iconify-icon><span>监管数据包导出</span></a><div class="ad-sidenav-sec">卡中台</div><a class="ad-sidenav-link" href="card-pricing.html"><iconify-icon class="text-xl" icon="solar:card-transfer-bold"></iconify-icon><span>卡费定价</span></a><a class="ad-sidenav-link ad-sidenav-active" href="card-recon.html"><iconify-icon class="text-xl" icon="solar:calculator-bold"></iconify-icon><span>卡费对账</span></a><div class="ad-sidenav-sec">客户与开户</div><div class="ad-sidenav-sec">个人开户管理</div><a class="ad-sidenav-link" href="ob-personal-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>个人开户总看板</span></a><a class="ad-sidenav-link" href="ob-personal.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>个人开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-personal-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>个人开户资料归档</span></a><a class="ad-sidenav-link" href="ob-personal-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-personal-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-personal-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>个人开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-personal-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>个人批量处理</span></a><a class="ad-sidenav-link" href="ob-personal-templates.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>驳回话术模板</span></a><a class="ad-sidenav-link" href="ob-personal-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>个人复审台账</span></a><div class="ad-sidenav-sec">商业开户管理</div><a class="ad-sidenav-link" href="ob-business-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>商业开户总看板</span></a><a class="ad-sidenav-link" href="ob-business.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>商业开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-business-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>商业开户资料归档</span></a><a class="ad-sidenav-link" href="ob-business-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>主管终审</span></a><a class="ad-sidenav-link" href="ob-business-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审核记录</span></a><a class="ad-sidenav-link" href="ob-business-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>商业开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-business-xgd.html"><iconify-icon class="text-xl" icon="solar:globus-bold"></iconify-icon><span>XGD 开户管理</span></a><a class="ad-sidenav-link" href="ob-business-xgd-form.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>XGD 开户表单</span></a><a class="ad-sidenav-link" href="ob-business-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>商业 EDD 工单</span></a><a class="ad-sidenav-link" href="ob-business-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>商业批量处理</span></a><a class="ad-sidenav-link" href="ob-business-reject.html"><iconify-icon class="text-xl" icon="solar:shield-cross-bold"></iconify-icon><span>拒户原因库</span></a><a class="ad-sidenav-link" href="ob-business-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>商业复审台账</span></a><a class="ad-sidenav-link" href="ob-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>开户配置</span></a><a class="ad-sidenav-link" href="business.html"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon><span>商业客户管理</span></a><a class="ad-sidenav-link" href="personal.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>个人客户管理</span></a><div class="ad-sidenav-sec">风控与合规</div><a class="ad-sidenav-link" href="risk.html"><iconify-icon class="text-xl" icon="solar:shield-warning-bold"></iconify-icon><span>风控总览</span></a><a class="ad-sidenav-link" href="risk-kyc.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>商户KYC档案</span></a><a class="ad-sidenav-link" href="risk-score.html"><iconify-icon class="text-xl" icon="solar:slider-minimalistic-horizontal-bold"></iconify-icon><span>风险评分配置</span></a><a class="ad-sidenav-link" href="risk-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>EDD 强化尽调</span></a><a class="ad-sidenav-link" href="risk-alerts.html"><iconify-icon class="text-xl" icon="solar:bell-bing-bold"></iconify-icon><span>交易风控告警</span></a><a class="ad-sidenav-link" href="risk-screening.html"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon><span>名单筛查</span></a><a class="ad-sidenav-link" href="risk-ledger.html"><iconify-icon class="text-xl" icon="solar:notebook-bold"></iconify-icon><span>商户风险台账</span></a><a class="ad-sidenav-link" href="risk-controls.html"><iconify-icon class="text-xl" icon="solar:lock-bold"></iconify-icon><span>账户管控中心</span></a><a class="ad-sidenav-link" href="risk-str.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>STR 可疑上报</span></a><a class="ad-sidenav-link" href="risk-audit.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审计日志</span></a><a class="ad-sidenav-link" href="risk-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>合规配置</span></a><a class="ad-sidenav-link" href="risk-review.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>审核工作台</span></a><a class="ad-sidenav-link" href="risk-cases.html"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon><span>案件管理</span></a><a class="ad-sidenav-link" href="risk-learn.html"><iconify-icon class="text-xl" icon="solar:square-academic-cap-bold"></iconify-icon><span>学习中心</span></a><div class="ad-sidenav-sec">安全与服务</div><a class="ad-sidenav-link" href="cs.html"><iconify-icon class="text-xl" icon="solar:headphones-round-sound-bold"></iconify-icon><span>客服管理</span></a><div class="ad-sidenav-sec">团队与账务</div><a class="ad-sidenav-link" href="managers.html"><iconify-icon class="text-xl" icon="solar:user-speak-bold"></iconify-icon><span>客户经理管理</span></a><a class="ad-sidenav-link" href="staff.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>员工管理</span></a><a class="ad-sidenav-link" href="bills.html"><iconify-icon class="text-xl" icon="solar:bill-list-bold"></iconify-icon><span>账单管理</span></a><a class="ad-sidenav-link" href="licenses.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>牌照管理</span></a></nav></div><div class="p-4" style="border-top:1px solid rgba(255,255,255,.08)"><div class="flex items-center space-x-3 p-2 rounded-lg" style="background:rgba(255,255,255,.05)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:#FFD008;color:#382b1b">涵</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold truncate text-white">运营-小涵</p><p class="text-xs text-gray-500 truncate" id="rc-side-role">—</p></div><a href="login.html" class="text-gray-500 hover:text-red-400" title="退出登录"><iconify-icon icon="solar:logout-3-bold"></iconify-icon></a></div></div></aside>
+<main class="flex-1 flex flex-col min-w-0">
+<header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 flex-none">
+<div class="flex items-center">
+<button class="lg:hidden p-2 -ml-2 text-gray-500" onclick="toggleSidebar()"><iconify-icon class="text-2xl" icon="solar:hamburger-menu-bold"></iconify-icon></button>
+<h1 class="text-lg font-bold ml-2">卡费对账</h1>
+</div>
+<div class="flex items-center space-x-4">
+<div id="rc-role-slot"></div>
+<span class="text-xs text-gray-400 hidden md:block">卡中台 · 金额单位 USD · 操作全程留痕</span>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6" id="rc-body">
+
+<div class="flex flex-wrap items-center justify-between gap-3"><div class="flex flex-wrap gap-2" id="rc-month"></div><div class="flex gap-2"><a class="px-4 py-2 rounded-8 border border-gray-200 bg-white text-sm font-bold hover:border-dark" href="card-pricing.html">费率配置</a><button class="px-4 py-2 rounded-8 bg-dark text-white text-sm font-bold" id="rc-export" type="button">导出对账明细</button></div></div>
+<div class="grid grid-cols-2 xl:grid-cols-5 gap-4" id="rc-kpi"></div>
+<div class="grid lg:grid-cols-5 gap-6">
+<div class="lg:col-span-3 bg-white rounded-8 custom-shadow p-6"><div class="flex justify-between items-center mb-4"><h3 class="font-bold">供应商对账 · WasabiCard</h3><span class="text-xs text-gray-400">我方逐笔测算 vs Wasabi 月度账单</span></div><div id="rc-sup"></div></div>
+<div class="lg:col-span-2 bg-white rounded-8 custom-shadow p-6"><div class="flex justify-between items-center mb-4"><h3 class="font-bold">月度手续费利润</h3><span class="text-xs text-gray-400">USD</span></div><div class="space-y-3" id="rc-trend"></div></div>
+</div>
+<div class="bg-white rounded-8 custom-shadow overflow-hidden">
+<div class="p-6 border-b border-gray-100 flex flex-wrap justify-between items-center gap-3"><div><h3 class="font-bold">客户卡费对账</h3><p class="text-xs text-gray-400 mt-0.5">净应收 = 手续费 − 返还客户返现；利润 = 净应收 − 供应商净成本</p></div><div class="flex flex-wrap items-center gap-2"><div class="flex gap-1.5" id="rc-filter"></div><input class="ddui-input !w-56 !py-2 text-sm" id="rc-q" placeholder="搜索客户"/><button class="hidden px-3 py-2 rounded-8 bg-primary text-dark text-sm font-bold" id="rc-bill-all" type="button">批量出账</button></div></div>
+<div class="overflow-x-auto"><table class="w-full min-w-[1100px]"><thead class="bg-gray-50/80"><tr>
+<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">客户</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400">用量（交易额）</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400">手续费收入</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400">返还客户返现</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400">客户净应收</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400">供应商净成本</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400">手续费利润</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">状态</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">操作</th>
+</tr></thead><tbody id="rc-tb"></tbody><tfoot id="rc-tf"></tfoot></table></div>
+</div>
+
+</div>
+</main>
+<div class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+</div>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/rc-data.js"></script>
+<script src="../assets/js/ob-data.js"></script>
+<script src="../assets/js/card-hub.js"></script>
+<script>
+function toggleSidebar(){var s=document.getElementById('sidebar'),b=document.getElementById('sidebar-backdrop');if(!s)return;s.classList.toggle('hidden');s.classList.toggle('fixed');s.classList.toggle('inset-y-0');s.classList.toggle('left-0');s.classList.toggle('z-50');if(b)b.classList.toggle('hidden');}
+RC.renderSwitcher(document.getElementById('rc-role-slot'));
+var sr=document.getElementById('rc-side-role');if(sr)sr.textContent=RC.ROLES[RC.role()].name;
+function rcDeny(){DDUI.toast('当前角色（'+RC.ROLES[RC.role()].name+'）无此操作权限','error');}
+function rcNeed(act){if(!RC.can(act)){rcDeny();return false;}return true;}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function rcNoPerm(){document.getElementById('rc-body').innerHTML='<div class="bg-white rounded-8 custom-shadow p-16 text-center"><iconify-icon class="text-5xl text-gray-300" icon="solar:lock-bold"></iconify-icon><p class="mt-4 font-bold text-gray-700">当前角色无权访问本页面</p><p class="text-sm text-gray-400 mt-1">请联系合规负责人或切换角色查看（右上角可切换演示角色）</p></div>';}
+
+(function () {
+    var H = DDCardHub, D = H.load(), mny = H.money;
+    var MS = H.MONTHS, M = (new URLSearchParams(location.search).get('m')) || MS[MS.length - 1].id;
+    if (!MS.some(function (x) { return x.id === M; })) M = MS[MS.length - 1].id;
+    var CF = 'all';
+    function reload() { D = H.load(); }
+    function mo() { return MS.filter(function (x) { return x.id === M; })[0]; }
+    function pname(id) { var x = D.products.filter(function (p) { return p.id === id; })[0]; return x ? x.name : id; }
+    function st(c) { var r = D.recon[M + '|' + c.id]; return r ? r.st : 'open'; }
+    var ST = { open: ['bg-gray-100 text-gray-500', '未出账'], billed: ['bg-yellow-50 text-[#b45309]', '已出账 · 待收款'], paid: ['bg-green-50 text-green-600', '已收款'] };
+    function chip(s) { return '<span class="inline-block px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap ' + ST[s][0] + '">' + ST[s][1] + '</span>'; }
+    function rows() { return D.customers.filter(function (c) { var b = H.monthBill(D, c.id, M); return b.spend > 0 || c.products.length; }).map(function (c) { return { c: c, b: H.monthBill(D, c.id, M), s: st(c) }; }); }
+
+    function renderMonths() {
+        document.getElementById('rc-month').innerHTML = MS.map(function (m) { return '<button class="px-4 py-2 rounded-8 text-sm font-bold ' + (m.id === M ? 'bg-dark text-white' : 'bg-white border border-gray-200 text-gray-500 hover:border-dark') + '" data-m="' + m.id + '" type="button">' + m.label + (m.closed ? '' : ' <span class="text-[11px] font-normal opacity-70">进行中</span>') + '</button>'; }).join('');
+        document.querySelectorAll('#rc-month [data-m]').forEach(function (b) { b.onclick = function () { M = b.dataset.m; try { history.replaceState(null, '', '?m=' + M); } catch (e) {} renderAll(); }; });
+    }
+    function renderKpi() {
+        var T = { spend: 0, cost: 0, rev: 0, profit: 0, fee: 0, rbIn: 0, rbOut: 0, cards: 0, txN: 0, recv: 0, got: 0 };
+        rows().forEach(function (r) { var b = r.b; T.spend += b.spend; T.cost += b.cost; T.rev += b.rev; T.profit += b.profit; T.fee += b.fee; T.rbIn += b.rebateIn; T.rbOut += b.rebateOut; T.cards += b.cards; T.txN += b.txN; if (r.s === 'paid') T.got += b.rev; });
+        function k(l, v, sub, cls) { return '<div class="bg-white rounded-8 custom-shadow p-5"><p class="text-xs text-gray-400">' + l + '</p><p class="text-xl font-extrabold mt-1 ' + (cls || '') + '">' + v + '</p><p class="text-xs text-gray-400 mt-1 leading-relaxed">' + sub + '</p></div>'; }
+        document.getElementById('rc-kpi').innerHTML =
+            k('客户用量', mny(T.spend), T.cards.toLocaleString() + ' 张活跃卡 · ' + T.txN.toLocaleString() + ' 笔交易')
+            + k('供应商成本（净）', mny(T.cost), '手续费 ' + mny(T.cost + T.rbIn) + ' − Wasabi 返现 ' + mny(T.rbIn), T.cost < 0 ? 'text-green-600' : '')
+            + k('客户应收（净）', mny(T.rev), '手续费 ' + mny(T.fee) + ' − 返还客户 ' + mny(T.rbOut) + (T.rev < 0 ? '（净应付客户）' : ''))
+            + k('手续费利润', mny(T.profit), '费率差 ' + mny(T.fee - (T.cost + T.rbIn)) + ' + 返现留存 ' + mny(T.rbIn - T.rbOut), 'text-accent1')
+            + k('利润率（占用量）', T.spend ? (T.profit / T.spend * 100).toFixed(3) + '%' : '—', mo().closed ? '已结账月份 · 金额已锁定' : (mo().note || '进行中，按当前费率实时测算'));
+        /* 趋势 */
+        var all = MS.map(function (m) { var p = 0, s = 0; D.customers.forEach(function (c) { var b = H.monthBill(D, c.id, m.id); p += b.profit; s += b.spend; }); return { m: m, p: p, s: s }; }), mx = Math.max.apply(null, all.map(function (x) { return x.p; })) || 1;
+        document.getElementById('rc-trend').innerHTML = all.map(function (x) {
+            return '<div class="flex items-center gap-3 text-sm ' + (x.m.id === M ? 'font-bold' : 'text-gray-500') + '"><span class="w-24 flex-none">' + x.m.label.replace('2026 年 ', '') + '</span><div class="flex-1 h-6 bg-gray-50 rounded-8 overflow-hidden"><div class="h-full rounded-8 ' + (x.m.id === M ? 'bg-primary' : 'bg-gray-200') + '" style="width:' + Math.max(2, x.p / mx * 100).toFixed(1) + '%"></div></div><span class="w-28 text-right flex-none">' + mny(x.p) + '</span><span class="w-32 text-right text-xs text-gray-400 flex-none hidden md:inline">用量 ' + mny(x.s) + '</span></div>';
+        }).join('');
+    }
+    function renderSup() {
+        var sp = H.supplierSplit(D, M), sb = D.supBill[M], el = document.getElementById('rc-sup');
+        var net = sp.fee - sp.rebate;
+        var h = '<div class="grid md:grid-cols-4 gap-4 text-sm">'
+            + '<div><p class="text-xs text-gray-400">我方测算 · 手续费应付</p><p class="text-lg font-extrabold mt-1">' + mny(sp.fee) + '</p></div>'
+            + '<div><p class="text-xs text-gray-400">我方测算 · 返现应收</p><p class="text-lg font-extrabold mt-1 text-green-600">' + mny(sp.rebate) + '</p></div>';
+        if (sb) {
+            var diff = sb.fee - sp.fee, ok = Math.abs(diff) < 1;
+            h += '<div><p class="text-xs text-gray-400">Wasabi 账单 ' + sb.no + '</p><p class="text-lg font-extrabold mt-1">' + mny(sb.fee) + ' <span class="text-xs font-normal text-gray-400">/ 返 ' + mny(sb.rebate) + '</span></p></div>'
+                + '<div><p class="text-xs text-gray-400">差异</p><p class="text-lg font-extrabold mt-1 ' + (ok ? 'text-green-600' : 'text-red-500') + '">' + (ok ? '一致' : (diff > 0 ? '账单多收 ' : '账单少收 ') + mny(Math.abs(diff))) + '</p></div></div>'
+                + '<div class="mt-4 flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-gray-50"><p class="text-xs text-gray-500">' + (sb.st === 'paid' ? '<iconify-icon class="text-green-600 align-middle" icon="solar:check-circle-bold"></iconify-icon> 已于 ' + sb.at + ' 与 Wasabi 完成结算（轧差净额 ' + mny(sb.rebate - sb.fee) + ' 已到账）' : (ok ? '账单与测算一致，可确认结算' : '<iconify-icon class="text-red-500 align-middle" icon="solar:danger-triangle-bold"></iconify-icon> 账单手续费比我方测算多 ' + (diff / sp.fee * 100).toFixed(2) + '%，建议导出明细与 Wasabi 核对后再结算')) + '</p>'
+                + (sb.st === 'paid' ? '' : '<div class="flex gap-2"><button class="px-3 py-1.5 rounded-8 border border-gray-200 text-xs font-bold hover:border-dark" id="rc-sup-dispute" type="button">发起差异核对</button><button class="px-3 py-1.5 rounded-8 bg-dark text-white text-xs font-bold" id="rc-sup-pay" type="button">确认结算</button></div>') + '</div>';
+        } else {
+            h += '<div class="md:col-span-2"><p class="text-xs text-gray-400">Wasabi 账单</p><p class="text-sm mt-2 text-gray-500">本月未结账，Wasabi 将于次月 5 日前出具账单；预计轧差净额 <b class="text-green-600">' + mny(-net) + '</b>（返现大于手续费，Wasabi 应付我方）</p></div></div>';
+        }
+        el.innerHTML = h;
+        var pay = document.getElementById('rc-sup-pay'), dis = document.getElementById('rc-sup-dispute');
+        if (pay) pay.onclick = function () {
+            if (!rcNeed('config_edit')) return;
+            var diff = sb.fee - sp.fee;
+            DDUI.confirm('确认与 Wasabi 结算 ' + sb.no, (Math.abs(diff) >= 1 ? '账单与测算仍有差异 ' + mny(diff) + '，' : '') + '确认后本月供应商账单标记为已结算。', function () {
+                reload(); D.supBill[M].st = 'paid'; D.supBill[M].at = new Date().toISOString().slice(0, 10); H.log(D, '供应商结算', 'WasabiCard ' + sb.no, '手续费 ' + mny(sb.fee) + '，返现 ' + mny(sb.rebate)); H.save(D); RC.log('卡中台·供应商结算', sb.no, '');
+                DDUI.toast('已确认结算', 'success'); renderAll();
+            }, '确认结算');
+        };
+        if (dis) dis.onclick = function () {
+            if (!rcNeed('config_edit')) return;
+            reload(); H.log(D, '发起差异核对', 'WasabiCard ' + sb.no, '账单 ' + mny(sb.fee) + ' vs 测算 ' + mny(sp.fee)); H.save(D); RC.log('卡中台·供应商差异核对', sb.no, '');
+            exportCsv(true); DDUI.toast('已导出逐项明细并记录核对工单，请发送给 Wasabi 商务', 'success');
+        };
+    }
+    function renderTable() {
+        var list = rows(), q = (document.getElementById('rc-q').value || '').trim().toLowerCase();
+        var cnt = { all: list.length, open: 0, billed: 0, paid: 0 }; list.forEach(function (r) { cnt[r.s]++; });
+        document.getElementById('rc-filter').innerHTML = [['all', '全部'], ['open', '未出账'], ['billed', '待收款'], ['paid', '已收款']].map(function (f) { return '<button class="px-3 py-1.5 rounded-full text-xs font-bold ' + (CF === f[0] ? 'bg-dark text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200') + '" data-f="' + f[0] + '" type="button">' + f[1] + ' ' + cnt[f[0]] + '</button>'; }).join('');
+        document.querySelectorAll('#rc-filter [data-f]').forEach(function (b) { b.onclick = function () { CF = b.dataset.f; renderTable(); }; });
+        var view = list.filter(function (r) { return (CF === 'all' || r.s === CF) && (!q || r.c.name.toLowerCase().indexOf(q) > -1); });
+        var T = { spend: 0, fee: 0, rbOut: 0, rev: 0, cost: 0, profit: 0 };
+        var td = 'py-3.5 px-4 border-t border-gray-50 text-sm text-right';
+        document.getElementById('rc-tb').innerHTML = view.map(function (r) {
+            var b = r.b, c = r.c; T.spend += b.spend; T.fee += b.fee; T.rbOut += b.rebateOut; T.rev += b.rev; T.cost += b.cost; T.profit += b.profit;
+            var act = '<button class="text-xs font-bold text-dark hover:underline" data-ra="detail" data-id="' + c.id + '" type="button">明细</button>';
+            if (r.s === 'open' && mo().closed) act += '<button class="text-xs font-bold text-accent2 hover:underline" data-ra="bill" data-id="' + c.id + '" type="button">出账</button>';
+            if (r.s === 'billed') act += '<button class="text-xs font-bold text-green-600 hover:underline" data-ra="paid" data-id="' + c.id + '" type="button">确认收款</button>';
+            return '<tr class="hover:bg-gray-50/60"><td class="py-3.5 px-4 border-t border-gray-50"><p class="text-sm font-bold">' + esc(c.name) + '</p><p class="text-xs text-gray-400">' + c.products.map(pname).join(' · ') + '</p></td>'
+                + '<td class="' + td + '">' + mny(b.spend) + '<p class="text-[11px] text-gray-400">' + b.cards + ' 卡 · ' + b.txN.toLocaleString() + ' 笔</p></td>'
+                + '<td class="' + td + '">' + mny(b.fee) + '</td><td class="' + td + ' text-gray-500">-' + mny(b.rebateOut).replace('-', '') + '</td>'
+                + '<td class="' + td + ' font-bold ' + (b.rev < 0 ? 'text-accent2' : '') + '">' + mny(b.rev) + '</td>'
+                + '<td class="' + td + '">' + mny(b.cost) + '</td>'
+                + '<td class="' + td + ' font-bold ' + (b.profit < 0 ? 'text-red-500' : 'text-green-600') + '">' + mny(b.profit) + '</td>'
+                + '<td class="py-3.5 px-4 border-t border-gray-50">' + (mo().closed ? chip(r.s) : '<span class="text-xs text-gray-400">本月进行中</span>') + '</td>'
+                + '<td class="py-3.5 px-4 border-t border-gray-50"><div class="flex gap-3">' + act + '</div></td></tr>';
+        }).join('') || '<tr><td colspan="9" class="py-12 text-center text-sm text-gray-400">无匹配记录</td></tr>';
+        document.getElementById('rc-tf').innerHTML = view.length ? '<tr class="bg-gray-50/80 font-bold text-sm"><td class="py-3 px-4">合计（' + view.length + ' 户）</td><td class="py-3 px-4 text-right">' + mny(T.spend) + '</td><td class="py-3 px-4 text-right">' + mny(T.fee) + '</td><td class="py-3 px-4 text-right text-gray-500">-' + mny(T.rbOut).replace('-', '') + '</td><td class="py-3 px-4 text-right">' + mny(T.rev) + '</td><td class="py-3 px-4 text-right">' + mny(T.cost) + '</td><td class="py-3 px-4 text-right text-accent1">' + mny(T.profit) + '</td><td colspan="2"></td></tr>' : '';
+        document.querySelectorAll('#rc-tb [data-ra]').forEach(function (b) { b.onclick = function () { act(b.dataset.ra, b.dataset.id); }; });
+        document.getElementById('rc-bill-all').classList.toggle('hidden', !(mo().closed && cnt.open));
+        document.querySelectorAll('#rc-tb .dd-search-empty').forEach(function (r) { r.remove(); });
+    }
+    function lineTable(lines) {
+        var th = 'py-2 px-3 text-[11px] font-semibold text-gray-400';
+        return '<table class="w-full text-xs"><thead class="bg-gray-50"><tr><th class="' + th + ' text-left">计费项</th><th class="' + th + ' text-right">用量</th><th class="' + th + ' text-right">成本价</th><th class="' + th + ' text-right">卖价</th><th class="' + th + ' text-right">成本</th><th class="' + th + ' text-right">应收</th><th class="' + th + ' text-right">利润</th></tr></thead><tbody>'
+            + lines.filter(function (l) { return l.qty; }).map(function (l) {
+                var it = H.item(l.k), q = l.unit === 'pct' ? mny(l.qty) : l.qty.toLocaleString() + ' ' + (l.per || '');
+                return '<tr class="border-t border-gray-50"><td class="py-2 px-3">' + l.label + (l.own ? ' <span class="px-1 rounded bg-yellow-50 font-bold">单独</span>' : '') + '</td><td class="py-2 px-3 text-right">' + q + '</td><td class="py-2 px-3 text-right text-gray-500">' + H.fmtRate(it, l.cr) + '</td><td class="py-2 px-3 text-right">' + H.fmtRate(it, l.sr) + '</td><td class="py-2 px-3 text-right">' + mny(l.cost) + '</td><td class="py-2 px-3 text-right">' + mny(l.rev) + '</td><td class="py-2 px-3 text-right font-bold ' + (l.profit < 0 ? 'text-red-500' : 'text-green-600') + '">' + mny(l.profit) + '</td></tr>';
+            }).join('') + '</tbody></table>';
+    }
+    function act(a, id) {
+        var c = H.cust(D, id), b = H.monthBill(D, id, M);
+        if (a === 'detail') {
+            var body = '<div class="grid grid-cols-4 gap-3 mb-5">' + [['用量', mny(b.spend)], ['净应收', mny(b.rev)], ['净成本', mny(b.cost)], ['利润', mny(b.profit)]].map(function (x, i) { return '<div class="rounded-8 bg-gray-50 p-3"><p class="text-[11px] text-gray-400">' + x[0] + '</p><p class="font-extrabold mt-0.5 ' + (i === 3 ? 'text-accent1' : '') + '">' + x[1] + '</p></div>'; }).join('') + '</div>'
+                + Object.keys(b.products).map(function (p) { var x = b.products[p]; return '<div class="mb-5"><div class="flex justify-between items-center mb-2"><p class="font-bold text-sm">' + pname(p) + '</p><p class="text-xs text-gray-400">用量 ' + mny(x.spend) + ' · 利润 <b class="text-green-600">' + mny(x.profit) + '</b></p></div><div class="rounded-8 border border-gray-100 overflow-hidden">' + lineTable(x.lines) + '</div></div>'; }).join('')
+                + '<p class="text-[11px] text-gray-400">返现类项目以负数计：成本为 Wasabi 返给平台的返现，应收为平台返还客户的返现。' + (D.recon[M + '|' + id] && D.recon[M + '|' + id].snap ? '该月已出账，金额按出账时费率锁定。' : '未出账，按当前费率实时测算。') + '</p>';
+            DDUI.modal({ title: c.name + ' · ' + mo().label + ' 卡费明细', width: 860, body: body, actions: [{ text: '导出明细', onClick: function () { exportCsv(false, id); } }, { text: '关闭', type: 'primary' }] });
+        } else if (a === 'bill') {
+            if (!rcNeed('config_edit')) return;
+            DDUI.confirm('为「' + c.name + '」出账', mo().label + ' 净应收 ' + mny(b.rev) + '。出账后金额锁定，后续调价不再影响本期。', function () { doBill([id]); }, '确认出账');
+        } else if (a === 'paid') {
+            if (!rcNeed('config_edit')) return;
+            DDUI.confirm('确认收款', '「' + c.name + '」' + mo().label + ' 卡费 ' + mny(b.rev) + (b.rev < 0 ? '（净应付客户，确认已返还）' : ' 已到账') + '？', function () {
+                reload(); var r = D.recon[M + '|' + id]; r.st = 'paid'; r.paidAt = new Date().toISOString().slice(0, 10);
+                H.log(D, '确认收款', c.name, mo().label + ' ' + mny(b.rev)); H.save(D); RC.log('卡中台·确认收款', c.name, mo().label);
+                DDUI.toast('已确认收款', 'success'); renderAll();
+            }, '确认');
+        }
+    }
+    function doBill(ids) {
+        reload();
+        ids.forEach(function (id) { var c = H.cust(D, id); D.recon[M + '|' + id] = { st: 'billed', at: new Date().toISOString().slice(0, 10), snap: H.billCust(D, id, M) }; H.log(D, '客户出账', c.name, mo().label + ' 净应收 ' + mny(D.recon[M + '|' + id].snap.rev)); });
+        H.save(D); RC.log('卡中台·客户出账', ids.length + ' 户', mo().label);
+        DDUI.toast('已出账 ' + ids.length + ' 户，账单已推送至客户「账单」页', 'success'); renderAll();
+    }
+    function exportCsv(sup, onlyId) {
+        var out = [['月份', '客户', '卡种', '计费项', '用量', '成本价', '卖价', '是否单独定价', '成本(USD)', '应收(USD)', '利润(USD)']];
+        D.customers.forEach(function (c) {
+            if (onlyId && c.id !== onlyId) return;
+            var b = H.monthBill(D, c.id, M);
+            Object.keys(b.products).forEach(function (p) { b.products[p].lines.forEach(function (l) { if (!l.qty) return; out.push([M, c.name, pname(p), l.label, l.qty, l.cr, l.sr, l.own ? '是' : '否', l.cost.toFixed(2), l.rev.toFixed(2), l.profit.toFixed(2)]); }); });
+        });
+        var csv = '\ufeff' + out.map(function (r) { return r.map(function (x) { x = String(x); return /[",\n]/.test(x) ? '"' + x.replace(/"/g, '""') + '"' : x; }).join(','); }).join('\n');
+        var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+        a.download = (sup ? 'Wasabi核对_' : '卡费对账_') + M + (onlyId ? '_' + onlyId : '') + '.csv'; document.body.appendChild(a); a.click(); a.remove();
+        if (!sup) DDUI.toast('已导出 ' + (out.length - 1) + ' 行明细', 'success');
+    }
+    function renderAll() { reload(); renderMonths(); renderKpi(); renderSup(); renderTable(); }
+
+    document.getElementById('rc-q').oninput = renderTable;
+    document.getElementById('rc-export').onclick = function () { exportCsv(false); };
+    document.getElementById('rc-bill-all').onclick = function () {
+        if (!rcNeed('config_edit')) return;
+        var ids = rows().filter(function (r) { return r.s === 'open'; }).map(function (r) { return r.c.id; });
+        DDUI.confirm('批量出账', '将为 ' + ids.length + ' 户未出账客户生成 ' + mo().label + ' 卡费账单。', function () { doBill(ids); }, '确认出账');
+    };
+    renderAll();
+    window.DDCardRecon = { renderAll: renderAll, setMonth: function (m) { M = m; renderAll(); }, act: act, exportCsv: exportCsv };
+})();
+
+</script>
+</body>
+</html>

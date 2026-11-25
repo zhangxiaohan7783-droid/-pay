@@ -31,6 +31,7 @@ window.DDEnt = (function () {
             return;
         }
         if (!silent && window.DDUI) DDUI.toast('已切换至主体「' + ent.name + '」', 'success');
+        try { document.dispatchEvent(new CustomEvent('dd-ent-change', { detail: ent })); } catch (e) {}
     }
 
     function paint() {

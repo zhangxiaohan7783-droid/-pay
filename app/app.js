@@ -752,8 +752,8 @@
   /* ================= 财税 / 开票 / 风控（对齐 Web 端，共享 localStorage） ================= */
   function taxLed() {
     var d = null;
-    try { d = JSON.parse(localStorage.getItem('dd-tax-ledger-v2') || 'null'); } catch (e) {}
-    if (!d && window.DDTaxData) { d = DDTaxData.ledSeed(); try { localStorage.setItem('dd-tax-ledger-v2', JSON.stringify(d)); } catch (e) {} }
+    try { d = JSON.parse(localStorage.getItem('dd-tax-ledger-v3') || 'null'); } catch (e) {}
+    if (!d && window.DDTaxData) { d = DDTaxData.ledSeed(); try { localStorage.setItem('dd-tax-ledger-v3', JSON.stringify(d)); } catch (e) {} }
     return d || {};
   }
   function taxOv() { try { return JSON.parse(localStorage.getItem('dd-tax-overview-v1') || '{}'); } catch (e) { return {}; } }

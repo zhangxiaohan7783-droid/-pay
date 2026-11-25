@@ -7,6 +7,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>税务申报 - 叮当支付 (DingDang Pay)</title>
 <script src="assets/vendor/tailwindcss.js"></script>
+<script>tailwind.config = { theme: { extend: { colors: { primary: '#FFD008', dark: '#382b1b', accent1: '#FF8106', accent2: '#00B7EC', accent3: '#B786D6' }, borderRadius: { '8': '8px' } } } }</script>
 <script src="assets/vendor/iconify-icon.min.js"></script>
 <style>
         body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #382b1b; background-color: #f8f9fa; }
@@ -55,7 +56,7 @@
 </header>
 <div class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6 bg-[#f8f9fa]">
 <div><h2 class="text-2xl font-bold text-gray-900">税务申报</h2>
-<p class="text-gray-500 mt-1 text-sm">欧洲与英国公司自助税务管理：六国申报指南与表格模板 · 税务局账户 · VAT · 企业所得税 · 年报 · 进口申报一站式完成</p></div>
+<p class="text-gray-500 mt-1 text-sm">欧洲与英国公司自助报税：按 2026 年现行规则自动判定申报频率与截止日，5 步完成 VAT 取数、校验、生成、提交与缴款</p></div>
 
 <!-- 国家选择 -->
 <div class="bg-white rounded-8 custom-shadow p-5">
@@ -82,15 +83,48 @@
 
 <!-- Tab -->
 <div class="flex gap-2 p-1 bg-gray-100 rounded-8 w-fit flex-wrap">
-<button class="px-5 py-2 text-sm font-bold bg-white rounded-8 shadow-sm" id="tf-tab-guide" onclick="tfTab('guide')" type="button">申报指南 · 各国模板</button>
+<button class="px-5 py-2 text-sm font-bold bg-white rounded-8 shadow-sm" id="tf-tab-wizard" onclick="tfTab('wizard')" type="button">一键报税</button>
+<button class="px-5 py-2 text-sm font-medium text-gray-500" id="tf-tab-guide" onclick="tfTab('guide')" type="button">申报指南 · 各国模板</button>
 <button class="px-5 py-2 text-sm font-medium text-gray-500" id="tf-tab-vat" onclick="tfTab('vat')" type="button">VAT 申报</button>
 <button class="px-5 py-2 text-sm font-medium text-gray-500" id="tf-tab-cit" onclick="tfTab('cit')" type="button">企业所得税</button>
 <button class="px-5 py-2 text-sm font-medium text-gray-500" id="tf-tab-annual" onclick="tfTab('annual')" type="button">年度申报</button>
 <button class="px-5 py-2 text-sm font-medium text-gray-500" id="tf-tab-import" onclick="tfTab('import')" type="button">进口申报</button>
 </div>
 
+<!-- 一键报税向导 pane -->
+<div id="tf-pane-wizard" class="space-y-6">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between flex-wrap gap-2 mb-1">
+<h3 class="font-bold text-gray-900" id="tfw-title">一键报税</h3>
+<span class="text-xs px-2 py-1 rounded-full bg-yellow-50 text-yellow-700 font-medium">5 步完成 · 无需税务代理</span>
+</div>
+<p class="text-xs text-gray-400 mb-5" id="tfw-sub"></p>
+<div class="flex items-center gap-1 overflow-x-auto pb-1" id="tfw-steps"></div>
+<div class="mt-5 pt-5 border-t border-gray-100" id="tfw-body"></div>
+</div>
+<div class="space-y-6">
+<div class="bg-white rounded-8 custom-shadow p-6">
+<div class="flex items-center justify-between mb-4"><h3 class="font-bold text-gray-900">申报截止日历</h3><span class="text-xs text-gray-400" id="tfw-cal-ctry"></span></div>
+<div class="space-y-2" id="tfw-cal"></div>
+<button class="mt-4 w-full px-4 py-2 text-xs font-bold text-gray-600 border border-gray-200 rounded-8 hover:bg-gray-50" onclick="tfCalExport()" type="button">导出日历（.ics，可导入手机 / Outlook）</button>
+</div>
+<div class="bg-white rounded-8 custom-shadow p-6">
+<h3 class="font-bold text-gray-900 mb-1">逾期成本试算</h3>
+<p class="text-xs text-gray-400 mb-4">按所选国家现行罚则估算迟缴罚款与利息</p>
+<div class="grid grid-cols-2 gap-3">
+<div><label class="block text-xs font-bold text-gray-500 mb-1.5">欠缴税额</label><input class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-8 text-sm focus:outline-none focus:border-accent2" id="tfl-tax" inputmode="decimal" placeholder="10000" type="text"/></div>
+<div><label class="block text-xs font-bold text-gray-500 mb-1.5">逾期天数</label><input class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-8 text-sm focus:outline-none focus:border-accent2" id="tfl-days" inputmode="numeric" placeholder="20" type="text"/></div>
+</div>
+<button class="mt-3 w-full px-4 py-2 text-xs font-bold text-accent2 border border-accent2 rounded-8 hover:bg-accent2/5" onclick="tfLateCalc()" type="button">计算逾期成本</button>
+<div class="mt-3 hidden" id="tfl-out"></div>
+</div>
+</div>
+</div>
+</div>
+
 <!-- 申报指南 pane -->
-<div id="tf-pane-guide" class="space-y-6">
+<div id="tf-pane-guide" class="space-y-6 hidden">
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 <div class="lg:col-span-2 bg-white rounded-8 custom-shadow p-6">
 <div class="flex items-center justify-between flex-wrap gap-2">
@@ -112,8 +146,9 @@
 </div>
 <div class="bg-white rounded-8 custom-shadow p-6">
 <h3 class="font-bold text-gray-900 mb-4">还没开始申报？</h3>
-<p class="text-xs text-gray-400 mb-4 leading-relaxed">先在「VAT 申报」完成本期增值税，再在「企业所得税」计算年度税负，最后「年度申报」打包备案材料。</p>
+<p class="text-xs text-gray-400 mb-4 leading-relaxed">推荐用「一键报税」5 步完成本期增值税；年度再用「企业所得税」计算税负、「年度申报」打包备案材料。</p>
 <div class="space-y-2">
+<button class="w-full flex items-center justify-between px-4 py-2.5 text-sm font-bold bg-primary text-dark rounded-8 hover:opacity-90" onclick="tfTab('wizard')" type="button">开始一键报税<iconify-icon icon="solar:alt-arrow-right-linear"></iconify-icon></button>
 <button class="w-full flex items-center justify-between px-4 py-2.5 text-sm font-bold text-accent2 border border-accent2 rounded-8 hover:bg-accent2/5" onclick="tfTab('vat')" type="button">去填 VAT 申报表<iconify-icon icon="solar:alt-arrow-right-linear"></iconify-icon></button>
 <button class="w-full flex items-center justify-between px-4 py-2.5 text-sm font-bold text-gray-600 border border-gray-200 rounded-8 hover:bg-gray-50" onclick="tfTab('cit')" type="button">去算企业所得税<iconify-icon icon="solar:alt-arrow-right-linear"></iconify-icon></button>
 <button class="w-full flex items-center justify-between px-4 py-2.5 text-sm font-bold text-gray-600 border border-gray-200 rounded-8 hover:bg-gray-50" onclick="tfTab('annual')" type="button">去打年报申报包<iconify-icon icon="solar:alt-arrow-right-linear"></iconify-icon></button>
@@ -295,107 +330,107 @@
 /* ---------- 税务申报：6 国 VAT + 企业所得税 + 年度申报 + 税务局账户 ---------- */
 var TF_COUNTRIES = {
 IT: { name: '意大利', flag: 'twemoji:flag-italy', ccy: '€',
-  vat: { form: 'Liquidazioni IVA periodiche + Dichiarazione IVA annuale', authority: 'Agenzia delle Entrate', channel: 'Fisconline / Entratel 电子申报', freq: '月度或季度申报 + 年度汇总申报', deadline: '月度：次月 16 日；季度：次季度第二个月 16 日；年度申报表：次年 4 月 30 日', rates: '标准 22% · 减免 10% / 5% / 4%',
-    period: '2026 Q3（7–9 月）', deadlineShort: '2026-11-16',
+  vat: { form: 'Liquidazioni IVA periodiche + Dichiarazione IVA annuale', authority: 'Agenzia delle Entrate', channel: 'F24 缴款 + Fisconline / Entratel 电子申报', freq: '月度或季度（按上年营业额判定）+ 年度汇总申报', deadline: '月度：次月 16 日；季度：5/16、8/20、11/16，Q4 并入次年 3/16 结算（季度缴款加计 1% 利息）；年度申报：2/1–4/30', rates: '标准 22% · 减免 10% / 5% / 4%',
+    period: '2026 年 11 月', deadlineShort: '2026-12-16', prev: '2026 年 10 月', freqNow: 'monthly',
     boxes: [
-      { code: 'VP1', label: '应税销售额（22%）', kind: 'out', rate: 0.22 },
-      { code: 'VP2', label: '应税销售额（10%）', kind: 'out', rate: 0.10 },
-      { code: 'VP3', label: '出口及欧盟内供货（零税率）', kind: 'info' },
-      { code: 'VP4', label: '销项税额 IVA su vendite', kind: 'out' },
-      { code: 'VP5', label: '进项税额 IVA su acquisti', kind: 'in' },
-      { code: 'VP6', label: '应缴税额（销项 − 进项）', kind: 'net' }
+      { code: 'VP2·22%', label: '应税销售额（22%）', kind: 'out', rate: 0.22 },
+      { code: 'VP2·10%', label: '应税销售额（10%）', kind: 'out', rate: 0.10 },
+      { code: 'VP2·0%', label: '出口及欧盟内供货（不计税，计入 VP2 总额）', kind: 'info' },
+      { code: 'VP4', label: '销项税额 IVA esigibile', kind: 'out' },
+      { code: 'VP5', label: '进项税额 IVA detratta', kind: 'in' },
+      { code: 'VP14', label: '应缴 / 留抵 IVA da versare o a credito', kind: 'net' }
     ],
-    notes: ['季度申报需同时提交 LIPE（季度增值税数据通信）', '年营业额 ≤€400,000（服务）/€700,000（货物）可选季度申报', '反向征收（Reverse Charge）交易单独列示'] },
+    notes: ['上年营业额 ≤€500,000（服务）/ ≤€800,000（其他活动）可选季度申报，季度缴款加计 1% 利息', '无论月度/季度，均须按季提交 LIPE（5/31、9/30、11/30、次年 2 月末）', '12 月 27 日前缴纳 IVA 年度预缴 Acconto（遇节假日顺延）', '反向征收交易须同时登记销项与进项，漏报按交易额处罚'] },
   cit: { form: 'Redditi SC · IRES + IRAP', period: 'FY2025',
-    rules: ['IRES 企业所得税：应税利润 × 24%', 'IRAP 大区生产税：（营业收入 − 营业成本）× 3.9%（各大区略有差异）', '预缴（Acconto）通常为上年税额的 100%，分 6 月 / 11 月两期', '亏损可无限期向后结转，抵扣限额为应税利润的 80%'] },
-  annual: { form: 'Dichiarazione dei Redditi（SC/RF）+ Bilancio d\'esercizio', authority: 'Agenzia delle Entrate / Registro delle Imprese', period: 'FY2025', deadline: '报税：次年 11 月 30 日；财报备案：股东会批准后 30 日内',
-    rules: ['IRES 企业所得税 24% + IRAP 大区税约 3.9%', '财务报表须以 XBRL 格式提交商会备案', '微小型企业可提交简化报表（Bilancio abbreviato）', '股东会须在财年结束后 120 日内批准财报'],
+    rules: ['IRES 企业所得税：应税利润 × 24%', 'IRAP 大区生产税：（营业收入 − 营业成本）× 3.9%（各大区略有差异）', '预缴（Acconto）合计为上年税额 100%：6 月 30 日缴 40%（与上年余额同缴），11 月 30 日缴 60%', '亏损可无限期结转，抵扣上限为当年应税利润的 80%'] },
+  annual: { form: 'Dichiarazione dei Redditi（SC）+ Bilancio d\'esercizio', authority: 'Agenzia delle Entrate / Registro delle Imprese', period: 'FY2025', deadline: 'Redditi SC：财年结束后第 10 个月末（FY2025 = 2026-11-02）；财报：股东会批准后 30 日内备案',
+    rules: ['IRES 24% + IRAP 约 3.9%，余额与预缴均通过 F24 缴纳', '股东会须在财年结束后 120 日内（特殊情况 180 日）批准财报', '财务报表须以 XBRL 格式提交商会（Registro Imprese）备案', '微小型企业可提交简化报表（Bilancio abbreviato / micro）'],
     items: ['财务报表 Bilancio（XBRL 格式）', 'Redditi SC 企业所得税申报表', 'IRAP 大区税申报表', '股东会批准决议 Verbale assemblea', '董事报告 Relazione sulla gestione'] } },
 DE: { name: '德国', flag: 'twemoji:flag-germany', ccy: '€',
-  vat: { form: 'Umsatzsteuervoranmeldung（UStVA）', authority: 'Finanzamt', channel: 'ELSTER 电子申报', freq: '月度或季度预缴申报 + 年度申报', deadline: '次月 10 日（可申请延期 1 个月）', rates: '标准 19% · 减免 7%',
-    period: '2026 年 10 月', deadlineShort: '2026-11-10',
+  vat: { form: 'Umsatzsteuervoranmeldung（UStVA）', authority: 'Finanzamt', channel: 'ELSTER 电子申报', freq: '月度 / 季度预申报（按上年应缴 VAT 判定）+ 年度申报', deadline: '次月 10 日；申请 Dauerfristverlängerung 可延 1 个月（月度申报者须缴 1/11 特别预缴）', rates: '标准 19% · 减免 7%',
+    period: '2026 年 11 月', deadlineShort: '2026-12-10', prev: '2026 年 10 月', freqNow: 'monthly',
     boxes: [
       { code: 'Kz81', label: '应税销售额（19%）', kind: 'out', rate: 0.19 },
       { code: 'Kz86', label: '应税销售额（7%）', kind: 'out', rate: 0.07 },
-      { code: 'Kz41', label: '欧盟内供货（免税）', kind: 'info' },
+      { code: 'Kz41', label: '欧盟内供货（对方有 USt-IdNr，免税）', kind: 'info' },
       { code: 'KzUSt', label: '销项税额 Umsatzsteuer', kind: 'out' },
       { code: 'Kz66', label: '进项税额 Vorsteuer', kind: 'in' },
-      { code: 'Kz83', label: '应缴税额 Zahllast', kind: 'net' }
+      { code: 'Kz83', label: '应缴 / 应退 Vorauszahlung / Überschuss', kind: 'net' }
     ],
-    notes: ['上年应缴 VAT >€7,500 须月度申报，≤€1,000 可免预缴', '欧盟内采购须申报 Erwerbsteuer 并同时计入进项', '年度申报 Umsatzsteuererklärung 次年 7 月 31 日前'] },
+    notes: ['上年应缴 VAT >€9,000 月度申报；€2,000–€9,000 季度；≤€2,000 可申请免预申报（2025 年起门槛）', '新设企业 2021–2026 年按预计年税额判定申报频率', '欧盟内采购须申报 Erwerbsteuer（Kz89）并同时计入进项（Kz61）', '2026 版 UStVA：补充说明改为勾选 Kz500（取代原 Kz23）'] },
   cit: { form: 'KSt 1 · Körperschaftsteuer + Solidaritätszuschlag', period: 'FY2025',
-    rules: ['公司所得税：应税利润 × 15%', '团结附加税：公司所得税 × 5.5%（实际合计约 15.83%）', '营业税 Gewerbesteuer 另计（约 7%–17%，按城市），本计算不含', '预缴按上年核定税额按季缴纳'] },
-  annual: { form: 'Körperschaftsteuererklärung + Gewerbesteuererklärung + Jahresabschluss', authority: 'Finanzamt / Bundesanzeiger', period: 'FY2025', deadline: '次年 7 月 31 日（有税务顾问可延至次年 2 月末）',
-    rules: ['公司所得税 15% + 团结附加税 5.5%×15%', '营业税 Gewerbesteuer 各地不同（约 7%–17%）', '财务报表以 E-Bilanz（XBRL）电子提交', ' Jahresabschluss 须公示于 Bundesanzeiger'],
-    items: ['E-Bilanz 财务报表（XBRL）', '公司所得税申报 KSt 1', '营业税申报 Gewerbesteuererklärung', '贸易税核定基础数据', '公示文件（Bundesanzeiger 上传凭证）'] } },
+    rules: ['公司所得税：应税利润 × 15%（2028 年起逐年下调 1 个百分点）', '团结附加税：公司所得税 × 5.5%（合计约 15.825%）', '营业税 Gewerbesteuer 另计（约 7%–17%，按城市），本计算不含', '预缴按上年核定税额于 3/10、6/10、9/10、12/10 按季缴纳'] },
+  annual: { form: 'Körperschaftsteuererklärung + Gewerbesteuererklärung + Jahresabschluss', authority: 'Finanzamt / Unternehmensregister', period: 'FY2025', deadline: '自行申报：次年 7 月 31 日（FY2025 = 2026-07-31）；税务顾问代理：第二年 2 月末（FY2025 = 2027-03-01）',
+    rules: ['公司所得税 15% + 团结附加税 5.5%×15%', '营业税 Gewerbesteuer 各地不同（约 7%–17%）', '财务报表以 E-Bilanz（XBRL）通过 ELSTER 电子提交', 'Jahresabschluss 须在财年结束后 12 个月内于 Unternehmensregister 公示'],
+    items: ['E-Bilanz 财务报表（XBRL）', '公司所得税申报 KSt 1', '营业税申报 Gewerbesteuererklärung', '年度增值税申报 USt 2', '公示凭证（Unternehmensregister）'] } },
 FR: { name: '法国', flag: 'twemoji:flag-france', ccy: '€',
-  vat: { form: 'Déclaration CA3（3310-CA3）', authority: 'DGFiP', channel: 'impots.gouv.fr 企业空间电子申报', freq: '月度（régime réel normal）或季度', deadline: '每月 15–19 日（按地区分批）', rates: '标准 20% · 中间 10% · 减免 5.5% / 2.1%',
-    period: '2026 年 10 月', deadlineShort: '2026-11-17',
+  vat: { form: 'Déclaration CA3（3310-CA3）', authority: 'DGFiP', channel: 'impots.gouv.fr 企业空间（EDI / EFI）', freq: '月度（régime réel normal）；小额可季度；简易制 CA12 年报', deadline: '每月 15–24 日（按法律形式与所在省分批，见企业空间）', rates: '标准 20% · 中间 10% · 减免 5.5% / 2.1%',
+    period: '2026 年 11 月', deadlineShort: '2026-12-17', prev: '2026 年 10 月', freqNow: 'monthly',
     boxes: [
-      { code: '01', label: '应税销售额（20%）', kind: 'out', rate: 0.20 },
-      { code: '02', label: '应税销售额（10% / 5.5%）', kind: 'out', rate: 0.10 },
-      { code: '03', label: '出口及欧盟内供货（免税）', kind: 'info' },
-      { code: '16', label: '销项税额 TVA collectée', kind: 'out' },
+      { code: '08', label: '应税销售额（20%）', kind: 'out', rate: 0.20 },
+      { code: '9B', label: '应税销售额（10%）', kind: 'out', rate: 0.10 },
+      { code: '04/06', label: '出口及欧盟内供货（免税）', kind: 'info' },
+      { code: '16', label: '销项税额合计 TVA brute', kind: 'out' },
       { code: '20', label: '可抵扣进项税 TVA déductible', kind: 'in' },
-      { code: '28', label: '应缴净额 TVA nette due', kind: 'net' }
+      { code: '28', label: '应缴净额 TVA nette due（负数转 25 行留抵）', kind: 'net' }
     ],
-    notes: ['年 VAT 应缴 <€4,000 可改季度申报', '欧盟内采购适用 autoliquidation（自我计税）', '退税申请（crédit de TVA）可结转或申请返还'] },
+    notes: ['年应缴 VAT <€4,000 可选季度申报', '营业额 ≤€840,000（货物）/ ≤€254,000（服务）可用简易制 CA12：年报 + 7 月、12 月两次预缴', '欧盟内采购与进口 VAT 适用 autoliquidation（自我计税）', '电子发票：2026-09-01 起所有企业须能接收；大型及中型企业同日起开具，中小微企业 2027-09-01 起开具'] },
   cit: { form: 'Liasse 2065 · IS（Impôt sur les sociétés）', period: 'FY2025',
-    rules: ['IS 标准税率：应税利润 × 25%', '中小企业（营收 <€10M）前 €42,500 利润适用 15% 优惠档', '预缴分 4 期（3/6/9/12 月），按上年税额估算', '亏损可向后结转，或向前结转 1 年（上限 €1M）'] },
-  annual: { form: 'Liasse fiscale（2050–2058）', authority: 'DGFiP', period: 'FY2025', deadline: '财年结束后 3 个月内（电子申报另加 15 个工作日）',
-    rules: ['IS 企业所得税 25%（中小企业部分利润 15%）', 'Liasse 含资产负债表 2050-2053、损益表 2054-2059', '必须通过 EDI 电子申报（régime réel 强制）', '大中型企业另需 CVAE 地方经济捐税申报'],
-    items: ['Liasse fiscale 完整申报包（2050–2058）', 'IS 企业所得税结算 2065', '资产负债表与损益表', '管理层文档（如适用）', 'CVAE 申报 1329-DEF（如适用）'] } },
+    rules: ['IS 标准税率：应税利润 × 25%', '中小企业（营收 <€10M、资本全缴且 75% 由自然人持有）前 €42,500 利润适用 15%', '预缴分 4 期（3/15、6/15、9/15、12/15），余额于次年 5 月 15 日结清', '亏损可无限期向后结转，或向前结转 1 年（上限 €1M）'] },
+  annual: { form: 'Liasse fiscale（2050–2058）', authority: 'DGFiP', period: 'FY2025', deadline: '12/31 结账：次年 5 月第 2 个工作日 + 电子申报宽限 15 天；其他结账日：财年结束后 3 个月内',
+    rules: ['IS 企业所得税 25%（中小企业部分利润 15%）', 'Liasse 含资产负债表 2050–2051、损益表 2052–2053 及附表', 'régime réel 企业必须通过 EDI 电子申报', '营业额 ≥€500,000 另需 CVAE 地方经济捐税申报（1330-CVAE）'],
+    items: ['Liasse fiscale 完整申报包（2050–2058）', 'IS 企业所得税结算 2065', '资产负债表与损益表', '管理层文档（如适用）', 'CVAE 申报 1330 / 1329-DEF（如适用）'] } },
 UK: { name: '英国', flag: 'twemoji:flag-united-kingdom', ccy: '£',
-  vat: { form: 'VAT Return（9-box，MTD 数字化申报）', authority: 'HMRC', channel: 'MTD 兼容软件在线申报', freq: '季度申报（标准）', deadline: '申报期结束后 1 个月 + 7 天', rates: '标准 20% · 减免 5% · 零税率 0%',
-    period: '2026 Q3（8–10 月）', deadlineShort: '2026-12-07',
+  vat: { form: 'VAT Return（9-box，MTD 数字化申报）', authority: 'HMRC', channel: 'MTD 兼容软件在线申报', freq: '季度申报（标准）；可选年度会计计划', deadline: '申报期结束后 1 个月 + 7 天（申报与缴款同日）', rates: '标准 20% · 减免 5% · 零税率 0%',
+    period: '2026 年 8–10 月', deadlineShort: '2026-12-07', prev: '2026 年 5–7 月', freqNow: 'quarterly',
     boxes: [
       { code: 'Box 1', label: '销项税额 VAT due on sales（直接填税额）', kind: 'out' },
       { code: 'Box 2', label: '欧盟采购应计税（北爱适用）', kind: 'out' },
       { code: 'Box 4', label: '进项可抵扣税 VAT reclaimed', kind: 'in' },
-      { code: 'Box 5', label: '应缴/应退净额 Net VAT', kind: 'net' },
+      { code: 'Box 5', label: '应缴 / 应退净额 Net VAT', kind: 'net' },
       { code: 'Box 6', label: '销售总额（不含税）', kind: 'info' },
       { code: 'Box 7', label: '采购总额（不含税）', kind: 'info' },
       { code: 'Box 8', label: '对欧盟供货额（北爱适用）', kind: 'info' },
       { code: 'Box 9', label: '自欧盟采购额（北爱适用）', kind: 'info' }
     ],
-    notes: ['MTD 强制：所有 VAT 注册企业须数字化记账与申报', 'Box 3 = Box 1 + Box 2，Box 5 = Box 3 − Box 4 自动计算', '迟交采用积分制罚款（Penalty Points）'] },
+    notes: ['VAT 注册门槛：应税营业额 £90,000（2024-04 起）', 'MTD 强制：所有 VAT 注册企业须数字化记账与申报', 'Box 3 = Box 1 + Box 2，Box 5 = Box 3 − Box 4 自动计算', '迟报积分制（季度 4 分罚 £200）；迟缴 16 天起罚 3%，31 天起再加 3% + 年化 10%'] },
   cit: { form: 'CT600 · Corporation Tax', period: 'FY2025',
-    rules: ['利润 ≤£50,000：19% 小企业税率', '利润 ≥£250,000：25% 主税率', '£50,000–£250,000：边际减免（Marginal Relief），实际税率 19%→25% 渐变', '缴税期限：财年结束后 9 个月 + 1 天；大企业按季预缴'] },
-  annual: { form: 'Company Tax Return（CT600）+ Annual Accounts', authority: 'HMRC / Companies House', period: 'FY2025', deadline: 'CT600：财年结束后 12 个月；缴税：9 个月 + 1 天；年报：Companies House 9 个月',
-    rules: ['Corporation Tax 25%（利润 ≤£50k 适用 19% 小企业税率）', '年报须按 FRS 102 / FRS 105 编制', '休眠公司可提交 Dormant Accounts', 'Confirmation Statement 每年单独提交'],
+    rules: ['利润 ≤£50,000：19% 小企业税率', '利润 ≥£250,000：25% 主税率', '£50,000–£250,000：边际减免（Marginal Relief），实际税率 19%→25% 渐变', '缴税期限：财年结束后 9 个月 + 1 天；利润 >£1.5M 的大企业按季预缴'] },
+  annual: { form: 'Company Tax Return（CT600）+ Annual Accounts', authority: 'HMRC / Companies House', period: 'FY2025', deadline: 'CT600：财年结束后 12 个月（FY2025 = 2026-12-31）；缴税：9 个月 + 1 天；年报：Companies House 9 个月',
+    rules: ['Corporation Tax 25%（利润 ≤£50k 适用 19% 小企业税率）', '年报须按 FRS 102 / FRS 105 编制并以 iXBRL 提交', '休眠公司可提交 Dormant Accounts', 'Confirmation Statement 每年单独提交'],
     items: ['CT600 公司税申报表', '年度财务报表（iXBRL）', '税务计算表（Tax computation）', 'Confirmation Statement', '董事报告与审计报告（如适用）'] } },
 AT: { name: '奥地利', flag: 'twemoji:flag-austria', ccy: '€',
-  vat: { form: 'Umsatzsteuervoranmeldung（UStVA）', authority: 'Finanzamt Österreich', channel: 'FinanzOnline 电子申报', freq: '月度或季度预缴 + 年度申报', deadline: '次月 15 日', rates: '标准 20% · 减免 10% / 13%',
-    period: '2026 Q3（7–9 月）', deadlineShort: '2026-11-15',
+  vat: { form: 'Umsatzsteuervoranmeldung（UVA · U30）', authority: 'Finanzamt Österreich', channel: 'FinanzOnline 电子申报', freq: '月度或季度预申报（按上年营业额判定）+ 年度申报 U1', deadline: '第二个月 15 日（月度：10 月 → 12 月 15 日；季度：5/15、8/15、11/15、2/15）', rates: '标准 20% · 减免 10% / 13% · 基本食品 4.9%（2026-07-01 起）',
+    period: '2026 年 10 月', deadlineShort: '2026-12-15', prev: '2026 年 9 月', freqNow: 'monthly',
     boxes: [
-      { code: 'Kz000', label: '应税销售额（20%）', kind: 'out', rate: 0.20 },
-      { code: 'Kz006', label: '应税销售额（10%）', kind: 'out', rate: 0.10 },
+      { code: 'Kz022', label: '应税销售额（20%）', kind: 'out', rate: 0.20 },
+      { code: 'Kz029', label: '应税销售额（10%）', kind: 'out', rate: 0.10 },
       { code: 'Kz017', label: '欧盟内供货（免税）', kind: 'info' },
-      { code: 'Kz029', label: '销项税额 Umsatzsteuer', kind: 'out' },
+      { code: 'USt', label: '销项税额 Umsatzsteuer', kind: 'out' },
       { code: 'Kz060', label: '进项税额 Vorsteuer', kind: 'in' },
-      { code: 'Kz090', label: '应缴税额 Zahllast', kind: 'net' }
+      { code: 'Kz095', label: '应缴 / 留抵 Zahllast / Gutschrift', kind: 'net' }
     ],
-    notes: ['上年营业额 >€100,000 须月度申报', '欧盟内采购 Eigenverbrauch/Erwerbsteuer 单独列示', '年度申报 Umsatzsteuererklärung 次年 6 月 30 日（电子）'] },
+    notes: ['上年营业额 >€100,000 月度；€55,000–€100,000 季度；≤€55,000 适用小企业免税', '迟缴超过 3 天加收 2% Säumniszuschlag', '欧盟内采购 Erwerbsteuer 单独列示，ZM 次月月底前提交', '年度 U1：纸质 4 月 30 日、电子 6 月 30 日'] },
   cit: { form: 'K1 · Körperschaftsteuer', period: 'FY2025',
-    rules: ['公司所得税：应税利润 × 23%（2024 年起）', '最低公司税 Mindestkörperschaftsteuer：€500/年（新设公司首年更低）', '预缴按上年核定税额按季缴纳', '亏损可无限期向后结转，抵扣限额为应税利润的 75%'] },
-  annual: { form: 'Körperschaftsteuererklärung（K1）+ Jahresabschluss', authority: 'Finanzamt / Firmenbuch', period: 'FY2025', deadline: '次年 6 月 30 日（电子申报）；财报备案 9 个月内',
-    rules: ['公司所得税 23%（2024 年起）', '最低公司税 Mindestkörperschaftsteuer €500/年', '财务报表须提交 Firmenbuch（法院登记）公示', '小微企业可提交简化 Einnahmen-Ausgaben 报表'],
-    items: ['K1 公司所得税申报表', '年度财务报表（UGB 格式）', '最低公司税核定', 'Firmenbuch 备案凭证', '股东会批准决议'] } },
+    rules: ['公司所得税：应税利润 × 23%', '最低公司税 Mindestkörperschaftsteuer：GmbH €500/年', '预缴按上年核定税额于 2/15、5/15、8/15、11/15 按季缴纳', '亏损可无限期结转，抵扣上限为应税利润的 75%'] },
+  annual: { form: 'Körperschaftsteuererklärung（K1）+ U1 + Jahresabschluss', authority: 'Finanzamt / Firmenbuch', period: 'FY2025', deadline: '纸质 4 月 30 日、电子 6 月 30 日（FY2025 = 2026-06-30）；税务顾问代理可至第二年 3 月 31 日；财报 9 个月内交 Firmenbuch',
+    rules: ['公司所得税 23%，最低公司税 €500/年', '年度增值税 U1 与 K1 同期提交', '财务报表须在 9 个月内提交 Firmenbuch 公示', '小微企业可提交简化报表'],
+    items: ['K1 公司所得税申报表', 'U1 年度增值税申报表', '年度财务报表（UGB 格式）', 'Firmenbuch 备案凭证', '股东会批准决议'] } },
 IE: { name: '爱尔兰', flag: 'twemoji:flag-ireland', ccy: '€',
-  vat: { form: 'VAT 3 Return', authority: 'Revenue Commissioners', channel: 'ROS（Revenue Online Service）', freq: '双月申报（标准）', deadline: '次月 19 日（ROS 线上 23 日）', rates: '标准 23% · 减免 13.5% / 9% / 4.8%',
-    period: '2026 年 9–10 月', deadlineShort: '2026-11-23',
+  vat: { form: 'VAT 3 Return', authority: 'Revenue Commissioners', channel: 'ROS（Revenue Online Service）', freq: '双月申报（标准）；小额可四个月 / 半年', deadline: '次月 19 日（ROS 申报并缴款延至 23 日，遇周末顺延）', rates: '标准 23% · 减免 13.5% / 9% / 4.8%（餐饮与理发 2026-07-01 起 9%）',
+    period: '2026 年 11–12 月', deadlineShort: '2027-01-25', prev: '2026 年 9–10 月', freqNow: 'bimonthly',
     boxes: [
       { code: 'T1', label: '销项税额 VAT on sales（直接填税额）', kind: 'out' },
       { code: 'T2', label: '进项可抵扣税 VAT on purchases', kind: 'in' },
       { code: 'T3/T4', label: '应缴 / 应退净额', kind: 'net' },
       { code: 'E1', label: '欧盟内供货额（免税）', kind: 'info' },
       { code: 'E2', label: '欧盟内采购额', kind: 'info' },
-      { code: 'E3', label: '欧盟内服务采购额', kind: 'info' }
+      { code: 'ES1', label: '欧盟内服务供应额', kind: 'info' }
     ],
-    notes: ['年应缴 <€3,000 可改半年申报，€3,000–€14,400 季度申报', '欧盟内服务采购适用 reverse charge 自我计税', 'VIES 欧盟内供货需按月/季度另行申报'] },
+    notes: ['年应缴 ≤€3,000 可半年申报，€3,001–€14,400 可四个月申报', '欧盟内服务采购适用 reverse charge 自我计税', 'VIES 申报次月 23 日；年度 RTD 于财年结束次月 23 日前提交', '餐饮、理发服务自 2026-07-01 起由 13.5% 降至 9%'] },
   cit: { form: 'Form CT1 · Corporation Tax', period: 'FY2025',
-    rules: ['贸易利润税率：12.5%（本计算器按贸易利润处理）', '非贸易利润（投资/租金等）税率 25%，可在税务调整中体现', '预缴：小企业一次性预缴（财年结束前 1 个月），大企业分两期', '亏损可同集团内结转或向后结转'] },
-  annual: { form: 'Corporation Tax Return（Form CT1）+ Annual Return（B1）', authority: 'Revenue / CRO', period: 'FY2025', deadline: 'CT1：财年结束后 9 个月内（ROS 23 日）；B1：按周年日',
+    rules: ['贸易利润税率：12.5%（本计算器按贸易利润处理）', '非贸易利润（投资/租金等）税率 25%，可在税务调整中体现', '预缴：小企业于财年结束前 1 个月的 23 日一次缴清，大企业分两期', '亏损可同集团内抵扣或向后结转'] },
+  annual: { form: 'Corporation Tax Return（Form CT1）+ Annual Return（B1）', authority: 'Revenue / CRO', period: 'FY2025', deadline: 'CT1：财年结束后第 9 个月 23 日（FY2025 = 2026-09-23）；B1：按周年申报日',
     rules: ['贸易利润税率 12.5%，非贸易利润 25%', 'CT1 必须通过 ROS 电子申报并电子支付', '年报 B1 提交公司注册处 CRO（含财务报表）', '逾期提交 B1 将丧失审计豁免资格 2 年'],
     items: ['Form CT1 公司税申报表', 'iXBRL 财务报表', 'B1 年度申报表（CRO）', '审计豁免声明（如适用）', '董事合规声明'] } }
 };
@@ -406,16 +441,16 @@ IT: {
   vatName: 'IVA periodiche 申报表 + 年度 IVA 申报表', vatUrl: 'https://www.agenziaentrate.gov.it/portale/modelli-download',
   annName: 'Redditi SC 申报表 + Bilancio（XBRL）', annUrl: 'https://www.agenziaentrate.gov.it/portale/modelli-download',
   vatGuide: ['导出本期销售明细：按 22% / 10% / 零税率分别汇总应税销售额', '导出本期采购发票：汇总可抵扣进项税 IVA su acquisti', '在左侧申报表逐项填入金额，点击「自动计算应缴」得出应缴或应退税额', '季度申报企业同步核对 LIPE 季度数据通信中的交易总额', '点击「一键生成申报表」下载填写好的表格，登录 Agenzia delle Entrate（Fisconline）提交', '通过「预约缴款」在截止日前完成 F24 缴款'],
-  annGuide: ['财年结束后编制财务报表（Bilancio），微小型企业可用简化格式', '使用 Agenzia 免费软件或本平台模板将报表转换为 XBRL 格式', '填写 Redditi SC：以会计利润为起点做税务增减调整，得出应税所得', '在「企业所得税」页一键计算 IRES 24% 与 IRAP（约 3.9%），填报预缴抵扣', '股东会在财年结束 120 日内批准财报并留档决议', '30 日内将 XBRL 财报提交商会（Registro Imprese）备案，11 月 30 日前提交 Redditi'] },
+  annGuide: ['财年结束后编制财务报表（Bilancio），微小型企业可用简化格式', '使用 Agenzia 免费软件或本平台模板将报表转换为 XBRL 格式', '填写 Redditi SC：以会计利润为起点做税务增减调整，得出应税所得', '在「企业所得税」页一键计算 IRES 24% 与 IRAP（约 3.9%），填报预缴抵扣', '股东会在财年结束 120 日内批准财报并留档决议', '30 日内将 XBRL 财报提交商会（Registro Imprese）备案，财年结束后第 10 个月末前提交 Redditi'] },
 DE: {
   vatName: 'UStVA 预缴申报表（ELSTER）', vatUrl: 'https://www.elster.de/eportal/start',
   annName: 'KSt 1 + Gewerbesteuer + E-Bilanz', annUrl: 'https://www.elster.de/eportal/start',
   vatGuide: ['导出本期销售：区分 19% 标准税率与 7% 减免税率销售额', '欧盟内供货填入 Kz41 免税栏，欧盟内采购须同时申报 Erwerbsteuer', '汇总进项发票税额填入 Kz66（留好发票备查）', '点击「自动计算应缴」得出 Kz83 Zahllast', '生成表格后登录 ELSTER 提交 UStVA，截止次月 10 日', '通过「预约缴款」授权 Finanzamt 直接扣款（Lastschrift）'],
-  annGuide: ['按 HGB 编制年度财务报表，并用本平台模板转 E-Bilanz（XBRL）', '填写 KSt 1：以商业利润为起点做税法调整', '在「企业所得税」页一键计算公司所得税 15% + 团结附加税', '另行填写 Gewerbesteuererklärung（营业税，税率按城市）', '7 月 31 日前通过 ELSTER 提交（有税务顾问可延期）', '将 Jahresabschluss 上传 Bundesanzeiger 公示'] },
+  annGuide: ['按 HGB 编制年度财务报表，并用本平台模板转 E-Bilanz（XBRL）', '填写 KSt 1：以商业利润为起点做税法调整', '在「企业所得税」页一键计算公司所得税 15% + 团结附加税', '另行填写 Gewerbesteuererklärung（营业税，税率按城市）', '7 月 31 日前通过 ELSTER 提交（税务顾问代理可至第二年 2 月末）', '将 Jahresabschluss 上传 Bundesanzeiger 公示'] },
 FR: {
   vatName: 'Déclaration CA3（3310-CA3）', vatUrl: 'https://www.impots.gouv.fr/professionnel',
   annName: 'Liasse fiscale（2050–2058）', annUrl: 'https://www.impots.gouv.fr/professionnel',
-  vatGuide: ['导出本期销售：区分 20% / 10% / 5.5% 税率行', '出口与欧盟内供货填入免税行（03）', '欧盟内采购按 autoliquidation 同时计销项与进项', '汇总可抵扣进项（20 行），点击「自动计算应缴」得出 28 行净额', '生成表格后在 impots.gouv.fr 企业空间提交 CA3，截止每月 15–19 日', '进项大于销项时可结转下期或申请退税（crédit de TVA）'],
+  vatGuide: ['导出本期销售：区分 20% / 10% / 5.5% 税率行', '出口填 04 行、欧盟内供货填 06 行（免税）', '欧盟内采购按 autoliquidation 同时计销项与进项', '汇总可抵扣进项（20 行），点击「自动计算应缴」得出 28 行净额', '生成表格后在 impots.gouv.fr 企业空间提交 CA3，截止每月 15–24 日（按分批日）', '进项大于销项时可结转下期或申请退税（crédit de TVA）'],
   annGuide: ['财年结束 3 个月内编制 Liasse fiscale 完整申报包', '2050-2053 填资产负债表，2054-2059 填损益与税务调整', '在「企业所得税」页一键计算 IS 25%（中小企业 15% 档）', 'régime réel 企业必须通过 EDI 电子申报', '如适用，同步准备 CVAE 1329-DEF 申报', '留存申报回执（accusé de réception）备查'] },
 UK: {
   vatName: 'VAT Return（9-box）', vatUrl: 'https://www.gov.uk/submit-vat-return',
@@ -425,7 +460,7 @@ UK: {
 AT: {
   vatName: 'UStVA 预缴申报表（U30）', vatUrl: 'https://finanzonline.bmf.gv.at/',
   annName: 'K1 公司所得税申报 + Jahresabschluss', annUrl: 'https://finanzonline.bmf.gv.at/',
-  vatGuide: ['导出本期销售：区分 20% / 10% / 13% 税率', '欧盟内供货填 Kz017 免税，欧盟内采购计 Erwerbsteuer', '汇总进项发票填入 Kz060', '点击「自动计算应缴」得出 Kz090 Zahllast', '登录 FinanzOnline 提交 UStVA，截止次月 15 日', '通过「预约缴款」向 Finanzamt 指定账户付款'],
+  vatGuide: ['导出本期销售：区分 20%（Kz022）/ 10%（Kz029）/ 13% / 4.9% 税率', '欧盟内供货填 Kz017 免税，欧盟内采购计 Erwerbsteuer', '汇总进项发票填入 Kz060', '点击「自动计算应缴」得出 Kz095 Zahllast', '登录 FinanzOnline 提交 UVA，截止第二个月 15 日', '通过「预约缴款」向 Finanzamt 指定账户付款'],
   annGuide: ['按 UGB 编制年度财务报表（小微企业可简化）', '填写 K1：以会计利润调整为应税所得', '在「企业所得税」页一键计算 23%（注意最低公司税 €500/年）', '6 月 30 日前通过 FinanzOnline 电子提交', '9 个月内将财报提交 Firmenbuch 公示备案', '留存股东会批准决议与备案回执'] },
 IE: {
   vatName: 'VAT 3 Return（ROS）', vatUrl: 'https://www.ros.ie/',
@@ -436,9 +471,9 @@ IE: {
 
 var TF_COUNTRY_ORDER = ['IT', 'DE', 'FR', 'UK', 'AT', 'IE'];
 var TF_CUR = 'IT';
-var TF_TAB = 'guide';
+var TF_TAB = 'wizard';
 var HIST_KEY = 'dd-tax-history-v1';
-var LED_KEY = 'dd-tax-ledger-v2';
+var LED_KEY = 'dd-tax-ledger-v3';
 var OV_KEY = 'dd-tax-overview-v1';
 
 function tfEntName() { try { var e = (window.DDEnt && DDEnt.current) ? DDEnt.current() : null; return (e && e.name) ? e.name : 'Flash Commerce srl'; } catch (e) { return 'Flash Commerce srl'; } }
@@ -453,39 +488,39 @@ function tfLedSeed() {
     function S(entries) { return entries; }
     d.IT = S([
         { date: '2026-01-05', item: '上年留抵结转（IVA credito）', in: 8600, out: 0 },
-        { date: '2026-04-16', item: '2026 Q1 VAT 缴款（F24）', in: 0, out: 41250 },
+        { date: '2026-04-16', item: '2026 Q1 VAT 缴款（F24）', in: 41250, out: 41250 },
         { date: '2026-06-20', item: 'IRES/IRAP 第一期预缴（Acconto）', in: 42000, out: 0 },
-        { date: '2026-07-16', item: '2026 Q2 VAT 缴款（F24）', in: 0, out: 39800 },
+        { date: '2026-07-16', item: '2026 Q2 VAT 缴款（F24）', in: 39800, out: 39800 },
         { date: '2026-09-30', item: '进口 VAT 退税到账', in: 5120, out: 0 }
     ]);
     d.DE = S([
         { date: '2026-01-10', item: '上年留抵结转（Vorsteuerüberhang）', in: 3200, out: 0 },
-        { date: '2026-04-10', item: '2026-03 UStVA 缴款（Lastschrift）', in: 0, out: 11800 },
+        { date: '2026-04-10', item: '2026-03 UStVA 缴款（Lastschrift）', in: 11800, out: 11800 },
         { date: '2026-06-10', item: 'KSt 季度预缴（Vorauszahlung）', in: 9600, out: 0 },
-        { date: '2026-10-10', item: '2026-09 UStVA 缴款（Lastschrift）', in: 0, out: 12400 }
+        { date: '2026-10-10', item: '2026-09 UStVA 缴款（Lastschrift）', in: 12400, out: 12400 }
     ]);
     d.FR = S([
         { date: '2026-01-15', item: '上年留抵结转（crédit de TVA）', in: 8420, out: 0 },
-        { date: '2026-04-17', item: '2026-03 CA3 缴款', in: 0, out: 15600 },
+        { date: '2026-04-17', item: '2026-03 CA3 缴款', in: 15600, out: 15600 },
         { date: '2026-06-15', item: 'IS 预缴（Acompte IS）', in: 18500, out: 0 },
-        { date: '2026-10-19', item: '2026-09 CA3 缴款', in: 0, out: 14900 }
+        { date: '2026-10-19', item: '2026-09 CA3 缴款', in: 14900, out: 14900 }
     ]);
     d.UK = S([
         { date: '2026-01-07', item: 'VAT 留抵结转（HMRC 账户）', in: 2150, out: 0 },
-        { date: '2026-05-07', item: '2026 Q1 VAT Return 缴款（Direct Debit）', in: 0, out: 9420 },
+        { date: '2026-05-07', item: '2026 Q1 VAT Return 缴款（Direct Debit）', in: 9420, out: 9420 },
         { date: '2026-07-01', item: 'Corporation Tax 预缴', in: 11000, out: 0 },
-        { date: '2026-08-07', item: '2026 Q2 VAT Return 缴款（Direct Debit）', in: 0, out: 9880 }
+        { date: '2026-08-07', item: '2026 Q2 VAT Return 缴款（Direct Debit）', in: 9880, out: 9880 }
     ]);
     d.AT = S([
         { date: '2026-02-15', item: '上年留抵结转（Vorsteuerguthaben）', in: 1980, out: 0 },
-        { date: '2026-05-15', item: '2026-04 UStVA 缴款', in: 0, out: 6240 },
+        { date: '2026-05-15', item: '2026-04 UStVA 缴款', in: 6240, out: 6240 },
         { date: '2026-06-30', item: 'KSt 季度预缴', in: 7200, out: 0 },
-        { date: '2026-08-15', item: '2026-07 UStVA 缴款', in: 0, out: 6580 }
+        { date: '2026-08-15', item: '2026-07 UStVA 缴款', in: 6580, out: 6580 }
     ]);
     d.IE = S([
         { date: '2026-01-23', item: '上年留抵结转（VAT credit）', in: 2640, out: 0 },
-        { date: '2026-03-23', item: '2026-01/02 VAT 3 缴款（ROS）', in: 0, out: 7320 },
-        { date: '2026-07-23', item: '2026-05/06 VAT 3 缴款（ROS）', in: 0, out: 7650 },
+        { date: '2026-03-23', item: '2026-01/02 VAT 3 缴款（ROS）', in: 7320, out: 7320 },
+        { date: '2026-07-23', item: '2026-05/06 VAT 3 缴款（ROS）', in: 7650, out: 7650 },
         { date: '2026-09-01', item: 'CT1 预缴（Preliminary Tax）', in: 9800, out: 0 }
     ]);
     return d;
@@ -530,7 +565,8 @@ function tfRenderOverview() {
     }
     document.getElementById('tf-ov-cards').innerHTML =
         card('税务局账户余额', tfSigned(c, bal), bal >= 0 ? '税务局持有您的资金，可抵扣或退回' : '您在税务局存在欠缴', 'solar:safe-2-bold', bal >= 0 ? 'text-green-600' : 'text-red-500') +
-        card('本期应缴 VAT', vatNet === null ? '未计算' : (vatNet >= 0 ? tfNumFmt(c, vatNet) : '−' + tfNumFmt(c, -vatNet) + '（应退）'), vatNet === null ? '在 VAT 页点「自动计算应缴」' : c.vat.period, 'solar:calculator-bold', vatNet !== null && vatNet < 0 ? 'text-green-600' : 'text-gray-900') +
+        (ov.vatPaid === c.vat.period ? card('本期 VAT', vatNet !== null && vatNet < 0 ? '已留抵' : '已缴清', c.vat.period + ' · 下一期截止见右侧日历', 'solar:calculator-bold', 'text-green-600') :
+        card('本期应缴 VAT', vatNet === null ? '未计算' : (vatNet >= 0 ? tfNumFmt(c, vatNet) : '−' + tfNumFmt(c, -vatNet) + '（应退）'), vatNet === null ? '在「一键报税」第 2 步自动取数' : c.vat.period + ' · 截止 ' + c.vat.deadlineShort, 'solar:calculator-bold', vatNet !== null && vatNet < 0 ? 'text-green-600' : 'text-gray-900')) +
         card('企业所得税' + (citDue !== null && citDue < 0 ? '（应退）' : '（应补）'), citDue === null ? '未计算' : tfNumFmt(c, Math.abs(citDue)), citDue === null ? '在「企业所得税」页一键计算' : c.cit.form, 'solar:chart-2-bold', citDue !== null && citDue < 0 ? 'text-green-600' : 'text-gray-900') +
         card('应退税合计', tfNumFmt(c, refund), refund > 0 ? '可在台账中「申请退税」' : '当前无待退税款', 'solar:refresh-circle-bold', refund > 0 ? 'text-green-600' : 'text-gray-900');
 }
@@ -624,7 +660,7 @@ function tfTab(t) {
     TF_TAB = t;
     var onBtn = 'px-5 py-2 text-sm font-bold bg-white rounded-8 shadow-sm';
     var offBtn = 'px-5 py-2 text-sm font-medium text-gray-500';
-    ['guide', 'vat', 'cit', 'annual', 'import'].forEach(function (x) {
+    ['wizard', 'guide', 'vat', 'cit', 'annual', 'import'].forEach(function (x) {
         document.getElementById('tf-tab-' + x).className = t === x ? onBtn : offBtn;
         document.getElementById('tf-pane-' + x).classList.toggle('hidden', t !== x);
     });
@@ -634,26 +670,37 @@ function tfRuleRow(k, v) { return '<div class="flex justify-between gap-4"><span
 
 /* ---------- VAT ---------- */
 var TF_PREFILL = {
-    IT: { VP1: 486200, VP2: 38500, VP3: 128400, VP5: 45280 },
-    DE: { Kz81: 128400, Kz86: 12600, Kz41: 48200, Kz66: 9300 },
-    FR: { '01': 98600, '02': 8400, '03': 36500, '20': 8200 },
+    IT: { 'VP2·22%': 486200, 'VP2·10%': 38500, 'VP2·0%': 128400, VP5: 45280 },
+    DE: { Kz81: 128400, Kz86: 12600, Kz41: 70400, Kz66: 9300 },
+    FR: { '08': 98600, '9B': 8400, '04/06': 36500, '20': 8200 },
     UK: { 'Box 1': 17720, 'Box 2': 0, 'Box 4': 6120, 'Box 6': 443000, 'Box 7': 30600, 'Box 8': 0, 'Box 9': 0 },
-    AT: { Kz000: 64200, Kz006: 5800, Kz017: 18600, Kz060: 5480 },
-    IE: { T1: 12052, T2: 4960, E1: 22800, E2: 8600, E3: 1200 }
+    AT: { Kz022: 64200, Kz029: 5800, Kz017: 24600, Kz060: 5480 },
+    IE: { T1: 12052, T2: 4960, E1: 45000, E2: 8600, ES1: 1200 }
 };
 
+var TF_DRAFT = {};
 function tfRenderVat() {
     var c = TF_COUNTRIES[TF_CUR], v = c.vat;
     document.getElementById('tf-vat-form-title').textContent = c.name + ' · ' + v.form;
     document.getElementById('tf-vat-form-sub').textContent = '申报机构：' + v.authority + ' · ' + v.channel;
     document.getElementById('tf-vat-period').textContent = '申报期：' + v.period;
-    document.getElementById('tf-vat-boxes').innerHTML = v.boxes.map(function (b, i) {
+    var boxEl = document.getElementById('tf-vat-boxes');
+    /* 重建前保存草稿（按国家），避免提交 / 切换国家后已填金额丢失 */
+    if (boxEl.dataset.cc) {
+        var d = {}; boxEl.querySelectorAll('input[data-kind]').forEach(function (el) { if (el.value) d[el.dataset.code] = el.value; });
+        TF_DRAFT[boxEl.dataset.cc] = d;
+    }
+    boxEl.dataset.cc = TF_CUR;
+    boxEl.innerHTML = v.boxes.map(function (b, i) {
         var input = b.kind === 'net'
             ? '<input class="w-full px-3 py-2 bg-yellow-50 border border-yellow-200 rounded-8 text-right font-bold text-dark" id="tfb-' + i + '" readonly placeholder="自动计算" type="text"/>'
             : '<input class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-8 text-right focus:outline-none focus:border-accent2" id="tfb-' + i + '" data-kind="' + b.kind + '" data-code="' + b.code + '"' + (b.rate ? ' data-rate="' + b.rate + '"' : '') + ' placeholder="' + c.ccy + ' 0.00" type="text"/>';
         var note = b.rate ? '税基 × ' + (b.rate * 100).toFixed(0) + '% 计税' : (b.kind === 'net' ? '系统自动计算' : (b.kind === 'info' ? '统计栏位，不影响应缴额' : ''));
         return '<tr class="border-b border-gray-50"><td class="py-2.5 pr-3 font-mono text-xs text-gray-500">' + b.code + '</td><td class="py-2.5 pr-3 text-gray-700">' + b.label + (note ? ' <span class="text-xs text-gray-400">· ' + note + '</span>' : '') + '</td><td class="py-2.5">' + input + '</td></tr>';
     }).join('');
+    var dr = TF_DRAFT[TF_CUR] || {}, hasDr = false;
+    boxEl.querySelectorAll('input[data-kind]').forEach(function (el) { if (dr[el.dataset.code]) { el.value = dr[el.dataset.code]; hasDr = true; } });
+    if (hasDr) tfCalc();
     document.getElementById('tf-vat-rules').innerHTML =
         tfRuleRow('申报表格', v.form.split('（')[0]) +
         tfRuleRow('申报频率', v.freq) +
@@ -661,9 +708,9 @@ function tfRenderVat() {
         tfRuleRow('税率', v.rates) +
         v.notes.map(function (n) { return '<div class="flex gap-2 pt-1"><iconify-icon class="text-accent2 flex-none mt-0.5" icon="solar:info-circle-bold"></iconify-icon><span class="text-gray-500 text-xs leading-relaxed">' + n + '</span></div>'; }).join('');
     var h = (tfHist()[TF_CUR] || []).filter(function (x) { return x.type === 'vat'; });
-    var seed = [{ period: '2026 Q2', form: v.form.split('（')[0], amount: c.ccy + ' —', deadline: '已截止', status: '已缴清', receipt: 'RCPT-' + TF_CUR + '-26Q2' }];
+    var seed = [{ period: v.prev, form: v.form.split('（')[0], amount: c.ccy + ' —', deadline: '已截止', status: '已缴清', receipt: 'RCPT-' + TF_CUR + '-PREV' }];
     document.getElementById('tf-vat-history').innerHTML = (h.concat(seed)).map(function (x) {
-        return '<tr class="hover:bg-gray-50/60"><td class="py-3 px-6 text-sm border-t border-gray-50">' + x.period + '</td><td class="py-3 px-6 text-sm border-t border-gray-50 text-gray-500">' + x.form + '</td><td class="py-3 px-6 text-sm border-t border-gray-50 font-bold">' + x.amount + '</td><td class="py-3 px-6 text-sm border-t border-gray-50 text-gray-500">' + x.deadline + '</td><td class="py-3 px-6 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium ' + (x.status === '已提交' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600') + '">' + x.status + '</span></td><td class="py-3 px-6 text-sm border-t border-gray-50 font-mono text-xs text-gray-400">' + x.receipt + '</td></tr>';
+        return '<tr class="hover:bg-gray-50/60"><td class="py-3 px-6 text-sm border-t border-gray-50">' + x.period + '</td><td class="py-3 px-6 text-sm border-t border-gray-50 text-gray-500">' + x.form + '</td><td class="py-3 px-6 text-sm border-t border-gray-50 font-bold">' + x.amount + '</td><td class="py-3 px-6 text-sm border-t border-gray-50 text-gray-500">' + x.deadline + '</td><td class="py-3 px-6 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium ' + (x.status === '已提交' || x.status === '已更正' ? 'bg-blue-50 text-blue-600' : (x.status === '留抵下期' ? 'bg-yellow-50 text-yellow-700' : 'bg-green-50 text-green-600')) + '">' + x.status + '</span></td><td class="py-3 px-6 text-sm border-t border-gray-50 font-mono text-xs text-gray-400">' + x.receipt + '</td></tr>';
     }).join('');
     document.getElementById('tf-vat-hist-hint').textContent = '当前国家：' + c.name;
     tfRenderTpl('vat');
@@ -712,7 +759,7 @@ function tfCalc() {
     }
     var net = outTax - inn;
     document.querySelectorAll('#tf-vat-boxes input[readonly]').forEach(function (el) {
-        el.value = (net >= 0 ? '' : '−') + c.ccy + ' ' + Math.abs(net).toLocaleString('en-US', { minimumFractionDigits: 2 }) + (net >= 0 ? '' : '（应退）');
+        el.value = (net >= 0 ? '' : '−') + c.ccy + ' ' + Math.abs(net).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + (net >= 0 ? '' : '（应退）');
     });
     var ov = tfOv(); ov[TF_CUR] = ov[TF_CUR] || {}; ov[TF_CUR].vatNet = net; tfOvSave(ov);
     tfRenderOverview();
@@ -733,26 +780,57 @@ function tfGenerate() {
 }
 function tfSubmitVat() {
     var c = TF_COUNTRIES[TF_CUR];
-    var hasVal = false;
-    document.querySelectorAll('#tf-vat-boxes input[data-kind]').forEach(function (el) { if (tfNum(el) !== 0) hasVal = true; });
-    if (!hasVal) { DDUI.toast('请先预填或填写申报金额', 'error'); return; }
+    var errs = tfValidate().filter(function (x) { return x.lvl === 'error'; });
+    if (errs.length) { DDUI.toast(errs[0].msg, 'error'); return; }
     var net = tfCalc();
+    function go() {
+        var rc = tfDoSubmitVat(net);
+        tfRenderVat(); tfRenderWizard();
+        DDUI.toast(c.name + ' VAT 申报已提交（回执 ' + rc + '）' + (net > 0 ? '，请在截止日前缴款' : (net < 0 ? '，留抵税额已记入税务局账户' : '')), 'success');
+    }
+    if (tfVatFiled()) DDUI.confirm('更正申报', c.vat.period + ' 已提交过申报。再次提交将作为更正申报（替换原申报数据），确认继续？', go, '提交更正');
+    else go();
+}
+/* 本期是否已提交 */
+function tfVatFiled() {
+    var c = TF_COUNTRIES[TF_CUR];
+    return (tfHist()[TF_CUR] || []).some(function (x) { return x.type === 'vat' && x.period === c.vat.period; });
+}
+/* 提交本期 VAT（向导与 VAT 页共用）；返回回执号 */
+function tfDoSubmitVat(net) {
+    var c = TF_COUNTRIES[TF_CUR];
     var h = tfHist(); h[TF_CUR] = h[TF_CUR] || [];
-    h[TF_CUR].unshift({ type: 'vat', period: c.vat.period, form: c.vat.form.split('（')[0], amount: (net >= 0 ? '' : '−') + c.ccy + ' ' + Math.abs(net).toLocaleString('en-US', { minimumFractionDigits: 2 }), deadline: c.vat.deadlineShort, status: '已提交', receipt: 'RCPT-' + TF_CUR + '-' + Math.random().toString(36).slice(2, 8).toUpperCase() });
+    var old = h[TF_CUR].filter(function (x) { return x.type === 'vat' && x.period === c.vat.period; })[0];
+    h[TF_CUR] = h[TF_CUR].filter(function (x) { return !(x.type === 'vat' && x.period === c.vat.period); });
+    var rc = 'RCPT-' + TF_CUR + '-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+    h[TF_CUR].unshift({ type: 'vat', period: c.vat.period, form: c.vat.form.split('（')[0], amount: tfSigned(c, Math.round(net * 100) / 100), net: Math.round(net * 100) / 100, deadline: c.vat.deadlineShort, status: old ? '已更正' : '已提交', receipt: rc });
     tfHistSave(h);
-    tfRenderVat();
-    DDUI.toast(c.name + ' VAT 申报已提交至 ' + c.vat.authority + '（演示）' + (net > 0 ? '，请预约缴款' : (net < 0 ? '，应退税额已计入台账余额' : '')), 'success');
+    if (net < 0 && !(old && old.net < 0)) tfLedAdd(TF_CUR, { date: tfToday(), item: c.vat.period + ' VAT 留抵（' + c.vat.authority + '）', in: Math.round(-net * 100) / 100, out: 0 });
+    return rc;
+}
+/* 缴款：先用税务局账户余额抵扣，不足部分钱包扣款；mode = auto | wallet */
+function tfDoPay(net, mode) {
+    var c = TF_COUNTRIES[TF_CUR];
+    var bal = Math.max(tfLedBal(TF_CUR), 0);
+    var fromBal = mode === 'wallet' ? 0 : Math.min(bal, net);
+    var fromWallet = Math.round((net - fromBal) * 100) / 100;
+    tfLedAdd(TF_CUR, { date: tfToday(), item: c.vat.period + ' VAT 缴款（' + (fromBal > 0 ? '余额抵扣 ' + tfNumFmt(c, fromBal) + (fromWallet > 0 ? ' + ' : '') : '') + (fromWallet > 0 ? '钱包扣款 ' + tfNumFmt(c, fromWallet) : '') + '）', in: fromWallet, out: Math.round(net * 100) / 100 });
+    var h = tfHist();
+    (h[TF_CUR] || []).forEach(function (x) { if (x.type === 'vat' && x.period === c.vat.period) x.status = '已缴清'; });
+    tfHistSave(h);
+    var ov = tfOv(); ov[TF_CUR] = ov[TF_CUR] || {}; ov[TF_CUR].vatNet = 0; ov[TF_CUR].vatPaid = c.vat.period; tfOvSave(ov);
+    return { fromBal: fromBal, fromWallet: fromWallet };
 }
 function tfPay() {
     var c = TF_COUNTRIES[TF_CUR];
     var net = tfCalc();
     if (net <= 0) { DDUI.toast('本期无需缴款（应退或为零）', 'error'); return; }
-    var bal = tfLedBal(TF_CUR);
-    DDUI.confirm('预约缴款', '本期应缴 ' + tfNumFmt(c, net) + '，税务账户余额 ' + tfSigned(c, bal) + '。优先从余额抵扣，不足部分从钱包扣款。确认创建缴款指令？', function () {
-        tfLedAdd(TF_CUR, { date: tfToday(), item: c.vat.period + ' VAT 缴款（' + c.vat.authority + '）', in: 0, out: Math.round(net * 100) / 100 });
-        var ov = tfOv(); if (ov[TF_CUR]) { ov[TF_CUR].vatNet = 0; tfOvSave(ov); }
+    if (!tfVatFiled()) { DDUI.toast('请先提交本期申报，再缴款', 'error'); return; }
+    var bal = Math.max(tfLedBal(TF_CUR), 0), fromBal = Math.min(bal, net);
+    DDUI.confirm('确认缴款', '本期应缴 ' + tfNumFmt(c, net) + '。税务局账户余额抵扣 ' + tfNumFmt(c, fromBal) + '，钱包扣款 ' + tfNumFmt(c, net - fromBal) + '。确认缴款？', function () {
+        tfDoPay(net, 'auto');
         tfRenderAll();
-        DDUI.toast('缴款完成，税务账户余额已更新（演示）', 'success');
+        DDUI.toast('缴款完成，税务局账户台账已更新', 'success');
     }, '确认缴款');
 }
 
@@ -783,7 +861,7 @@ function tfCitCompute(code, rev, cogs, opex, other) {
         var soli = kst * 0.055;
         lines.push(['应税利润', profit]);
         lines.push(['公司所得税（15%）', kst]);
-        lines.push(['团结附加税（5.5% × 所得税）', soli]);
+        lines.push(['团结附加税 Solidaritätszuschlag（5.5% × 所得税）', soli]);
         tax = kst + soli;
     } else if (code === 'FR') {
         var t = 0;
@@ -799,7 +877,7 @@ function tfCitCompute(code, rev, cogs, opex, other) {
         var p = Math.max(profit, 0), ukt = 0, desc = '';
         if (p <= 50000) { ukt = p * 0.19; desc = '小企业税率 19%'; }
         else if (p >= 250000) { ukt = p * 0.25; desc = '主税率 25%'; }
-        else { ukt = p * 0.25 - (250000 - p) * 3 / 200 * 0.01 * 100 / 100; ukt = p * 0.25 - (250000 - p) * 0.015; desc = '边际减免（19%→25% 渐变）'; }
+        else { ukt = p * 0.25 - (250000 - p) * 0.015; desc = '边际减免（25% − 3/200 ×（£250k − 利润））'; }
         lines.push(['应税利润', profit]);
         lines.push(['Corporation Tax（' + desc + '）', ukt]);
         tax = ukt;
@@ -906,15 +984,15 @@ function tfRenderAnnual() {
     var h = (tfHist()[TF_CUR] || []).filter(function (x) { return x.type === 'annual'; });
     var seed = [{ year: 'FY2024', form: a.form.split('（')[0], auth: a.authority, deadline: '已截止', status: '已备案' }];
     document.getElementById('tf-ann-history').innerHTML = (h.concat(seed)).map(function (x) {
-        return '<tr class="hover:bg-gray-50/60"><td class="py-3 px-6 text-sm border-t border-gray-50">' + x.year + '</td><td class="py-3 px-6 text-sm border-t border-gray-50 text-gray-500">' + x.form + '</td><td class="py-3 px-6 text-sm border-t border-gray-50 text-gray-500">' + x.auth + '</td><td class="py-3 px-6 text-sm border-t border-gray-50 text-gray-500">' + x.deadline + '</td><td class="py-3 px-6 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium ' + (x.status === '已提交' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600') + '">' + x.status + '</span></td></tr>';
+        return '<tr class="hover:bg-gray-50/60"><td class="py-3 px-6 text-sm border-t border-gray-50">' + x.year + '</td><td class="py-3 px-6 text-sm border-t border-gray-50 text-gray-500">' + x.form + '</td><td class="py-3 px-6 text-sm border-t border-gray-50 text-gray-500">' + x.auth + '</td><td class="py-3 px-6 text-sm border-t border-gray-50 text-gray-500">' + x.deadline + '</td><td class="py-3 px-6 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium ' + (x.status === '已提交' || x.status === '已更正' ? 'bg-blue-50 text-blue-600' : (x.status === '留抵下期' ? 'bg-yellow-50 text-yellow-700' : 'bg-green-50 text-green-600')) + '">' + x.status + '</span></td></tr>';
     }).join('');
     tfRenderTpl('annual');
 }
 
-function tfCountry(code) { TF_CUR = code; tfRenderAll(); }
+function tfCountry(code) { TF_CUR = code; TF_WIZ = { code: code, step: 1, receipt: '', paid: false, freq: null }; tfRenderAll(); }
 function tfRenderAll() {
     tfRenderCountries(); tfRenderOverview(); tfRenderLedger();
-    tfRenderGuide(); tfRenderVat(); tfRenderCit(); tfRenderAnnual(); tfRenderImport();
+    tfRenderGuide(); tfRenderVat(); tfRenderCit(); tfRenderAnnual(); tfRenderImport(); tfRenderWizard();
 }
 
 /* ---------- 进口关税 + 进口 VAT 申报 ---------- */
@@ -979,19 +1057,19 @@ IT: {
   payName: 'F24 缴款 & 税务账户查询（Cassetto Fiscale）',
   ids: [['Partita IVA 增值税号', 'IT01234567890'], ['Codice Fiscale 税码', '01234567890'], ['EORI 海关号', 'IT01234567890']],
   address: 'Via Roma 128, 20121 Milano (MI), Italy',
-  late: 'F24 逾期按 0.1%/天计息（ravvedimento operoso 可减免）；漏报按税额 120%–240% 处罚。',
-  freq: 'VAT 月度（次月 16 日）或季度（次季第二月 16 日）；所得税与年报按年',
+  late: '迟缴基础罚款 25%；主动补缴（ravvedimento operoso）14 天内 0.0833%/天、15–30 天 1.25%、31–90 天 1.39%、一年内 3.125%，另按法定利率 1.6%/年（2026）计息；漏报按税额 120% 起罚。',
+  freq: 'VAT 月度（次月 16 日）或季度（5/16、8/20、11/16，Q4 并入次年 3/16）；LIPE 按季；Redditi 财年后第 10 个月末',
   steps: [
     '用 SPID / CIE 或 Fisconline 凭证登录 Agenzia delle Entrate 预留区，准备本期申报。',
     '导出本期销售与采购：按 22% / 10% / 4% 税率分列，出口与欧盟内供货单列为零税率。',
-    '在本页「VAT 申报」点「从交易数据预填」，核对 VP1–VP5 各栏，再点「自动计算应缴」得出 VP6。',
+    '在本页「VAT 申报」点「从交易数据预填」，核对 VP2–VP5 各栏，再点「自动计算应缴」得出 VP14。',
     '点「一键生成申报表」导出完整税表（A4 打印版 + CSV），对照栏位在 Fisconline 填 Liquidazione IVA。',
     '用 F24 缴款（银行 / home banking），保存回执；回到本页「税务局账户」登记缴款，余额自动更新。',
-    '季度申报企业另需提交 LIPE 数据通信；年度 4 月 30 日前交 Dichiarazione IVA，11 月 30 日前交 Redditi SC。'
+    '按季提交 LIPE（5/31、9/30、11/30、次年 2 月末）；2/1–4/30 交 Dichiarazione IVA；财年结束后第 10 个月末（FY2025 = 2026-11-02）交 Redditi SC + IRAP。'
   ],
   docs: ['有效 Partita IVA 与 Codice Fiscale', '本期销售发票清单（含税率、免税/反向征收标识）', '本期采购发票与海关缴款凭证', '上期申报回执与留抵（credito IVA）余额', 'F24 缴款回执（含 md5 编号）', '银行流水（对账用）'],
   faq: [
-    ['我该月度还是季度申报？', '年营业额 ≤€400,000（服务）/ ≤€700,000（货物）可选季度申报，其余必须月度；季度申报仍需单独提交 LIPE。'],
+    ['我该月度还是季度申报？', '上年营业额 ≤€500,000（服务）/ ≤€800,000（其他活动）可选季度申报，季度缴款须加计 1% 利息；超过门槛必须月度。无论哪种都要按季提交 LIPE。'],
     ['进项大于销项怎么办？', '形成 credito IVA，可结转下期抵扣；年度申报后可申请退税（需满足担保或加速退税条件）。'],
     ['反向征收（Reverse Charge）怎么填？', '同一期内在销项与进项同时登记，净额为零，但必须申报，漏报按交易额处罚。']
   ]
@@ -1004,19 +1082,19 @@ DE: {
   payName: 'SEPA-Lastschrift 授权扣款 & 税务账户查询',
   ids: [['Steuernummer 税号', '12/345/67890'], ['USt-IdNr. 增值税号', 'DE123456789'], ['EORI 海关号', 'DE123456789012345']],
   address: 'Friedrichstrasse 88, 10117 Berlin, Germany',
-  late: '迟报加收 Verspaetungszuschlag（最低 €25/月），欠税按 0.5%/月计滞纳利息。',
-  freq: 'VAT 月度（次月 10 日）或季度；可申请 Dauerfristverlängerung 延后 1 个月',
+  late: '迟报 Verspätungszuschlag：每迟 1 个月按税额 0.25%、最低 €25/月；迟缴 Säumniszuschlag：每月 1%（转账有 3 天宽限）。',
+  freq: 'UStVA：上年 VAT >€9,000 月度、€2,000–€9,000 季度、≤€2,000 可免；次月 10 日，Dauerfristverlängerung 延 1 个月',
   steps: [
     '用 ELSTER 证书文件或签名卡登录 ELSTER 门户（首次需激活证书）。',
     '导出本期销售：19% 标准税率与 7% 减免税率分列；欧盟内供货记入 Kz41（免税）。',
     '本页预填 Kz81 / Kz86 / Kz66，点「自动计算应缴」得出 Kz83 Zahllast。',
     '「一键生成申报表」导出完整 UStVA，按栏位在 ELSTER 填报并提交，保存 Übertragungsprotokoll。',
     '通过 SEPA-Lastschrift 授权 Finanzamt 扣款；申请了延期的需先缴 1/11 Sondervorauszahlung。',
-    '欧盟内 B2B 供货另报 ZM（次月 25 日）；年度 UStVA 于次年 7 月 31 日前提交。'
+    '欧盟内 B2B 供货另报 ZM（次月 25 日）；年度 USt 申报自行申报次年 7 月 31 日、税务顾问代理第二年 2 月末。'
   ],
   docs: ['Steuernummer 与 USt-IdNr.', '符合 §14 UStG 要素的销售发票', '采购发票与进口 EUSt 缴税凭证', '上月 UStVA 回执（Übertragungsprotokoll）', 'ELSTER 证书与 PIN', '银行账户（SEPA 授权）'],
   faq: [
-    ['什么时候必须月度申报？', '上年应缴 VAT >€7,500 须月度申报；≤€1,000 可免预缴；其余按季度。'],
+    ['什么时候必须月度申报？', '上年应缴 VAT >€9,000 须月度申报；€2,000–€9,000 按季度；≤€2,000 可申请免除预申报、只交年报（2025 年起门槛）。新设企业 2021–2026 年按预计税额判定。'],
     ['EUSt 进口 VAT 如何抵扣？', '凭海关缴税凭证（EUSt-Bescheid）在下期 UStVA 的 Kz66 中作为进项抵扣。'],
     ['逾期有什么后果？', 'Finanzamt 会核定 Verspätungszuschlag（迟报附加费，最低 €25/月）并加收滞纳利息。']
   ]
@@ -1030,18 +1108,19 @@ FR: {
   ids: [['SIREN / SIRET', '912 345 678 00012'], ['TVA intracommunautaire', 'FR 12 912345678'], ['EORI 海关号', 'FR91234567800012']],
   address: '24 Rue de la Paix, 75002 Paris, France',
   late: '逾期申报自动加收 10% 罚款、利息 0.20%/月；催告后仍不报提高至 40%。',
-  freq: 'VAT 月度（每月 15–19 日按地区分批）或季度；IS 分 4 期预缴',
+  freq: 'CA3 月度（每月 15–24 日分批）；年 VAT <€4,000 可季度；IS 分 4 期预缴（3/6/9/12 月 15 日）',
   steps: [
     '用 SIREN + 密码或 FranceConnect 登录 impots.gouv.fr 企业空间。',
     '导出本期销售：20% / 10% / 5.5% / 2.1% 各税率分列，出口与欧盟内供货填免税行。',
     '欧盟内采购按 autoliquidation 自我计税，同一期同时计销项与进项（净额为零但必须申报）。',
-    '本页预填 01 / 02 / 20 行，自动算出 28 行 TVA nette；「一键生成申报表」导出完整 CA3。',
+    '本页预填 08 / 9B / 20 行，自动算出 28 行 TVA nette；「一键生成申报表」导出完整 CA3。',
     '在 impots.gouv.fr 填报 CA3 并提交，回执（accusé de réception）留档。',
-    '启用 prélèvement automatique 自动扣款；财年结束 3 个月内 EDI 申报 Liasse fiscale，IS 余额随 2065 结清。'
+    '启用 prélèvement automatique 自动扣款；12/31 结账企业于次年 5 月中旬前 EDI 申报 Liasse fiscale，IS 余额 5 月 15 日结清。'
   ],
   docs: ['SIREN / SIRET 与 TVA intracommunautaire 号', '上期 CA3 回执与 crédit de TVA 余额', '销售与采购发票（须含 mentions légales）', 'DEB / EMEBI 欧盟交易申报记录', '银行 RIB（自动扣款授权）', 'Liasse fiscale 编制底稿（年度）'],
   faq: [
-    ['年缴税额小能否季度申报？', '年 VAT 应缴 <€4,000 可申请季度申报（régime réel simplifié）。'],
+    ['年缴税额小能否季度申报？', '年 VAT 应缴 <€4,000 可选季度申报；营业额 ≤€840,000（货物）/ ≤€254,000（服务）可用简易制 CA12（年报 + 两次预缴）。'],
+    ['电子发票改革对我有什么影响？', '2026-09-01 起所有企业须能通过认证平台（PA）接收电子发票；大型与中型企业同日起必须开具并做 e-reporting，中小微企业 2027-09-01 起开具。'],
     ['crédit de TVA 怎么退？', '可结转下期抵扣，或在年度申报时申请返还；频繁出现贷方余额可申请月度预退。'],
     ['进口 VAT 还要向海关缴吗？', '2022 年起进口 VAT 统一在 CA3 自计税，不再向海关实缴，只缴关税。']
   ]
@@ -1054,7 +1133,7 @@ UK: {
   payName: 'Direct Debit / Faster Payment 缴款 & 退税申请',
   ids: [['VAT Registration No.', 'GB 123 4567 89'], ['Company Registration No.（CRN）', '12345678'], ['EORI（GB / 北爱 XI）', 'GB123456789000']],
   address: '18 Finsbury Circus, London EC2M 7EB, United Kingdom',
-  late: '迟交积分制：每次迟报记 1 分，达阈值触发 £200 罚款；欠税按基准利率 +2.5% 计息。',
+  late: '迟报积分制：季度申报累计 4 分罚 £200；迟缴 15 天内免罚，16–30 天罚 3%，31 天起再加 3% 并按年化 10% 日罚；利息为基准利率 +4%（2026-01 起 7.75%）。',
   freq: 'VAT 季度（期后 1 个月 + 7 天）；CT600 财年后 12 个月，缴税 9 个月 + 1 天',
   steps: [
     '用 Government Gateway 凭证登录 HMRC Business Tax Account。',
@@ -1068,7 +1147,7 @@ UK: {
   faq: [
     ['还能纸质申报 VAT 吗？', '不能。所有 VAT 注册企业必须通过 MTD 兼容软件数字化申报。'],
     ['进口 VAT 一定要先缴吗？', '可用 PVA（Postponed VAT Accounting）递延：在 VAT Return 的 Box 1 申报、Box 4 抵扣，无需进口时实缴。'],
-    ['迟交会怎样？', '迟交采用积分制 Penalty Points，累计到阈值触发 £200 罚款，并叠加滞纳利息。']
+    ['迟交会怎样？', '迟报记 Penalty Point，季度申报满 4 分罚 £200；迟缴 16 天起罚 3%，31 天起再罚 3% 并按年化 10% 每日计罚，另计 7.75% 利息。15 天内申请 Time to Pay 可免罚。']
   ]
 },
 AT: {
@@ -1079,19 +1158,19 @@ AT: {
   payName: 'FinanzOnline 缴款 / SEPA 扣款 & 账户查询（Abgabenkonto）',
   ids: [['Steuernummer 税号', '12 345/6789'], ['UID-Nummer 增值税号', 'ATU12345678'], ['EORI 海关号', 'ATU12345678']],
   address: 'Mariahilfer Strasse 45, 1060 Wien, Austria',
-  late: '迟报加收 Verspaetungszuschlag，欠税按约 2%/季（约 8%/年）计滞纳利息。',
-  freq: 'VAT 月度（次月 15 日）；上年营业额 ≤€100,000 可季度',
+  late: '迟缴超过 3 天宽限加收 2% Säumniszuschlag，3 个月后仍未缴再加 1%、再 3 个月再加 1%；迟报可处最高 10% Verspätungszuschlag。',
+  freq: 'UVA：上年营业额 >€100,000 月度、€55,000–€100,000 季度；第二个月 15 日到期；U1/K1 电子申报 6 月 30 日',
   steps: [
     '用 FinanzOnline 的 Teilnehmer-ID + PIN + 手机 TAN 登录。',
     '导出本期销售：20% / 10% / 13% 分列；欧盟内供货填 Kz017（免税）。',
-    '本页预填 Kz000 / Kz006 / Kz060，自动计算 Kz090 Zahllast。',
+    '本页预填 Kz022 / Kz029 / Kz060，自动计算 Kz095 Zahllast。',
     '「一键生成申报表」导出完整 UStVA（U30），在 FinanzOnline 填报并提交。',
     '通过 Abgabenkonto 缴款或授权 SEPA 扣款，保留 Bestätigung 回执。',
-    '年度 UStVA 于次年 6 月 30 日前电子提交；K1 公司税同期限；Jahresabschluss 9 个月内交 Firmenbuch。'
+    '年度 U1 / K1：纸质 4 月 30 日、电子 6 月 30 日前提交（税务顾问代理可至第二年 3 月 31 日）；Jahresabschluss 9 个月内交 Firmenbuch。'
   ],
   docs: ['UID-Nummer（ATU 开头）与 Steuernummer', 'FinanzOnline 凭证（ID / PIN / TAN）', '符合 §11 UStG 要素的发票', '欧盟内交易 ZM 清单', '上期 UStVA 回执', '进口 EUSt 缴纳凭证'],
   faq: [
-    ['必须月度申报吗？', '上年营业额 >€100,000 必须月度；≤€100,000 可季度；≤€35,000 可年度（需申请）。'],
+    ['必须月度申报吗？', '上年营业额 >€100,000 必须月度；€55,000–€100,000 按季度；≤€55,000 适用小企业免税（Kleinunternehmerregelung），一般无需 UVA。'],
     ['最低公司税是什么？', 'GmbH 每年最低公司税 Mindestkörperschaftsteuer €500，即使亏损也需缴纳。'],
     ['欧盟内供货要另报吗？', '要。Zusammenfassende Meldung（ZM）须在次月月底前提交。']
   ]
@@ -1104,8 +1183,8 @@ IE: {
   payName: 'ROS Debit Instruction / 银行转账 & 税务账户查询',
   ids: [['VAT Number', 'IE1234567AB'], ['CRO Number', '654321'], ['EORI 海关号', 'IE1234567AB']],
   address: '3 Harbour Master Place, Dublin 1, D01 K8F5, Ireland',
-  late: '迟报按税额加收 Late Filing Surcharge（5%–10%），欠税按日计息。',
-  freq: 'VAT 双月（次月 19 日，线上 23 日）；年应缴 <€3,000 可半年，€3,000–€14,400 可季度',
+  late: 'VAT 欠缴按 0.0274%/天计息（公司税 0.0219%/天）；CT1 迟报 2 个月内加征 5%、超过 2 个月加征 10% surcharge。',
+  freq: 'VAT 双月（次月 19 日，ROS 23 日）；年应缴 ≤€3,000 可半年，€3,001–€14,400 可四个月',
   steps: [
     '用 ROS 数字证书或 MyGovID 登录 ROS。',
     '导出本期销售：按 23% / 13.5% / 9% / 4.8% 汇总，T1 直接填销项税额。',
@@ -1116,7 +1195,7 @@ IE: {
   ],
   docs: ['VAT Number 与 CRO Number', 'ROS 数字证书 / MyGovID', '销售与采购发票', 'VIES 欧盟内交易申报记录', '上期 VAT 3 回执（Acknowledgement）', 'iXBRL 财务报表（年度）'],
   faq: [
-    ['申报周期怎么定？', '默认双月申报；年应缴 <€3,000 可半年，€3,000–€14,400 可季度，需在 Revenue 门户设置。'],
+    ['申报周期怎么定？', '默认双月申报；年应缴 ≤€3,000 可半年，€3,001–€14,400 可四个月，须注册满一年且无欠报，向 Collector-General 申请。'],
     ['欧盟内服务采购怎么处理？', '按 reverse charge 自我计税，同一期计入 T1 与 T2，净额为零但必须申报。'],
     ['B1 晚报有什么影响？', '逾期提交 B1 将丧失审计豁免资格 2 年，并产生 Late Filing Surcharge。']
   ]
@@ -1176,7 +1255,7 @@ DE: [['IT01234567890', '意大利', 'Rossi Import srl', 42000], ['FR12912345678'
 FR: [['DE811234567', '德国', 'Müller Handels GmbH', 24800], ['IT01234567890', '意大利', 'Rossi Import srl', 15600], ['BE0123456789', '比利时', 'Bruxelles Trading SA', 7200]],
 UK: [['IE1234567AB', '爱尔兰（北爱 XI）', 'Dublin Wholesale Ltd', 14200], ['DE811234567', '德国（北爱 XI）', 'Müller Handels GmbH', 8600]],
 AT: [['DE811234567', '德国', 'Müller Handels GmbH', 16400], ['IT01234567890', '意大利', 'Rossi Import srl', 8200]],
-IE: [['DE811234567', '德国', 'Müller Handels GmbH', 22800], ['FR12912345678', '法国', 'Atelier Paris SARL', 9600], ['GB123456789', '英国', 'London Retail Ltd', 12600]]
+IE: [['DE811234567', '德国', 'Müller Handels GmbH', 22800], ['FR12912345678', '法国', 'Atelier Paris SARL', 9600], ['NL812345678B01', '荷兰', 'Van Dijk BV', 12600]]
 };
 
 /* ==================== 通用取数 ==================== */
@@ -1508,6 +1587,381 @@ function tfSubmitAnnual() {
 }
 function tfDownload() { DDUI.toast('申报回执已下载（演示）', 'success'); }
 
+/* ==================== 一键报税向导（2026 现行规则） ==================== */
+var TF_WIZ = { code: 'IT', step: 1, receipt: '', paid: false, freq: null };
+var TF_PROFILE = {
+    IT: { turnover: 1260000, vat: 186000, act: 'goods' }, DE: { turnover: 486000, vat: 98000, act: 'goods' },
+    FR: { turnover: 398000, vat: 62000, act: 'goods' }, UK: { turnover: 342000, vat: 44000, act: 'goods' },
+    AT: { turnover: 218000, vat: 21000, act: 'goods' }, IE: { turnover: 286000, vat: 38000, act: 'goods' }
+};
+/* 截止日历：[日期, 事项, 类型]；周末 / 节假日已按各国规则顺延 */
+var TF_CAL = {
+IT: [['2026-11-30', 'LIPE 第三季度数据通信', 'vat'], ['2026-11-30', 'IRES / IRAP 第二期预缴（60%）· F24', 'cit'], ['2026-12-16', 'IVA 11 月缴款（F24 代码 6011）', 'vat'], ['2026-12-28', 'IVA 年度预缴 Acconto（12/27 遇周日顺延）', 'vat'], ['2027-01-18', 'IVA 12 月缴款（1/16 遇周六顺延）', 'vat'], ['2027-03-01', 'LIPE 第四季度数据通信', 'vat'], ['2027-03-16', 'IVA 年度余额缴款', 'vat'], ['2027-04-30', 'Dichiarazione IVA（FY2026 年度申报）', 'annual'], ['2027-06-30', 'IRES / IRAP 余额 + 第一期预缴（40%）', 'cit'], ['2027-11-02', 'Redditi SC + IRAP 申报（FY2026）', 'annual']],
+DE: [['2026-11-25', 'ZM 10 月（欧盟内供货汇总）', 'vat'], ['2026-12-10', 'UStVA 11 月 + KSt 第四季度预缴', 'vat'], ['2026-12-28', 'ZM 11 月', 'vat'], ['2027-01-11', 'UStVA 12 月 + 申请 2027 Dauerfristverlängerung', 'vat'], ['2027-02-10', 'UStVA 1 月', 'vat'], ['2027-02-15', 'GewSt 第一季度预缴', 'cit'], ['2027-03-01', 'FY2025 年度 KSt / GewSt / USt（税务顾问代理截止）', 'annual'], ['2027-03-10', 'UStVA 2 月 + KSt 第一季度预缴', 'cit'], ['2027-08-02', 'FY2026 年度申报（自行申报，7/31 遇周六顺延）', 'annual']],
+FR: [['2026-12-15', 'IS 第 4 期预缴（acompte）', 'cit'], ['2026-12-17', 'CA3 11 月申报与缴款', 'vat'], ['2027-01-19', 'CA3 12 月申报与缴款', 'vat'], ['2027-02-17', 'CA3 1 月申报与缴款', 'vat'], ['2027-03-15', 'IS 第 1 期预缴', 'cit'], ['2027-05-17', 'IS 余额结清 2572（5/15 遇周六顺延）', 'cit'], ['2027-05-19', 'Liasse fiscale 2065 + 2050–2058（FY2026）', 'annual'], ['2027-09-01', '中小微企业开始强制开具电子发票', 'vat']],
+UK: [['2026-12-07', 'VAT Return（2026 年 8–10 月）申报与缴款', 'vat'], ['2026-12-31', 'CT600 FY2025 申报截止', 'annual'], ['2027-03-07', 'VAT Return（2026-11 至 2027-01）', 'vat'], ['2027-06-07', 'VAT Return（2027 年 2–4 月）', 'vat'], ['2027-09-30', 'Annual Accounts FY2026 → Companies House', 'annual'], ['2027-10-01', 'Corporation Tax FY2026 缴款（9 个月 + 1 天）', 'cit']],
+AT: [['2026-11-30', 'ZM 10 月', 'vat'], ['2026-12-15', 'UVA 10 月申报与缴款', 'vat'], ['2027-01-15', 'UVA 11 月申报与缴款', 'vat'], ['2027-02-15', 'UVA 12 月 + KöSt 第一季度预缴', 'vat'], ['2027-03-31', 'FY2025 K1 / U1（税务顾问代理截止）', 'annual'], ['2027-06-30', 'FY2026 K1 / U1 电子申报', 'annual'], ['2027-09-30', 'FY2026 Jahresabschluss → Firmenbuch', 'annual']],
+IE: [['2027-01-25', 'VAT 3（11–12 月，ROS 1/23 遇周六顺延）', 'vat'], ['2027-01-25', 'RTD 年度交易明细（ROS）', 'vat'], ['2027-03-23', 'VAT 3（1–2 月）', 'vat'], ['2027-05-24', 'VAT 3（3–4 月）', 'vat'], ['2027-09-23', 'CT1 FY2026 申报 + 余额缴款', 'annual']]
+};
+var TF_FREQ_TXT = { monthly: '月度', quarterly: '季度', bimonthly: '双月', fourmonthly: '四个月', halfyear: '半年', annual: '仅年报' };
+
+function tfDays(d) { var t = new Date(); t.setHours(0, 0, 0, 0); return Math.round((new Date(d + 'T00:00:00') - t) / 86400000); }
+function tfDaysBadge(n) {
+    if (n < 0) return '<span class="text-[11px] px-2 py-0.5 rounded-full bg-gray-100 text-gray-400 font-medium whitespace-nowrap">已过 ' + (-n) + ' 天</span>';
+    if (n === 0) return '<span class="text-[11px] px-2 py-0.5 rounded-full bg-red-50 text-red-500 font-bold whitespace-nowrap">今天截止</span>';
+    if (n <= 7) return '<span class="text-[11px] px-2 py-0.5 rounded-full bg-red-50 text-red-500 font-bold whitespace-nowrap">' + n + ' 天后</span>';
+    if (n <= 30) return '<span class="text-[11px] px-2 py-0.5 rounded-full bg-yellow-50 text-yellow-700 font-bold whitespace-nowrap">' + n + ' 天后</span>';
+    return '<span class="text-[11px] px-2 py-0.5 rounded-full bg-gray-50 text-gray-500 font-medium whitespace-nowrap">' + n + ' 天后</span>';
+}
+
+/* 申报频率判定（2026 规则） */
+function tfFreqCheck(code, turnover, vat, act) {
+    var c = TF_COUNTRIES[code], f = '', why = '';
+    if (code === 'IT') {
+        var lim = act === 'service' ? 500000 : 800000;
+        if (turnover <= lim) { f = 'quarterly'; why = '上年营业额 ' + tfNumFmt(c, turnover) + ' ≤ ' + tfNumFmt(c, lim) + '（' + (act === 'service' ? '服务' : '其他活动') + '），可选季度申报，季度缴款加计 1% 利息；也可继续月度'; }
+        else { f = 'monthly'; why = '上年营业额 ' + tfNumFmt(c, turnover) + ' 超过 ' + tfNumFmt(c, lim) + '，必须月度申报（次月 16 日）'; }
+    } else if (code === 'DE') {
+        if (vat > 9000) { f = 'monthly'; why = '上年应缴 VAT ' + tfNumFmt(c, vat) + ' > €9,000，必须月度申报'; }
+        else if (vat > 2000) { f = 'quarterly'; why = '上年应缴 VAT 在 €2,000–€9,000 之间，按季度申报'; }
+        else { f = 'annual'; why = '上年应缴 VAT ≤ €2,000，可申请免除预申报，只交年度申报'; }
+    } else if (code === 'FR') {
+        var simp = act === 'service' ? 254000 : 840000;
+        if (vat < 4000) { f = 'quarterly'; why = '年应缴 VAT < €4,000，可选季度申报'; }
+        else if (turnover <= simp) { f = 'monthly'; why = '营业额 ≤ ' + tfNumFmt(c, simp) + '，可选简易制 CA12（年报 + 两次预缴）；当前按 régime réel normal 月度申报'; }
+        else { f = 'monthly'; why = '营业额超过简易制上限，适用 régime réel normal，必须月度 CA3'; }
+    } else if (code === 'UK') {
+        if (turnover < 90000) { f = 'quarterly'; why = '应税营业额低于 £90,000 注册门槛，可自愿注册；注册后按季度申报'; }
+        else { f = 'quarterly'; why = '应税营业额超过 £90,000，须注册 VAT 并按季度 MTD 申报' + (turnover <= 1350000 ? '；≤ £1.35M 可选年度会计计划' : ''); }
+    } else if (code === 'AT') {
+        if (turnover > 100000) { f = 'monthly'; why = '上年营业额 ' + tfNumFmt(c, turnover) + ' > €100,000，必须月度 UVA'; }
+        else if (turnover > 55000) { f = 'quarterly'; why = '上年营业额在 €55,000–€100,000 之间，按季度 UVA'; }
+        else { f = 'annual'; why = '上年营业额 ≤ €55,000，可适用小企业免税，一般无需 UVA'; }
+    } else if (code === 'IE') {
+        if (vat <= 3000) { f = 'halfyear'; why = '年应缴 VAT ≤ €3,000，可申请半年申报'; }
+        else if (vat <= 14400) { f = 'fourmonthly'; why = '年应缴 VAT 在 €3,001–€14,400 之间，可申请四个月申报'; }
+        else { f = 'bimonthly'; why = '年应缴 VAT > €14,400，按标准双月申报'; }
+    }
+    var now = c.vat.freqNow;
+    var ok = f === now || (code === 'IT' && f === 'quarterly' && now === 'monthly') || (code === 'FR' && now === 'monthly');
+    return { freq: f, why: why, ok: ok, now: now };
+}
+
+/* 逾期成本（罚款 + 利息） */
+function tfLateCost(code, tax, days) {
+    var L = [], pen = 0, intr = 0, note = '';
+    if (days <= 0) return { lines: [], total: 0, note: '未逾期，无罚款与利息' };
+    if (code === 'IT') {
+        var r = days <= 14 ? 0.000833 * days : days <= 30 ? 0.0125 : days <= 90 ? 0.013889 : days <= 365 ? 0.03125 : 0.0357;
+        pen = tax * r; intr = tax * 0.016 * days / 365;
+        L.push(['主动补缴罚款 ravvedimento（' + (r * 100).toFixed(3).replace(/0+$/, '') + '%）', pen], ['法定利息 1.6%/年 × ' + days + ' 天', intr]);
+        note = '通过 F24 一并缴纳：罚款代码 8904、利息代码 1991';
+    } else if (code === 'UK') {
+        if (days > 15) { L.push(['第一次迟缴罚款：第 15 天欠款 × 3%', tax * 0.03]); pen += tax * 0.03; }
+        if (days > 30) { L.push(['第一次迟缴罚款：第 30 天欠款 × 3%', tax * 0.03]); pen += tax * 0.03; var p2 = tax * 0.10 * (days - 30) / 365; L.push(['第二次迟缴罚款：年化 10% × ' + (days - 30) + ' 天', p2]); pen += p2; }
+        intr = tax * 0.0775 * days / 365; L.push(['迟缴利息 7.75%/年 × ' + days + ' 天', intr]);
+        note = '15 天内缴清或申请 Time to Pay 可免罚款';
+    } else if (code === 'DE') {
+        var m = days > 3 ? Math.ceil(days / 30) : 0;
+        var sz = tax * 0.01 * m; var vz = Math.max(25, tax * 0.0025) * Math.ceil(days / 30);
+        if (m) L.push(['Säumniszuschlag 迟缴 1%/月 × ' + m + ' 个月', sz]);
+        L.push(['Verspätungszuschlag 迟报 0.25%/月（最低 €25/月）', vz]); pen = sz + vz;
+        note = '申报按时、仅迟缴时无 Verspätungszuschlag；转账有 3 天宽限';
+    } else if (code === 'AT') {
+        var sz2 = days > 3 ? tax * 0.02 : 0; if (days > 93) sz2 += tax * 0.01; if (days > 183) sz2 += tax * 0.01;
+        if (sz2) L.push(['Säumniszuschlag（2% 起，3/6 个月后各加 1%）', sz2]); pen = sz2;
+        note = '3 天内到账免 Säumniszuschlag；金额低于 €50 不征收';
+    } else if (code === 'FR') {
+        pen = tax * 0.10; L.push(['迟报加征 majoration 10%', pen]);
+        var mm = Math.ceil(days / 30); intr = tax * 0.002 * mm; L.push(['迟延利息 0.20%/月 × ' + mm + ' 个月', intr]);
+        note = '催告后 30 日内仍未申报，加征提高至 40%';
+    } else if (code === 'IE') {
+        intr = tax * 0.000274 * days; L.push(['VAT 迟缴利息 0.0274%/天 × ' + days + ' 天', intr]);
+        note = '多次迟报可能失去 ROS 延期至 23 日的资格';
+    }
+    var total = L.reduce(function (a, b) { return a + b[1]; }, 0);
+    return { lines: L, total: total, note: note };
+}
+function tfLateCalc() {
+    var c = TF_COUNTRIES[TF_CUR];
+    var tax = parseFloat((document.getElementById('tfl-tax').value || '').replace(/[^0-9.]/g, ''));
+    var days = parseInt((document.getElementById('tfl-days').value || '').replace(/[^0-9]/g, ''), 10);
+    if (!(tax > 0)) { DDUI.toast('请填写欠缴税额', 'error'); return; }
+    if (!(days >= 0)) { DDUI.toast('请填写逾期天数', 'error'); return; }
+    var r = tfLateCost(TF_CUR, tax, days);
+    var box = document.getElementById('tfl-out'); box.classList.remove('hidden');
+    box.innerHTML = '<div class="rounded-8 bg-gray-50 p-3 text-xs space-y-1.5">' +
+        r.lines.map(function (l) { return '<div class="flex justify-between gap-3"><span class="text-gray-500">' + l[0] + '</span><b class="text-gray-800 whitespace-nowrap">' + tfNumFmt(c, Math.round(l[1] * 100) / 100) + '</b></div>'; }).join('') +
+        '<div class="flex justify-between gap-3 pt-1.5 border-t border-gray-200"><span class="font-bold text-gray-700">逾期成本合计</span><b class="text-red-500 whitespace-nowrap">' + tfNumFmt(c, Math.round(r.total * 100) / 100) + '</b></div>' +
+        '<p class="text-gray-400 pt-1">' + r.note + '</p></div>';
+}
+
+/* 申报数据校验 */
+function tfValidate() {
+    var c = TF_COUNTRIES[TF_CUR], out = [];
+    var vals = {}, any = false, neg = [];
+    document.querySelectorAll('#tf-vat-boxes input[data-kind]').forEach(function (el) {
+        var v = tfNum(el); vals[el.dataset.code] = v;
+        if (v !== 0) any = true;
+        if (v < 0) neg.push(el.dataset.code);
+    });
+    if (!any) { out.push({ lvl: 'error', msg: '尚未取数：请先从交易数据预填或手工填写本期金额' }); return out; }
+    if (neg.length) out.push({ lvl: 'error', msg: '栏位 ' + neg.join('、') + ' 不能为负数（退货请冲减当期销售额）' });
+    else out.push({ lvl: 'ok', msg: '所有金额栏均为有效的非负数' });
+    var net = tfCalc();
+    var info = c.vat.boxes.filter(function (b) { return b.kind === 'info'; })[0];
+    var viesSum = (TF_VIES[TF_CUR] || []).reduce(function (a, b) { return a + b[3]; }, 0);
+    var euKey = { IT: 'VP2·0%', DE: 'Kz41', FR: '04/06', AT: 'Kz017', IE: 'E1', UK: 'Box 8' }[TF_CUR];
+    var eu = vals[euKey] || 0;
+    if (eu > 0) {
+        var viesName = (TF_FORMS[TF_CUR] || []).filter(function (x) { return x.id === 'vies'; })[0];
+        var diff = Math.abs(eu - viesSum);
+        if (TF_CUR === 'IT' || TF_CUR === 'FR') out.push({ lvl: 'warn', msg: '本栏含出口与欧盟内供货 ' + tfNumFmt(c, eu) + '：其中欧盟内 B2B 部分须与「' + (viesName ? viesName.name : 'VIES') + '」（当前 ' + tfNumFmt(c, viesSum) + '）一致，出口部分须留存海关出口证明' });
+        else if (diff > 1) out.push({ lvl: 'warn', msg: '欧盟内供货 ' + tfNumFmt(c, eu) + ' 与 ' + (viesName ? viesName.name : 'VIES') + ' 合计 ' + tfNumFmt(c, viesSum) + ' 相差 ' + tfNumFmt(c, diff) + '，提交前请核对' });
+        else out.push({ lvl: 'ok', msg: '欧盟内供货与 VIES 清单金额一致' });
+    }
+    if (TF_CUR === 'UK') {
+        var b1 = vals['Box 1'] || 0, b6 = vals['Box 6'] || 0;
+        if (b6 > 0 && b1 / b6 > 0.2001) out.push({ lvl: 'error', msg: 'Box 1 销项税（' + tfNumFmt(c, b1) + '）超过 Box 6 销售额的 20%，请检查是否把含税金额填入 Box 6' });
+        if (b1 > 0 && !b6) out.push({ lvl: 'error', msg: '已填 Box 1 销项税，但 Box 6 销售额为空' });
+    }
+    if (TF_CUR === 'IE') {
+        var t1 = vals['T1'] || 0, t2 = vals['T2'] || 0;
+        if (t2 > t1 * 3 && t2 > 0) out.push({ lvl: 'warn', msg: 'T2 进项税远大于 T1 销项税，Revenue 可能要求提供进项发票核查' });
+    }
+    if (net < 0) out.push({ lvl: 'info', msg: '本期进项大于销项，形成留抵 ' + tfNumFmt(c, -net) + '，提交后记入税务局账户，可抵下期或申请退税' });
+    else out.push({ lvl: 'ok', msg: '本期应缴 ' + tfNumFmt(c, net) + '，计算公式：销项税 − 进项税' });
+    var fr = tfFreqCheck(TF_CUR, TF_PROFILE[TF_CUR].turnover, TF_PROFILE[TF_CUR].vat, TF_PROFILE[TF_CUR].act);
+    if (!fr.ok) out.push({ lvl: 'error', msg: '申报频率与规则不符：当前为' + TF_FREQ_TXT[fr.now] + '，按上年数据应为' + TF_FREQ_TXT[fr.freq] + '，请先在第 1 步调整' });
+    var d = tfDays(c.vat.deadlineShort);
+    if (d < 0 && net > 0) { var lc = tfLateCost(TF_CUR, net, -d); out.push({ lvl: 'warn', msg: '已逾期 ' + (-d) + ' 天，预计逾期成本 ' + tfNumFmt(c, Math.round(lc.total * 100) / 100) + '（' + lc.note + '）' }); }
+    else if (d >= 0 && d <= 7) out.push({ lvl: 'warn', msg: '距截止仅剩 ' + d + ' 天，请尽快提交并缴款' });
+    if (tfVatFiled()) out.push({ lvl: 'info', msg: '本期已提交过申报，再次提交将作为更正申报' });
+    return out;
+}
+
+function tfWizStepsHtml() {
+    var names = ['确认申报期', '自动取数', '核对与校验', '生成并提交', '缴款归档'];
+    return names.map(function (n, i) {
+        var k = i + 1, done = k < TF_WIZ.step, on = k === TF_WIZ.step;
+        return (i ? '<div class="flex-none w-6 h-px ' + (done || on ? 'bg-primary' : 'bg-gray-200') + '"></div>' : '') +
+            '<button class="flex items-center gap-2 px-3 py-2 rounded-8 flex-none ' + (on ? 'bg-[#FFFBEA]' : 'hover:bg-gray-50') + '" onclick="tfWizGo(' + k + ')" type="button">' +
+            '<span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-none ' + (done ? 'bg-green-500 text-white' : on ? 'bg-primary text-dark' : 'bg-gray-100 text-gray-400') + '">' + (done ? '✓' : k) + '</span>' +
+            '<span class="text-sm whitespace-nowrap ' + (on ? 'font-bold text-dark' : done ? 'font-medium text-gray-600' : 'text-gray-400') + '">' + n + '</span></button>';
+    }).join('');
+}
+function tfWizNav(back, next, nextTxt, extra) {
+    return '<div class="flex flex-wrap items-center gap-3 mt-6 pt-5 border-t border-gray-100">' +
+        (back ? '<button class="px-4 py-2.5 text-sm font-bold text-gray-600 border border-gray-200 rounded-8 hover:bg-gray-50" onclick="tfWizGo(' + back + ')" type="button">上一步</button>' : '') +
+        (extra || '') +
+        (next ? '<button class="ml-auto px-5 py-2.5 text-sm font-bold bg-primary text-dark rounded-8 hover:opacity-90" onclick="' + next + '" type="button">' + nextTxt + '</button>' : '') + '</div>';
+}
+function tfVatHasData() { var any = false; document.querySelectorAll('#tf-vat-boxes input[data-kind]').forEach(function (el) { if (tfNum(el) !== 0) any = true; }); return any; }
+
+function tfRenderWizard() {
+    var c = TF_COUNTRIES[TF_CUR], v = c.vat;
+    if (TF_WIZ.code !== TF_CUR) TF_WIZ = { code: TF_CUR, step: 1, receipt: '', paid: false, freq: null };
+    var t = document.getElementById('tfw-title'); if (!t) return;
+    t.textContent = c.name + ' · 一键报税 · ' + v.form.split('（')[0];
+    document.getElementById('tfw-sub').textContent = '申报期 ' + v.period + ' · 截止 ' + v.deadlineShort + ' · ' + v.authority + ' · ' + v.channel;
+    document.getElementById('tfw-steps').innerHTML = tfWizStepsHtml();
+    document.getElementById('tfw-body').innerHTML = tfWizBody();
+    document.getElementById('tfw-cal-ctry').textContent = c.name;
+    var cal = (TF_CAL[TF_CUR] || []).slice().sort(function (a, b) { return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0; });
+    var tag = { vat: ['VAT', 'bg-blue-50 text-blue-600'], cit: ['所得税', 'bg-green-50 text-green-600'], annual: ['年报', 'bg-purple-50 text-purple-600'] };
+    document.getElementById('tfw-cal').innerHTML = cal.map(function (x) {
+        var n = tfDays(x[0]), tg = tag[x[2]] || tag.vat;
+        return '<div class="flex items-start gap-3 p-2.5 rounded-8 ' + (n < 0 ? 'opacity-50' : 'hover:bg-gray-50') + '">' +
+            '<div class="w-11 flex-none text-center"><p class="text-[10px] text-gray-400 leading-none">' + x[0].slice(0, 7) + '</p><p class="text-lg font-bold text-dark leading-tight">' + x[0].slice(8) + '</p></div>' +
+            '<div class="min-w-0 flex-1"><p class="text-xs font-medium text-gray-700 leading-snug">' + x[1] + '</p><div class="flex items-center gap-1.5 mt-1"><span class="text-[10px] px-1.5 py-0.5 rounded ' + tg[1] + '">' + tg[0] + '</span>' + tfDaysBadge(n) + '</div></div></div>';
+    }).join('');
+}
+
+function tfWizBody() {
+    var c = TF_COUNTRIES[TF_CUR], v = c.vat, s = TF_WIZ.step, P = TF_PROFILE[TF_CUR];
+    if (s === 1) {
+        var d = tfDays(v.deadlineShort), fr = TF_WIZ.freq || tfFreqCheck(TF_CUR, P.turnover, P.vat, P.act);
+        var ids = TF_GUIDE[TF_CUR].ids.map(function (x) { return '<div class="flex justify-between gap-2 text-xs py-1"><span class="text-gray-500">' + x[0] + '</span><span class="font-mono font-medium text-gray-700">' + x[1] + '</span></div>'; }).join('');
+        return '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">' +
+            '<div class="p-4 rounded-8 bg-gray-50"><p class="text-xs text-gray-400">本期申报期</p><p class="text-base font-bold text-dark mt-1">' + v.period + '</p></div>' +
+            '<div class="p-4 rounded-8 bg-gray-50"><p class="text-xs text-gray-400">申报与缴款截止</p><p class="text-base font-bold text-dark mt-1">' + v.deadlineShort + '</p><div class="mt-1">' + tfDaysBadge(d) + '</div></div>' +
+            '<div class="p-4 rounded-8 bg-gray-50"><p class="text-xs text-gray-400">当前申报频率</p><p class="text-base font-bold text-dark mt-1">' + TF_FREQ_TXT[v.freqNow] + '</p></div></div>' +
+            '<p class="text-sm font-bold text-dark mb-2">申报频率自检 <span class="text-xs font-normal text-gray-400">· 按 2026 年 ' + c.name + '规则自动判定</span></p>' +
+            '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">' +
+            '<div><label class="block text-xs font-bold text-gray-500 mb-1.5">上年营业额（' + c.ccy + '）</label><input class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-8 text-sm focus:outline-none focus:border-accent2" id="tfw-turn" value="' + P.turnover + '" inputmode="decimal" type="text"/></div>' +
+            '<div><label class="block text-xs font-bold text-gray-500 mb-1.5">上年应缴 VAT（' + c.ccy + '）</label><input class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-8 text-sm focus:outline-none focus:border-accent2" id="tfw-vat" value="' + P.vat + '" inputmode="decimal" type="text"/></div>' +
+            '<div><label class="block text-xs font-bold text-gray-500 mb-1.5">主营业务</label><select class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-8 text-sm focus:outline-none focus:border-accent2" id="tfw-act"><option value="goods"' + (P.act === 'goods' ? ' selected' : '') + '>货物销售 / 其他</option><option value="service"' + (P.act === 'service' ? ' selected' : '') + '>服务</option></select></div></div>' +
+            '<button class="mt-3 px-4 py-2 text-xs font-bold text-accent2 border border-accent2 rounded-8 hover:bg-accent2/5" onclick="tfWizFreq()" type="button">重新判定</button>' +
+            '<div class="mt-3 p-3 rounded-8 border ' + (fr.ok ? 'border-green-100 bg-green-50/60' : 'border-red-100 bg-red-50/60') + ' flex gap-2"><iconify-icon class="text-lg flex-none ' + (fr.ok ? 'text-green-600' : 'text-red-500') + '" icon="' + (fr.ok ? 'solar:check-circle-bold' : 'solar:danger-triangle-bold') + '"></iconify-icon><div class="text-xs leading-relaxed"><p class="font-bold ' + (fr.ok ? 'text-green-700' : 'text-red-600') + '">规则判定：' + TF_FREQ_TXT[fr.freq] + (fr.ok ? ' · 与当前设置一致' : ' · 与当前设置（' + TF_FREQ_TXT[fr.now] + '）不一致') + '</p><p class="text-gray-600 mt-0.5">' + fr.why + '</p>' +
+            (fr.ok ? '' : '<button class="mt-2 px-3 py-1 text-xs font-bold bg-white border border-red-200 text-red-600 rounded-8" onclick="tfWizApplyFreq()" type="button">按规则调整为' + TF_FREQ_TXT[fr.freq] + '</button>') + '</div></div>' +
+            '<div class="mt-5 p-3 rounded-8 bg-gray-50"><p class="text-xs text-gray-400 mb-1">申报所需税务标识（已从主体资料读取）</p>' + ids + '</div>' +
+            tfWizNav(0, 'tfWizGo(2)', '确认，下一步');
+    }
+    if (s === 2) {
+        var has = tfVatHasData(), pre = TF_PREFILL[TF_CUR] || {};
+        var created = []; try { created = JSON.parse(localStorage.getItem('dd-inv-created-v1') || '[]') || []; } catch (e) {}
+        var rows = v.boxes.filter(function (b) { return b.kind !== 'net'; }).map(function (b) {
+            var val = pre[b.code];
+            var src = b.kind === 'in' ? '成本发票 + 海关进口凭证' : b.kind === 'info' ? (b.label.indexOf('采购') > -1 ? '采购发票（欧盟供应商）' : '销售发票（出口 / 欧盟 B2B）') : (b.rate ? '营收发票（' + (b.rate * 100).toFixed(0) + '% 税率）' : (typeof val === 'number' ? '营收发票汇总' : '按税基 × 税率自动计算'));
+            return '<tr class="border-b border-gray-50"><td class="py-2 pr-3 font-mono text-xs text-gray-500">' + b.code + '</td><td class="py-2 pr-3 text-gray-700">' + b.label + '</td><td class="py-2 pr-3 text-xs text-gray-400">' + src + '</td><td class="py-2 text-right font-medium">' + (!has ? '<span class="text-gray-300 font-normal">待取数</span>' : (typeof val === 'number' ? tfNumFmt(c, val) : '自动计算')) + '</td></tr>';
+        }).join('');
+        return '<p class="text-sm text-gray-600 mb-4">平台会按税率汇总本期营收发票、成本发票、海关进口凭证与银行流水，自动填入申报表各栏。</p>' +
+            '<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">' +
+            [['营收发票', (126 + created.length) + ' 张'], ['成本发票', '58 张'], ['进口凭证', '3 份'], ['银行流水', '412 笔已对账']].map(function (x) { return '<div class="p-3 rounded-8 bg-gray-50"><p class="text-xs text-gray-400">' + x[0] + '</p><p class="text-sm font-bold text-dark mt-1">' + x[1] + '</p></div>'; }).join('') + '</div>' +
+            '<table class="w-full text-sm"><thead><tr class="text-left text-xs text-gray-400 border-b border-gray-100"><th class="py-2 pr-3 font-semibold w-20">栏目</th><th class="py-2 pr-3 font-semibold">说明</th><th class="py-2 pr-3 font-semibold">数据来源</th><th class="py-2 font-semibold text-right">取数结果</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+            (has ? '<div class="mt-4 p-3 rounded-8 bg-green-50/60 border border-green-100 text-xs text-green-700 flex items-center gap-2"><iconify-icon icon="solar:check-circle-bold"></iconify-icon>已取数并填入申报表，下一步逐栏核对</div>' : '') +
+            tfWizNav(1, has ? 'tfWizGo(3)' : 'tfWizFetch()', has ? '下一步：核对' : '一键取数', has ? '<button class="px-4 py-2.5 text-sm font-bold text-accent2 border border-accent2 rounded-8 hover:bg-accent2/5" onclick="tfWizFetch()" type="button">重新取数</button>' : '');
+    }
+    if (s === 3) {
+        var list = tfValidate();
+        var inputs = v.boxes.map(function (b, i) {
+            var el = document.getElementById('tfb-' + i), val = el ? el.value : '';
+            var ro = b.kind === 'net' || (b.kind === 'out' && !b.rate && v.boxes.some(function (x) { return x.rate; }));
+            return '<tr class="border-b border-gray-50"><td class="py-2 pr-3 font-mono text-xs text-gray-500">' + b.code + '</td><td class="py-2 pr-3 text-gray-700">' + b.label + '</td><td class="py-2 w-44"><input class="w-full px-3 py-1.5 rounded-8 text-right text-sm ' + (ro ? 'bg-yellow-50 border border-yellow-200 font-bold' : 'bg-gray-50 border border-gray-200 focus:outline-none focus:border-accent2') + '" data-i="' + i + '" ' + (ro ? 'readonly' : 'oninput="tfWizEdit(this)"') + ' value="' + val + '" type="text"/></td></tr>';
+        }).join('');
+        var ico = { error: ['solar:close-circle-bold', 'text-red-500'], warn: ['solar:danger-triangle-bold', 'text-yellow-600'], info: ['solar:info-circle-bold', 'text-accent2'], ok: ['solar:check-circle-bold', 'text-green-600'] };
+        var errN = list.filter(function (x) { return x.lvl === 'error'; }).length;
+        return '<p class="text-sm text-gray-600 mb-3">可直接修改各栏金额，黄色栏由系统自动计算；右侧校验实时更新。</p>' +
+            '<table class="w-full text-sm"><tbody>' + inputs + '</tbody></table>' +
+            '<div class="mt-5 rounded-8 border border-gray-100 p-4" id="tfw-checks"><p class="text-sm font-bold text-dark mb-2">提交前校验 · ' + (errN ? '<span class="text-red-500">' + errN + ' 项需修正</span>' : '<span class="text-green-600">可以提交</span>') + '</p>' +
+            list.map(function (x) { return '<div class="flex gap-2 py-1 text-xs leading-relaxed"><iconify-icon class="flex-none mt-0.5 ' + ico[x.lvl][1] + '" icon="' + ico[x.lvl][0] + '"></iconify-icon><span class="text-gray-600">' + x.msg + '</span></div>'; }).join('') + '</div>' +
+            tfWizNav(2, 'tfWizGo(4)', '下一步：生成申报表');
+    }
+    if (s === 4) {
+        var net = tfCalc(), filed = tfVatFiled();
+        var hrec = (tfHist()[TF_CUR] || []).filter(function (x) { return x.type === 'vat' && x.period === v.period; })[0];
+        return '<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">' +
+            '<div class="p-4 rounded-8 bg-gray-50"><p class="text-xs text-gray-400">申报表</p><p class="text-sm font-bold text-dark mt-1">' + v.form.split('（')[0] + '</p></div>' +
+            '<div class="p-4 rounded-8 bg-gray-50"><p class="text-xs text-gray-400">申报期</p><p class="text-sm font-bold text-dark mt-1">' + v.period + '</p></div>' +
+            '<div class="p-4 rounded-8 ' + (net >= 0 ? 'bg-red-50/60' : 'bg-green-50/60') + '"><p class="text-xs text-gray-400">' + (net >= 0 ? '本期应缴' : '本期留抵 / 应退') + '</p><p class="text-lg font-extrabold mt-1 ' + (net >= 0 ? 'text-red-500' : 'text-green-600') + '">' + tfNumFmt(c, Math.round(net * 100) / 100) + '</p></div></div>' +
+            '<p class="text-sm font-bold text-dark mb-2">1. 生成申报文件</p>' +
+            '<div class="flex flex-wrap gap-2 mb-5">' +
+            '<button class="px-4 py-2 text-xs font-bold text-gray-600 border border-gray-200 rounded-8 hover:bg-gray-50" onclick="tfFullReturn(\'vat\')" type="button">预览 / 打印完整申报表</button>' +
+            '<button class="px-4 py-2 text-xs font-bold text-gray-600 border border-gray-200 rounded-8 hover:bg-gray-50" onclick="tfDlForm(\'vat\',true)" type="button">下载已填表（CSV）</button>' +
+            '<button class="px-4 py-2 text-xs font-bold text-gray-600 border border-gray-200 rounded-8 hover:bg-gray-50" onclick="tfWizPdf()" type="button">下载申报摘要（PDF）</button></div>' +
+            '<p class="text-sm font-bold text-dark mb-2">2. 提交至 ' + v.authority + '</p>' +
+            '<p class="text-xs text-gray-400 mb-3">平台通过 ' + v.channel + ' 通道代为传输，提交后生成官方回执号；也可下载文件后自行登录 ' + TF_GUIDE[TF_CUR].portalName + ' 提交。</p>' +
+            (filed ? '<div class="p-3 rounded-8 bg-green-50/60 border border-green-100 text-xs text-green-700 flex items-center gap-2"><iconify-icon icon="solar:check-circle-bold"></iconify-icon>已提交 · 回执号 <b class="font-mono">' + (hrec ? hrec.receipt : TF_WIZ.receipt) + '</b> · 状态：' + (hrec ? hrec.status : '已提交') + '</div>' : '') +
+            tfWizNav(3, filed ? 'tfWizGo(5)' : 'tfWizSubmit()', filed ? '下一步：缴款' : '确认提交申报', filed ? '<button class="px-4 py-2.5 text-sm font-bold text-gray-600 border border-gray-200 rounded-8 hover:bg-gray-50" onclick="tfWizSubmit()" type="button">更正申报</button>' : '');
+    }
+    /* step 5 */
+    var net5 = tfCalc(), bal = tfLedBal(TF_CUR), ov = tfOv()[TF_CUR] || {};
+    var paid = ov.vatPaid === v.period;
+    var next = (TF_CAL[TF_CUR] || []).filter(function (x) { return tfDays(x[0]) > 0 && x[0] > v.deadlineShort; }).sort(function (a, b) { return a[0] < b[0] ? -1 : 1; })[0];
+    var doneBox = '<div class="p-4 rounded-8 bg-green-50/60 border border-green-100"><p class="text-sm font-bold text-green-700 flex items-center gap-2"><iconify-icon class="text-lg" icon="solar:check-circle-bold"></iconify-icon>' + v.period + ' VAT 申报已全部完成</p><p class="text-xs text-gray-500 mt-1">回执、申报表与缴款记录已归档至「VAT 申报记录」与税务局账户台账。' + (next ? '下一个截止：' + next[0] + ' ' + next[1] + '。' : '') + '</p></div>';
+    if (net5 > 0 && !paid) {
+        var fromBal = Math.min(Math.max(bal, 0), net5);
+        return '<p class="text-sm text-gray-600 mb-4">本期应缴 <b class="text-red-500">' + tfNumFmt(c, net5) + '</b>，截止 ' + v.deadlineShort + '。缴款方式：' + TF_GUIDE[TF_CUR].payName.split(' & ')[0] + '。</p>' +
+            '<div class="space-y-2">' +
+            '<label class="flex items-start gap-3 p-4 rounded-8 border border-gray-200 cursor-pointer hover:border-accent2/40"><input class="mt-1" name="tfw-pay" type="radio" value="auto" checked/><span class="text-sm"><b class="text-dark">优先用税务局账户余额抵扣</b><span class="block text-xs text-gray-400 mt-0.5">余额 ' + tfSigned(c, bal) + ' · 抵扣 ' + tfNumFmt(c, fromBal) + ' · 钱包补缴 ' + tfNumFmt(c, net5 - fromBal) + '</span></span></label>' +
+            '<label class="flex items-start gap-3 p-4 rounded-8 border border-gray-200 cursor-pointer hover:border-accent2/40"><input class="mt-1" name="tfw-pay" type="radio" value="wallet"/><span class="text-sm"><b class="text-dark">全额从 ' + (c.ccy === '£' ? 'GBP' : 'EUR') + ' 钱包扣款</b><span class="block text-xs text-gray-400 mt-0.5">保留税务局账户余额用于所得税预缴</span></span></label></div>' +
+            tfWizNav(4, 'tfWizPay()', '确认缴款');
+    }
+    if (net5 < 0 && !paid) {
+        return '<p class="text-sm text-gray-600 mb-4">本期留抵 <b class="text-green-600">' + tfNumFmt(c, -net5) + '</b> 已记入税务局账户，当前余额 ' + tfSigned(c, bal) + '。</p>' +
+            '<div class="flex flex-wrap gap-2"><button class="px-4 py-2.5 text-sm font-bold text-gray-600 border border-gray-200 rounded-8 hover:bg-gray-50" onclick="tfWizKeep()" type="button">留抵下期（推荐）</button><button class="px-4 py-2.5 text-sm font-bold text-green-600 border border-green-200 rounded-8 hover:bg-green-50" onclick="tfRefund()" type="button">申请退税</button></div>' +
+            tfWizNav(4, '', '');
+    }
+    return doneBox + tfWizNav(4, 'tfTab(\'vat\')', '查看申报记录');
+}
+
+function tfWizGo(n) {
+    if (n >= 3 && !tfVatHasData()) { DDUI.toast('请先完成第 2 步「自动取数」', 'error'); n = 2; }
+    if (n >= 4 && TF_WIZ.step <= 3 && n > TF_WIZ.step) {
+        var errs = tfValidate().filter(function (x) { return x.lvl === 'error'; });
+        if (errs.length) { DDUI.toast(errs[0].msg, 'error'); n = 3; }
+    }
+    if (n >= 5 && !tfVatFiled()) { DDUI.toast('请先提交本期申报', 'error'); n = 4; }
+    TF_WIZ.step = n;
+    tfRenderWizard();
+}
+function tfWizFreq() {
+    var P = TF_PROFILE[TF_CUR];
+    P.turnover = parseFloat((document.getElementById('tfw-turn').value || '').replace(/[^0-9.]/g, '')) || 0;
+    P.vat = parseFloat((document.getElementById('tfw-vat').value || '').replace(/[^0-9.]/g, '')) || 0;
+    P.act = document.getElementById('tfw-act').value;
+    TF_WIZ.freq = tfFreqCheck(TF_CUR, P.turnover, P.vat, P.act);
+    tfRenderWizard();
+    DDUI.toast('已按 2026 规则重新判定：' + TF_FREQ_TXT[TF_WIZ.freq.freq], 'success');
+}
+function tfWizApplyFreq() {
+    var c = TF_COUNTRIES[TF_CUR], fr = TF_WIZ.freq || tfFreqCheck(TF_CUR, TF_PROFILE[TF_CUR].turnover, TF_PROFILE[TF_CUR].vat, TF_PROFILE[TF_CUR].act);
+    c.vat.freqNow = fr.freq; TF_WIZ.freq = null;
+    tfRenderWizard();
+    DDUI.toast('申报频率已调整为' + TF_FREQ_TXT[fr.freq] + '，请同步在 ' + TF_GUIDE[TF_CUR].portalName.split('（')[0] + ' 中变更', 'success');
+}
+function tfWizFetch() {
+    var c = TF_COUNTRIES[TF_CUR], pre = TF_PREFILL[TF_CUR] || {};
+    document.querySelectorAll('#tf-vat-boxes input[data-kind]').forEach(function (el) {
+        var v = pre[el.dataset.code];
+        el.value = typeof v === 'number' && v ? tfFmt(c, v) : '';
+    });
+    tfCalc();
+    tfRenderWizard();
+    DDUI.toast('已从营收 / 成本发票与进口凭证取数，共填入 ' + Object.keys(pre).length + ' 个栏位', 'success');
+}
+function tfWizEdit(inp) {
+    var el = document.getElementById('tfb-' + inp.dataset.i);
+    if (el) el.value = inp.value;
+    tfCalc();
+    document.querySelectorAll('#tfw-body input[readonly]').forEach(function (r) { var src = document.getElementById('tfb-' + r.dataset.i); if (src) r.value = src.value; });
+    clearTimeout(window._tfwT);
+    window._tfwT = setTimeout(function () {
+        var tmp = document.createElement('div'); tmp.innerHTML = tfWizBody();
+        var nc = tmp.querySelector('#tfw-checks'), oc = document.getElementById('tfw-checks');
+        if (nc && oc) oc.innerHTML = nc.innerHTML;
+    }, 250);
+}
+function tfWizSubmit() {
+    var c = TF_COUNTRIES[TF_CUR];
+    var errs = tfValidate().filter(function (x) { return x.lvl === 'error'; });
+    if (errs.length) { DDUI.toast(errs[0].msg, 'error'); TF_WIZ.step = 3; tfRenderWizard(); return; }
+    var net = tfCalc(), again = tfVatFiled();
+    DDUI.confirm(again ? '提交更正申报' : '确认提交申报', '将 ' + c.name + ' ' + c.vat.period + ' ' + c.vat.form.split('（')[0] + ' 提交至 ' + c.vat.authority + '，' + (net >= 0 ? '应缴 ' : '留抵 ') + tfNumFmt(c, Math.abs(net)) + '。提交后数据将作为正式申报，确认提交？', function () {
+        TF_WIZ.receipt = tfDoSubmitVat(net);
+        TF_WIZ.step = 4;
+        tfRenderAll();
+        DDUI.toast('申报已提交，回执号 ' + TF_WIZ.receipt, 'success');
+    }, again ? '提交更正' : '确认提交');
+}
+function tfWizPay() {
+    var c = TF_COUNTRIES[TF_CUR], net = tfCalc();
+    var r = document.querySelector('input[name="tfw-pay"]:checked');
+    var res = tfDoPay(net, r ? r.value : 'auto');
+    tfRenderAll();
+    DDUI.toast('缴款完成：余额抵扣 ' + tfNumFmt(c, res.fromBal) + '，钱包扣款 ' + tfNumFmt(c, res.fromWallet), 'success');
+}
+function tfWizKeep() {
+    var c = TF_COUNTRIES[TF_CUR];
+    var ov = tfOv(); ov[TF_CUR] = ov[TF_CUR] || {}; ov[TF_CUR].vatPaid = c.vat.period; tfOvSave(ov);
+    var h = tfHist(); (h[TF_CUR] || []).forEach(function (x) { if (x.type === 'vat' && x.period === c.vat.period) x.status = '留抵下期'; }); tfHistSave(h);
+    tfRenderAll();
+    DDUI.toast('留抵税额将在下期申报中自动抵扣', 'success');
+}
+function tfWizPdf() {
+    var c = TF_COUNTRIES[TF_CUR], v = c.vat, net = tfCalc(), cur = c.ccy === '£' ? 'GBP ' : 'EUR ';
+    function A(n) { return cur + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    var kvs = [['Country', TF_CUR], ['Form', v.form.split('（')[0].replace(/[^\x20-\x7E]/g, '')], ['Authority', v.authority], ['Period', v.period.replace(/ 年 /, '-').replace(/ 月/, '').replace(/[^\x20-\x7E]/g, '')], ['Deadline', v.deadlineShort], ['Taxpayer', tfEntName()]];
+    v.boxes.forEach(function (b, i) { var el = document.getElementById('tfb-' + i); kvs.push([b.code.replace(/[^\x20-\x7E]/g, ''), el && el.value ? A(tfNum(el)) : '-']); });
+    kvs.push([net >= 0 ? 'NET VAT PAYABLE' : 'NET VAT CREDIT', A(net)]);
+    if (window.DDPdf && DDPdf.kv) { DDPdf.kv('VAT RETURN SUMMARY', 'VAT-' + TF_CUR + '-' + v.deadlineShort, kvs, 'VAT_Return_' + TF_CUR + '_' + v.deadlineShort + '.pdf'); DDUI.toast('申报摘要 PDF 已下载', 'success'); }
+    else tfDlForm('vat', true);
+}
+function tfCalExport() {
+    var c = TF_COUNTRIES[TF_CUR];
+    var ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//DingdangPay//Tax//CN'];
+    (TF_CAL[TF_CUR] || []).forEach(function (x, i) {
+        var d = x[0].replace(/-/g, '');
+        ics.push('BEGIN:VEVENT', 'UID:dd-tax-' + TF_CUR + '-' + i + '@dingdangpay', 'DTSTART;VALUE=DATE:' + d, 'SUMMARY:' + c.name + ' ' + x[1], 'BEGIN:VALARM', 'TRIGGER:-P3D', 'ACTION:DISPLAY', 'DESCRIPTION:税务截止提醒', 'END:VALARM', 'END:VEVENT');
+    });
+    ics.push('END:VCALENDAR');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([ics.join('\r\n')], { type: 'text/calendar;charset=utf-8' }));
+    a.download = 'tax-calendar-' + TF_CUR + '.ics'; document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    DDUI.toast('已导出 ' + c.name + ' 截止日历（含提前 3 天提醒）', 'success');
+}
+
 tfRenderAll();
 
 </script>
@@ -1516,57 +1970,9 @@ tfRenderAll();
 </div>
 <script src="assets/js/ui.js"></script>
 <script src="assets/js/entity.js"></script>
+<script src="assets/js/dd-pdf.js"></script>
 <script>
 function toggleSidebar(){var s=document.getElementById('sidebar'),b=document.getElementById('sidebar-backdrop');if(!s)return;s.classList.toggle('hidden');s.classList.toggle('flex');s.classList.toggle('fixed');s.classList.toggle('inset-y-0');s.classList.toggle('left-0');s.classList.toggle('z-50');if(b)b.classList.toggle('hidden');}
-</script>
-<script>
-
-var dKw = '', dSt = '';
-function ddApplyFilter() {
-    document.querySelectorAll('.data-tbody tr').forEach(function (tr) {
-        var ok = (!dKw || tr.textContent.toLowerCase().indexOf(dKw) > -1) && (!dSt || dSt.indexOf('全部') === 0 || tr.textContent.indexOf(dSt) > -1);
-        tr.style.display = ok ? '' : 'none';
-    });
-}
-document.querySelectorAll('.data-search').forEach(function (i) { i.addEventListener('input', function () { dKw = this.value.trim().toLowerCase(); ddApplyFilter(); }); });
-document.querySelectorAll('.data-filter').forEach(function (s) { s.addEventListener('change', function () { dSt = this.value; ddApplyFilter(); }); });
-
-function vatDetail(p, ctry, amt) {
-    DDUI.modal({ title: 'VAT 申报详情 · ' + p, body:
-        '<div class="ddui-kv"><span>申报国家</span><b>' + ctry + '</b></div>' +
-        '<div class="ddui-kv"><span>应税销售额</span><b>' + amt + '</b></div>' +
-        '<div class="ddui-kv"><span>申报主体</span><b>Flash Commerce srl</b></div>' +
-        '<div class="ddui-kv"><span>申报方式</span><b>本地会计师代理申报</b></div>',
-        actions: [{ text: '关闭', type: 'primary' }] });
-}
-function vatFile(b) {
-    var tr = b.closest('tr');
-    DDUI.confirm('确认提交该周期 VAT 申报？提交后将生成缴款通知。', function () {
-        tr.querySelectorAll('td')[4].innerHTML = '<span class="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-600">已申报</span>';
-        b.outerHTML = '<button class="text-xs font-bold px-3 py-1.5 rounded-8 text-blue-600 hover:underline px-1" onclick="vatPayRec()">缴款记录</button>';
-        DDUI.toast('申报已提交，缴款通知已生成', 'success');
-    });
-}
-function vatPayRec() {
-    DDUI.modal({ title: '缴款记录', body:
-        '<div class="ddui-kv"><span>缴款方式</span><b>SEPA 转账</b></div>' +
-        '<div class="ddui-kv"><span>缴款日期</span><b>2026-07-14</b></div>' +
-        '<div class="ddui-kv"><span>回执编号</span><b>IT-AG-2026-77410</b></div>',
-        actions: [{ text: '下载回执', onClick: function (c) { c(); DDUI.toast('缴款回执已开始下载', 'success'); } }, { text: '关闭', type: 'primary' }] });
-}
-function vatNew() {
-    DDUI.modal({ title: '新建 VAT 申报', body:
-        '<div class="ddui-field"><label class="ddui-label">申报周期</label><select class="ddui-select"><option>2026 Q4</option><option>2026 年报</option></select></div>' +
-        '<div class="ddui-field"><label class="ddui-label">国家</label><select class="ddui-select"><option>意大利 IT</option><option>德国 DE</option><option>法国 FR</option><option>西班牙 ES</option></select></div>' +
-        '<div class="ddui-field"><label class="ddui-label">应税销售额 (EUR)</label><input class="ddui-input" id="vat-amt" type="number" placeholder="0.00"/></div>',
-        actions: [{ text: '取消' }, { text: '创建', type: 'primary', onClick: function (close, body) {
-            var amt = parseFloat(body.querySelector('#vat-amt').value);
-            if (!(amt > 0)) { DDUI.toast('请填写应税销售额', 'error'); return; }
-            close();
-            DDUI.toast('申报任务已创建，待会计师复核', 'success');
-        } }] });
-}
-
 </script>
 <script src="assets/js/i18n.js"></script>
 </body>
