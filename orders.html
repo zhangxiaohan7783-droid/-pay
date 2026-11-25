@@ -124,6 +124,7 @@ var OD_ORDERS = [
     { no: 'OFL-20261109-187', ch: 'offline', shop: '旗舰店 / POS-03', customer: '陈*强', items: '门店批发提货', amount: '¥18,600.00', pay: '支付宝', status: '已完成', docs: { quote: '已生成', contract: '已签署', pi: '已生成', packing: '已生成', logistics: '无需', customs: '无需' } },
     { no: 'OFL-20261109-166', ch: 'offline', shop: '分店A / 收款码', customer: '刘*敏', items: '门店零售商品', amount: '¥320.00', pay: '微信支付', status: '已完成', docs: { quote: '无需', contract: '无需', pi: '无需', packing: '无需', logistics: '无需', customs: '无需' } }
 ];
+try { var OD_CREATED = JSON.parse(localStorage.getItem('dd-orders-created-v1') || '[]'); if (OD_CREATED.length) OD_ORDERS = OD_CREATED.concat(OD_ORDERS); } catch (e) {}
 var OD_TAB = 'online';
 
 function odStatusChip(st) {
