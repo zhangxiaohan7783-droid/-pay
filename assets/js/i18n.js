@@ -5,11 +5,11 @@
 
   var DICT = {
     /* ---- 侧边栏 ---- */
-    '叮当支付': 'Dingdang Pay', '控制面板': 'Dashboard', '我的钱包': 'My Wallet',
+    '叮当支付': 'Dingdang Pay', '控制面板': 'Dashboard', '多币种余额': 'Multi-Currency Balance',
     '资金与汇款': 'FUNDS & REMITTANCE', '我的账户': 'My Accounts', '转账': 'Transfer',
     '全球即时付款': 'Instant Payout', '速汇中国': 'Express China', 'IBAN 账户': 'IBAN Accounts',
     '银行流水': 'Fiat Transactions', '收款人': 'Recipients',
-    '数字资产': 'DIGITAL ASSETS', '数字资产兑换': 'Exchange', 'USDT 钱包': 'USDT Wallet', '加密钱包': 'Crypto Wallet',
+    '数字资产': 'DIGITAL ASSETS', '加密币兑换': 'Crypto Exchange', 'USDT 钱包': 'USDT Wallet', '加密钱包': 'Crypto Wallet', 'U 卡': 'U Card',
     '收单管理': 'ACQUIRING', '线上收单': 'Online Acquiring', '线上加密币收单': 'Crypto Acquiring',
     '线下收单': 'Offline Acquiring', '收款链接': 'Payment Links', '营收发票': 'Invoices',
     '商务运营': 'OPERATIONS', '即时聊天': 'Messages', '结算记录': 'Settlements', '数据分析': 'Analytics',
@@ -39,11 +39,13 @@
     '今日': 'Today', '昨天': 'Yesterday', '近 7 天': 'Last 7 days', '近 30 天': 'Last 30 days', '近 90 天': 'Last 90 days',
     '最近7天': 'Last 7 days', '最近30天': 'Last 30 days', '本月累计': 'This Month', '查看全部': 'View All',
     /* ---- 钱包/兑换 ---- */
-    '我的钱包': 'My Wallet', '管理多币种账户余额、充值与提现': 'Manage multi-currency balances, deposits & withdrawals',
+    '多币种余额': 'Multi-Currency Balance', '管理多币种账户余额、法币换汇、充值与提现': 'Manage multi-currency balances, fiat exchange, deposits & withdrawals',
+    '法币换汇': 'Fiat Exchange', '确认换汇': 'Confirm Exchange', '换汇订单已提交，预计 1-3 分钟到账': 'Exchange order submitted, arriving in 1-3 minutes',
+    '仅支持法币之间的兑换；法币与加密币兑换请前往「加密币兑换」。': 'Fiat-to-fiat only; for fiat-crypto conversion go to "Crypto Exchange".',
     '可用余额': 'Available Balance', '冻结金额': 'Frozen Amount', '近期钱包动态': 'Recent Activity',
     '摘要': 'Summary', '美元账户 USD': 'USD Account', '欧元账户 EUR': 'EUR Account',
     '人民币账户 CNY': 'CNY Account', '港币账户 HKD': 'HKD Account',
-    '数字资产兑换': 'Exchange', '法币兑换': 'Fiat', '币币兑换': 'Crypto', '支付': 'You Pay', '获得': 'You Receive',
+    '加密币兑换': 'Crypto Exchange', '法币 ⇄ 加密币': 'Fiat ⇄ Crypto', '币币兑换': 'Crypto', '支付': 'You Pay', '获得': 'You Receive',
     '获得 (预计)': 'You Receive (est.)', '余额': 'Balance', '立即开启': 'Enable Now', '确认兑换': 'Confirm Exchange',
     'USDT 钱包': 'USDT Wallet', '充币': 'Deposit', '提币': 'Withdraw', '充币地址': 'Deposit Address',
     '提币地址': 'Withdrawal Address', '查看详情': 'View Details', '加密钱包': 'Crypto Wallet',
@@ -868,7 +870,10 @@
   // dd-client-v3:end
   // dd-exchange:start
   Object.assign(DICT, {
-      "换汇": "Currency Exchange",
+      "换汇": "Exchange",
+      "加密币兑换": "Crypto Exchange",
+      "法币 / 加密币兑换": "Fiat / Crypto Exchange",
+      "法币与加密币双向兑换 · 币币互换，实时行情，极低点差": "Fiat-crypto two-way and crypto swaps with live rates and minimal spreads",
       "法币 / 稳定币兑换": "Fiat / Stablecoin Exchange",
       "法币互换 · 法币与稳定币 · 币币兑换，实时行情，极低点差": "Fiat-to-fiat, fiat-stablecoin and crypto swaps with live rates and minimal spreads",
       "¥ CNY 人民币": "¥ CNY Chinese Yuan",
@@ -890,9 +895,31 @@
   // dd-exchange2:start
   Object.assign(DICT, {
       "法币 / USDT 兑换": "Fiat / USDT Exchange",
-      "法币互换 · 法币与 USDT 双向兑换 · 币币兑换，实时行情，极低点差": "Fiat-to-fiat, fiat-USDT two-way and crypto swaps with live rates and minimal spreads"
+      "法币互换 · 法币与 USDT 双向兑换 · 币币兑换，实时行情，极低点差": "Fiat-USDT two-way and crypto swaps with live rates and minimal spreads"
   });
   // dd-exchange2:end
+  // dd-ucard:start
+  Object.assign(DICT, {
+      "U 卡": "U Card",
+      "USDT 充值卡 · 仅支持 USDT（TRC-20）入金，链上确认后自动归集至卡资金池": "USDT top-up card · USDT (TRC-20) deposits only, auto-swept to the card pool after on-chain confirmation",
+      "模拟一笔入金": "Simulate a Deposit",
+      "累计入金（已加载）": "Total Deposited (Loaded)",
+      "归集处理中": "Sweep in Progress",
+      "链上确认 / 归集 / 划转 / 加载途中": "Confirming / sweeping / transferring / loading",
+      "USDT 专属充值钱包": "Exclusive USDT Deposit Wallet",
+      "仅支持 USDT 入金": "USDT deposits only",
+      "复制地址": "Copy Address",
+      "入金记录": "Deposit History",
+      "链上确认 → 归集 → 划转 → 加载 全链路状态": "Full pipeline: confirm → sweep → transfer → load",
+      "入金单号": "Deposit ID",
+      "链上哈希": "Tx Hash",
+      "暂无入金记录": "No deposits yet",
+      "模拟 USDT 入金": "Simulate USDT Deposit",
+      "发起入金": "Start Deposit",
+      "地址已复制": "Address copied",
+      "演示：发起后将经过链上确认与 KYT 筛查，可在后台「USDT 资金归集」查看全链路状态。": "Demo: deposits go through on-chain confirmation and KYT screening; track the full pipeline in Admin · USDT Sweep."
+  });
+  // dd-ucard:end
   var LANG_KEY = 'dd-lang';
 
   function getLang() { return localStorage.getItem(LANG_KEY) || 'zh'; }

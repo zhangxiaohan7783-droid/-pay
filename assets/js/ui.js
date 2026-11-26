@@ -108,12 +108,13 @@
 
   /* ---------------- 全局搜索 ---------------- */
   var SEARCH_ITEMS = [
-    ['控制面板', 'dashboard.html', 'solar:widget-bold'], ['我的钱包', 'wallet.html', 'solar:wallet-bold'],
+    ['控制面板', 'dashboard.html', 'solar:widget-bold'], ['多币种余额', 'wallet.html', 'solar:wallet-bold'],
     ['我的账户', 'receivables.html', 'solar:card-bold'], ['转账', 'transfer.html', 'solar:transfer-horizontal-bold'],
     ['全球即时付款', 'payall.html', 'solar:plain-bold'], ['速汇中国', 'remittance.html', 'solar:earth-bold'],
     ['银行流水', 'transactions.html', 'solar:bill-list-bold'],
-    ['收款人', 'recipients.html', 'solar:users-group-two-rounded-bold'], ['数字资产兑换', 'exchange.html', 'solar:refresh-circle-bold'],
+    ['收款人', 'recipients.html', 'solar:users-group-two-rounded-bold'], ['加密币兑换', 'exchange.html', 'solar:refresh-circle-bold'],
     ['USDT 钱包', 'usdt-wallet.html', 'solar:wallet-money-bold'], ['加密钱包', 'crypto-wallet.html', 'solar:card-bold-duotone'],
+    ['U 卡', 'u-card.html', 'solar:card-bold'],
     ['线上收单', 'acquiring.html', 'solar:card-2-bold'], ['线上加密币收单', 'crypto-acquiring.html', 'solar:bitcoin-circle-bold'],
     ['线下收单', 'offline-acquiring.html', 'solar:qr-code-bold'], ['收款链接', 'pay-link.html', 'solar:link-bold'],
     ['营收发票', 'invoices.html', 'solar:bill-bold'], ['发票模板管理', 'invoice-templates.html', 'solar:document-text-bold'], ['成本发票', 'cost-invoices.html', 'solar:bill-check-bold'],
