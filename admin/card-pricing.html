@@ -21,10 +21,12 @@ body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #3
 .ad-sidenav-link:hover{background:rgba(255,255,255,.06);color:#fff}
 .ad-sidenav-active,.ad-sidenav-active:hover{background:#FFD008;color:#382b1b;font-weight:600}
 .ad-sidenav-sec{padding:16px 12px 6px;font-size:11px;font-weight:600;color:#6b7280;letter-spacing:.05em}
-.ad-noscroll{scrollbar-width:none;-ms-overflow-style:none}
-.ad-noscroll::-webkit-scrollbar{display:none}
+.ad-noscroll{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.28) transparent;-ms-overflow-style:auto}
+.ad-noscroll::-webkit-scrollbar{display:block;width:6px}
+.ad-noscroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.22);border-radius:3px}
+.ad-noscroll::-webkit-scrollbar-track{background:transparent}
 </style>
-<aside class="w-64 flex-none hidden lg:flex flex-col" id="sidebar" style="background:#241d12"><div class="p-6 flex items-center space-x-3"><a class="flex items-center space-x-3" href="index.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="../assets/img/logo-h-rev.png"/></a></div><div class="flex-1 overflow-y-auto px-4 py-2 ad-noscroll"><nav class="space-y-1"><a class="ad-sidenav-link" href="index.html"><iconify-icon class="text-xl" icon="solar:widget-bold"></iconify-icon><span>运营总览</span></a><div class="ad-sidenav-sec">平台运营</div><a class="ad-sidenav-link" href="op-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>平台运营总看板</span></a><a class="ad-sidenav-link" href="op-customers.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>客户主体总览</span></a><a class="ad-sidenav-link" href="op-channels.html"><iconify-icon class="text-xl" icon="solar:globus-bold"></iconify-icon><span>渠道管理</span></a><a class="ad-sidenav-link" href="op-roles.html"><iconify-icon class="text-xl" icon="solar:lock-password-bold"></iconify-icon><span>角色权限配置</span></a><a class="ad-sidenav-link" href="op-export.html"><iconify-icon class="text-xl" icon="solar:download-square-bold"></iconify-icon><span>监管数据包导出</span></a><div class="ad-sidenav-sec">卡中台</div><a class="ad-sidenav-link ad-sidenav-active" href="card-pricing.html"><iconify-icon class="text-xl" icon="solar:card-transfer-bold"></iconify-icon><span>卡费定价</span></a><a class="ad-sidenav-link" href="card-recon.html"><iconify-icon class="text-xl" icon="solar:calculator-bold"></iconify-icon><span>卡费对账</span></a><a class="ad-sidenav-link" href="card-customers.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>客户卡台</span></a><a class="ad-sidenav-link" href="card-fund.html"><iconify-icon class="text-xl" icon="solar:wallet-money-bold"></iconify-icon><span>USDT 资金归集</span></a><div class="ad-sidenav-sec">客户与开户</div><div class="ad-sidenav-sec">个人开户管理</div><a class="ad-sidenav-link" href="ob-personal-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>个人开户总看板</span></a><a class="ad-sidenav-link" href="ob-personal.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>个人开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-personal-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>个人开户资料归档</span></a><a class="ad-sidenav-link" href="ob-personal-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>个人主管终审</span></a><a class="ad-sidenav-link" href="ob-personal-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>个人审核记录</span></a><a class="ad-sidenav-link" href="ob-personal-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>个人开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-personal-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>个人批量处理</span></a><a class="ad-sidenav-link" href="ob-personal-templates.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>驳回话术模板</span></a><a class="ad-sidenav-link" href="ob-personal-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>个人复审台账</span></a><div class="ad-sidenav-sec">商业开户管理</div><a class="ad-sidenav-link" href="ob-business-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>商业开户总看板</span></a><a class="ad-sidenav-link" href="ob-business.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>商业开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-business-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>商业开户资料归档</span></a><a class="ad-sidenav-link" href="ob-business-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>商业主管终审</span></a><a class="ad-sidenav-link" href="ob-business-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>商业审核记录</span></a><a class="ad-sidenav-link" href="ob-business-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>商业开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-business-xgd.html"><iconify-icon class="text-xl" icon="solar:globus-bold"></iconify-icon><span>XGD 开户管理</span></a><a class="ad-sidenav-link" href="ob-business-xgd-form.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>XGD 开户表单</span></a><a class="ad-sidenav-link" href="ob-business-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>商业 EDD 工单</span></a><a class="ad-sidenav-link" href="ob-business-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>商业批量处理</span></a><a class="ad-sidenav-link" href="ob-business-reject.html"><iconify-icon class="text-xl" icon="solar:shield-cross-bold"></iconify-icon><span>拒户原因库</span></a><a class="ad-sidenav-link" href="ob-business-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>商业复审台账</span></a><a class="ad-sidenav-link" href="ob-audit.html"><iconify-icon class="text-xl" icon="solar:clipboard-list-bold"></iconify-icon><span>开户操作审计</span></a><a class="ad-sidenav-link" href="ob-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>开户配置</span></a><a class="ad-sidenav-link" href="business.html"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon><span>商业客户管理</span></a><a class="ad-sidenav-link" href="personal.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>个人客户管理</span></a><div class="ad-sidenav-sec">风控与合规</div><a class="ad-sidenav-link" href="risk.html"><iconify-icon class="text-xl" icon="solar:shield-warning-bold"></iconify-icon><span>风控总览</span></a><a class="ad-sidenav-link" href="risk-kyc.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>商户KYC档案</span></a><a class="ad-sidenav-link" href="risk-score.html"><iconify-icon class="text-xl" icon="solar:slider-minimalistic-horizontal-bold"></iconify-icon><span>风险评分配置</span></a><a class="ad-sidenav-link" href="risk-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>EDD 强化尽调</span></a><a class="ad-sidenav-link" href="risk-alerts.html"><iconify-icon class="text-xl" icon="solar:bell-bing-bold"></iconify-icon><span>交易风控告警</span></a><a class="ad-sidenav-link" href="risk-screening.html"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon><span>名单筛查</span></a><a class="ad-sidenav-link" href="risk-ledger.html"><iconify-icon class="text-xl" icon="solar:notebook-bold"></iconify-icon><span>商户风险台账</span></a><a class="ad-sidenav-link" href="risk-controls.html"><iconify-icon class="text-xl" icon="solar:lock-bold"></iconify-icon><span>账户管控中心</span></a><a class="ad-sidenav-link" href="risk-str.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>STR 可疑上报</span></a><a class="ad-sidenav-link" href="risk-audit.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审计日志</span></a><a class="ad-sidenav-link" href="risk-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>合规配置</span></a><a class="ad-sidenav-link" href="risk-review.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>交易审核工作台</span></a><a class="ad-sidenav-link" href="risk-cases.html"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon><span>案件管理</span></a><a class="ad-sidenav-link" href="risk-learn.html"><iconify-icon class="text-xl" icon="solar:square-academic-cap-bold"></iconify-icon><span>学习中心</span></a><div class="ad-sidenav-sec">安全与服务</div><a class="ad-sidenav-link" href="cs.html"><iconify-icon class="text-xl" icon="solar:headphones-round-sound-bold"></iconify-icon><span>客服管理</span></a><div class="ad-sidenav-sec">团队与账务</div><a class="ad-sidenav-link" href="managers.html"><iconify-icon class="text-xl" icon="solar:user-speak-bold"></iconify-icon><span>客户经理管理</span></a><a class="ad-sidenav-link" href="staff.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>员工管理</span></a><a class="ad-sidenav-link" href="bills.html"><iconify-icon class="text-xl" icon="solar:bill-list-bold"></iconify-icon><span>账单管理</span></a><a class="ad-sidenav-link" href="licenses.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>牌照管理</span></a></nav></div><div class="p-4" style="border-top:1px solid rgba(255,255,255,.08)"><div class="flex items-center space-x-3 p-2 rounded-lg" style="background:rgba(255,255,255,.05)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:#FFD008;color:#382b1b">涵</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold truncate text-white">运营-小涵</p><p class="text-xs text-gray-500 truncate" id="rc-side-role">—</p></div><a href="login.html" class="text-gray-500 hover:text-red-400" title="退出登录"><iconify-icon icon="solar:logout-3-bold"></iconify-icon></a></div></div></aside>
+<aside class="w-64 flex-none hidden lg:flex flex-col lg:h-screen lg:sticky lg:top-0" id="sidebar" style="background:#241d12"><div class="p-6 flex items-center space-x-3"><a class="flex items-center space-x-3" href="index.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="../assets/img/logo-h-rev.png"/></a></div><div class="flex-1 overflow-y-auto px-4 py-2 ad-noscroll"><nav class="space-y-1"><a class="ad-sidenav-link" href="index.html"><iconify-icon class="text-xl" icon="solar:widget-bold"></iconify-icon><span>运营总览</span></a><div class="ad-sidenav-sec">平台运营</div><a class="ad-sidenav-link" href="op-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>平台运营总看板</span></a><a class="ad-sidenav-link" href="op-customers.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>客户主体总览</span></a><a class="ad-sidenav-link" href="op-channels.html"><iconify-icon class="text-xl" icon="solar:globus-bold"></iconify-icon><span>渠道管理</span></a><a class="ad-sidenav-link" href="op-roles.html"><iconify-icon class="text-xl" icon="solar:lock-password-bold"></iconify-icon><span>角色权限配置</span></a><a class="ad-sidenav-link" href="op-export.html"><iconify-icon class="text-xl" icon="solar:download-square-bold"></iconify-icon><span>监管数据包导出</span></a><div class="ad-sidenav-sec">卡中台</div><a class="ad-sidenav-link ad-sidenav-active" href="card-pricing.html"><iconify-icon class="text-xl" icon="solar:card-transfer-bold"></iconify-icon><span>卡费定价</span></a><a class="ad-sidenav-link" href="card-recon.html"><iconify-icon class="text-xl" icon="solar:calculator-bold"></iconify-icon><span>卡费对账</span></a><a class="ad-sidenav-link" href="card-customers.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>客户卡台</span></a><a class="ad-sidenav-link" href="card-fund.html"><iconify-icon class="text-xl" icon="solar:wallet-money-bold"></iconify-icon><span>USDT 资金归集</span></a><div class="ad-sidenav-sec">客户与开户</div><div class="ad-sidenav-sec">个人开户管理</div><a class="ad-sidenav-link" href="ob-personal-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>个人开户总看板</span></a><a class="ad-sidenav-link" href="ob-personal.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>个人开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-personal-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>个人开户资料归档</span></a><a class="ad-sidenav-link" href="ob-personal-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>个人主管终审</span></a><a class="ad-sidenav-link" href="ob-personal-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>个人审核记录</span></a><a class="ad-sidenav-link" href="ob-personal-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>个人开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-personal-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>个人批量处理</span></a><a class="ad-sidenav-link" href="ob-personal-templates.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>驳回话术模板</span></a><a class="ad-sidenav-link" href="ob-personal-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>个人复审台账</span></a><div class="ad-sidenav-sec">商业开户管理</div><a class="ad-sidenav-link" href="ob-business-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>商业开户总看板</span></a><a class="ad-sidenav-link" href="ob-business.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>商业开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-business-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>商业开户资料归档</span></a><a class="ad-sidenav-link" href="ob-business-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>商业主管终审</span></a><a class="ad-sidenav-link" href="ob-business-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>商业审核记录</span></a><a class="ad-sidenav-link" href="ob-business-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>商业开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-business-xgd.html"><iconify-icon class="text-xl" icon="solar:globus-bold"></iconify-icon><span>XGD 开户管理</span></a><a class="ad-sidenav-link" href="ob-business-xgd-form.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>XGD 开户表单</span></a><a class="ad-sidenav-link" href="ob-business-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>商业 EDD 工单</span></a><a class="ad-sidenav-link" href="ob-business-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>商业批量处理</span></a><a class="ad-sidenav-link" href="ob-business-reject.html"><iconify-icon class="text-xl" icon="solar:shield-cross-bold"></iconify-icon><span>拒户原因库</span></a><a class="ad-sidenav-link" href="ob-business-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>商业复审台账</span></a><a class="ad-sidenav-link" href="ob-audit.html"><iconify-icon class="text-xl" icon="solar:clipboard-list-bold"></iconify-icon><span>开户操作审计</span></a><a class="ad-sidenav-link" href="ob-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>开户配置</span></a><a class="ad-sidenav-link" href="business.html"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon><span>商业客户管理</span></a><a class="ad-sidenav-link" href="personal.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>个人客户管理</span></a><div class="ad-sidenav-sec">风控与合规</div><a class="ad-sidenav-link" href="risk.html"><iconify-icon class="text-xl" icon="solar:shield-warning-bold"></iconify-icon><span>风控总览</span></a><a class="ad-sidenav-link" href="risk-kyc.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>商户KYC档案</span></a><a class="ad-sidenav-link" href="risk-score.html"><iconify-icon class="text-xl" icon="solar:slider-minimalistic-horizontal-bold"></iconify-icon><span>风险评分配置</span></a><a class="ad-sidenav-link" href="risk-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>EDD 强化尽调</span></a><a class="ad-sidenav-link" href="risk-alerts.html"><iconify-icon class="text-xl" icon="solar:bell-bing-bold"></iconify-icon><span>交易风控告警</span></a><a class="ad-sidenav-link" href="risk-screening.html"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon><span>名单筛查</span></a><a class="ad-sidenav-link" href="risk-ledger.html"><iconify-icon class="text-xl" icon="solar:notebook-bold"></iconify-icon><span>商户风险台账</span></a><a class="ad-sidenav-link" href="risk-controls.html"><iconify-icon class="text-xl" icon="solar:lock-bold"></iconify-icon><span>账户管控中心</span></a><a class="ad-sidenav-link" href="risk-str.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>STR 可疑上报</span></a><a class="ad-sidenav-link" href="risk-audit.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审计日志</span></a><a class="ad-sidenav-link" href="risk-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>合规配置</span></a><a class="ad-sidenav-link" href="risk-review.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>交易审核工作台</span></a><a class="ad-sidenav-link" href="risk-cases.html"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon><span>案件管理</span></a><a class="ad-sidenav-link" href="risk-learn.html"><iconify-icon class="text-xl" icon="solar:square-academic-cap-bold"></iconify-icon><span>学习中心</span></a><div class="ad-sidenav-sec">安全与服务</div><a class="ad-sidenav-link" href="cs.html"><iconify-icon class="text-xl" icon="solar:headphones-round-sound-bold"></iconify-icon><span>客服管理</span></a><div class="ad-sidenav-sec">团队与账务</div><a class="ad-sidenav-link" href="managers.html"><iconify-icon class="text-xl" icon="solar:user-speak-bold"></iconify-icon><span>客户经理管理</span></a><a class="ad-sidenav-link" href="staff.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>员工管理</span></a><a class="ad-sidenav-link" href="bills.html"><iconify-icon class="text-xl" icon="solar:bill-list-bold"></iconify-icon><span>账单管理</span></a><a class="ad-sidenav-link" href="licenses.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>牌照管理</span></a></nav></div><div class="p-4" style="border-top:1px solid rgba(255,255,255,.08)"><div class="flex items-center space-x-3 p-2 rounded-lg" style="background:rgba(255,255,255,.05)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:#FFD008;color:#382b1b">涵</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold truncate text-white">运营-小涵</p><p class="text-xs text-gray-500 truncate" id="rc-side-role">—</p></div><a href="login.html" class="text-gray-500 hover:text-red-400" title="退出登录"><iconify-icon icon="solar:logout-3-bold"></iconify-icon></a></div></div></aside>
 <main class="flex-1 flex flex-col min-w-0">
 <header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 flex-none">
 <div class="flex items-center">
@@ -33,11 +35,17 @@ body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #3
 </div>
 <div class="flex items-center space-x-4">
 <div id="rc-role-slot"></div>
-<span class="text-xs text-gray-400 hidden md:block">卡中台 · 金额单位 USD · 操作全程留痕</span>
+<span class="text-xs text-gray-400 hidden md:block">后台环境 · 操作全程留痕</span>
 </div>
 </header>
 <div class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6" id="rc-body">
 
+<div class="bg-white rounded-8 custom-shadow p-2 flex gap-2" id="cp-suptab">
+<button class="flex-1 px-4 py-3 rounded-8 text-sm font-bold transition-colors" data-sup="wasabi" type="button">WasabiCard · 虚拟卡台报价</button>
+<button class="flex-1 px-4 py-3 rounded-8 text-sm font-bold transition-colors" data-sup="xgd" type="button">XGD Europe · 账户服务报价</button>
+</div>
+
+<div class="space-y-6" id="view-wasabi">
 <div class="bg-white rounded-8 custom-shadow p-6" id="cp-sup"></div>
 <div class="grid grid-cols-2 xl:grid-cols-5 gap-4" id="cp-kpi"></div>
 
@@ -74,6 +82,26 @@ body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #3
 </div>
 
 <div class="bg-white rounded-8 custom-shadow p-6"><div class="flex justify-between items-center mb-2"><h3 class="font-bold">卡中台操作记录</h3><span class="text-xs text-gray-400">最近 12 条 · 全量见审计日志</span></div><div id="cp-log"></div></div>
+</div>
+
+<div class="space-y-6 hidden" id="view-xgd">
+<div class="grid grid-cols-2 xl:grid-cols-4 gap-4" id="xg-kpi"></div>
+
+<div class="bg-white rounded-8 custom-shadow overflow-hidden" id="xg-quote">
+<div class="p-6 border-b border-gray-100 flex flex-wrap justify-between items-center gap-3">
+<div><h3 class="font-bold">XGD 报价单管理</h3><p class="text-xs text-gray-400 mt-0.5">报价单内容可维护；修改即时影响下方客户月费测算与新开通客户</p></div>
+<button class="px-4 py-2 rounded-8 bg-primary text-dark text-xs font-bold hover:opacity-90" id="xg-save" type="button">保存报价单</button>
+</div>
+<div class="p-6 space-y-6" id="xg-form"></div>
+</div>
+
+<div class="bg-white rounded-8 custom-shadow overflow-hidden">
+<div class="p-6 border-b border-gray-100"><h3 class="font-bold">客户 XGD 账户服务</h3><p class="text-xs text-gray-400 mt-0.5">为客户开通 / 停用 XGD 卢森堡 LU IBAN 伞账户服务，选择 Plan A / Plan B 套餐</p></div>
+<div class="overflow-x-auto"><table class="w-full min-w-[980px]"><thead class="bg-gray-50/80"><tr>
+<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">客户</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">套餐</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">LU IBAN</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">状态</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">月费预估</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">开通时间</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">操作</th>
+</tr></thead><tbody id="xg-cust"></tbody></table></div>
+</div>
+</div>
 
 </div>
 </main>
@@ -368,7 +396,127 @@ function rcNoPerm(){document.getElementById('rc-body').innerHTML='<div class="bg
             return '<div class="flex gap-4 py-3 border-b border-gray-50 text-sm"><span class="text-xs text-gray-400 w-32 flex-none">' + l.t + '</span><span class="font-bold w-28 flex-none">' + esc(l.act) + '</span><span class="flex-1 min-w-0"><b class="font-semibold">' + esc(l.target) + '</b><span class="text-gray-500"> ' + esc(l.detail) + '</span></span><span class="text-xs text-gray-400 flex-none">' + esc(l.who) + '</span></div>';
         }).join('') || '<p class="py-8 text-center text-sm text-gray-400">暂无记录</p>';
     }
-    function renderAll() { reload(); renderHead(); renderBar(); renderCols(); renderCust(); renderLog(); }
+    function renderAll() { reload(); renderHead(); renderBar(); renderCols(); renderCust(); renderLog(); renderSupTab(); }
+
+
+    /* ================= XGD Europe 账户服务报价 ================= */
+    var SUP = qs.get('sup') === 'xgd' ? 'xgd' : 'wasabi';
+    function xgMonthly(c) {
+        var x = D.xgd;
+        if (!c.xgd || c.xgd.st !== 'active') return 0;
+        if (c.xgd.plan === 'B') { var t = x.planB.monthly[0]; return t ? t.fee : 0; }
+        return x.planA.monthly;
+    }
+    function renderSupTab() {
+        document.querySelectorAll('#cp-suptab [data-sup]').forEach(function (b) {
+            var on = b.dataset.sup === SUP;
+            b.className = 'flex-1 px-4 py-3 rounded-8 text-sm font-bold transition-colors ' + (on ? 'bg-dark text-primary' : 'text-gray-500 hover:bg-gray-50');
+            b.onclick = function () { SUP = b.dataset.sup; renderSupTab(); };
+        });
+        document.getElementById('view-wasabi').classList.toggle('hidden', SUP !== 'wasabi');
+        document.getElementById('view-xgd').classList.toggle('hidden', SUP !== 'xgd');
+        if (SUP === 'xgd') renderXgd();
+    }
+    function renderXgd() {
+        reload();
+        var x = D.xgd;
+        var act = D.customers.filter(function (c) { return c.xgd && c.xgd.st === 'active'; });
+        var pend = D.customers.filter(function (c) { return c.xgd && c.xgd.st === 'pending'; });
+        var fee = 0; act.forEach(function (c) { fee += xgMonthly(c); });
+        function k(l, v, sub) { return '<div class="bg-white rounded-8 custom-shadow p-5"><p class="text-xs text-gray-400">' + l + '</p><p class="text-xl font-extrabold mt-1">' + v + '</p><p class="text-xs text-gray-400 mt-1">' + sub + '</p></div>'; }
+        document.getElementById('xg-kpi').innerHTML =
+            k('XGD 开通客户', act.length + ' 家', pend.length + ' 家开通中')
+            + k('月费收入预估', '\u20ac' + fee.toLocaleString('en-US'), '按当前报价单测算')
+            + k('Plan A / Plan B', act.filter(function (c) { return c.xgd.plan === 'A'; }).length + ' / ' + act.filter(function (c) { return c.xgd.plan === 'B'; }).length, '全功能 / 平台收款专用')
+            + k('报价单版本', esc(x.ver), x.eff + ' 生效 · 接入费 ' + (x.setup.paid ? '已于 ' + x.setup.paid + ' 支付' : '未支付'));
+        var F = function (id, label, v) { return '<div class="ddui-field"><label class="ddui-label">' + label + '</label><input class="ddui-input" id="' + id + '" value="' + esc(String(v)) + '"' + (RO ? ' disabled' : '') + '/></div>'; };
+        var N = function (id, label, v, unit) { return '<div class="ddui-field"><label class="ddui-label">' + label + (unit ? '（' + unit + '）' : '') + '</label><input class="ddui-input" id="' + id + '" type="number" step="0.01" min="0" value="' + v + '"' + (RO ? ' disabled' : '') + '/></div>'; };
+        document.getElementById('xg-form').innerHTML =
+          '<div><p class="text-sm font-bold mb-2">报价单信息</p><div class="grid grid-cols-2 lg:grid-cols-4 gap-x-4">'
+          + F('xg-qo', '报价单文件', x.quote) + F('xg-ver', '版本', x.ver) + F('xg-eff', '生效日期', x.eff) + N('xg-setup', '渠道合作一次性接入费', x.setup.v, 'EUR') + '</div></div>'
+          + '<div><p class="text-sm font-bold mb-1">Plan A · 全功能 LU IBAN</p><p class="text-xs text-gray-400 mb-2">' + esc(x.planA.scope) + '</p><div class="grid grid-cols-2 lg:grid-cols-4 gap-x-4">'
+          + N('xg-pa-m', '月费（每账户）', x.planA.monthly, 'EUR/月') + N('xg-pa-extra', '额外 IBAN', x.planA.extraIban, 'EUR/个/月')
+          + x.planA.open.map(function (t, i) { return N('xg-pa-open-' + i, '开户费 ' + t.from + '-' + (t.to || '\u221e') + ' 户', t.fee, 'EUR/户'); }).join('') + '</div></div>'
+          + '<div><p class="text-sm font-bold mb-1">Plan B · 平台收款专用 LU IBAN</p><p class="text-xs text-gray-400 mb-2">' + esc(x.planB.scope) + '</p><div class="grid grid-cols-2 lg:grid-cols-4 gap-x-4">'
+          + x.planB.monthly.map(function (t, i) { return N('xg-pb-m-' + i, '月费 ' + t.from + '-' + (t.to || '\u221e') + ' 户', t.fee, 'EUR/户/月'); }).join('') + '</div></div>'
+          + '<div><p class="text-sm font-bold mb-2">交易费率</p>' + x.tx.map(function (t, i) {
+              return '<div class="grid grid-cols-3 gap-x-4 items-end mb-2"><p class="text-sm font-bold pt-2">' + esc(t.rail) + '</p>' + F('xg-tx-in-' + i, '收款', t.inn) + F('xg-tx-out-' + i, '付款', t.out) + '</div>';
+            }).join('') + '</div>'
+          + '<div class="ddui-field"><label class="ddui-label">备注</label><textarea class="ddui-input" id="xg-note" rows="2"' + (RO ? ' disabled' : '') + '>' + esc(x.note) + '</textarea></div>';
+        document.getElementById('xg-save').classList.toggle('hidden', RO);
+        document.getElementById('xg-cust').innerHTML = D.customers.map(function (c) {
+            var g = c.xgd || { st: 'none' };
+            var st = g.st === 'active' ? '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-green-50 text-green-600">已开通</span>'
+              : g.st === 'pending' ? '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-blue-50 text-accent2">开通中</span>'
+              : g.st === 'suspended' ? '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-red-50 text-red-500">已停用</span>'
+              : '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-400">未开通</span>';
+            var ops = '';
+            if (!RO) {
+              if (g.st !== 'active') ops = '<button class="text-xs font-bold text-accent2 hover:underline" data-xg="open" data-id="' + c.id + '" type="button">开通服务</button>';
+              else ops = '<button class="text-xs font-bold text-dark hover:underline" data-xg="plan" data-id="' + c.id + '" type="button">切换套餐</button> <button class="text-xs font-bold text-red-500 hover:underline ml-1" data-xg="off" data-id="' + c.id + '" type="button">停用</button>';
+            }
+            return '<tr class="hover:bg-gray-50/60"><td class="py-3 px-4 text-sm border-t border-gray-50"><b>' + esc(c.name) + '</b><br/><span class="text-xs text-gray-400">' + esc(c.country) + ' · 客户经理 ' + esc(c.mgr || '\u2014') + '</span></td>'
+              + '<td class="py-3 px-4 text-sm border-t border-gray-50">' + (g.plan ? 'Plan ' + g.plan : '\u2014') + '</td>'
+              + '<td class="py-3 px-4 text-sm border-t border-gray-50 font-mono text-xs">' + (g.iban || '\u2014') + '</td>'
+              + '<td class="py-3 px-4 text-sm border-t border-gray-50">' + st + '</td>'
+              + '<td class="py-3 px-4 text-sm border-t border-gray-50">' + (g.st === 'active' ? '\u20ac' + xgMonthly(c) + '/\u6708' : '\u2014') + '</td>'
+              + '<td class="py-3 px-4 text-sm border-t border-gray-50">' + (g.at || '\u2014') + '</td>'
+              + '<td class="py-3 px-4 text-sm border-t border-gray-50">' + (ops || '<span class="text-xs text-gray-300">\u2014</span>') + '</td></tr>';
+        }).join('');
+        document.querySelectorAll('#xg-cust [data-xg]').forEach(function (b) { b.onclick = function () { xgAct(b.dataset.xg, b.dataset.id); }; });
+        if (window.DDTableKit) DDTableKit.refresh(document.getElementById('xg-cust').closest('table'));
+    }
+    function genIban(d2) {
+        var max = 0; d2.customers.forEach(function (c) { if (c.xgd && c.xgd.seq > max) max = c.xgd.seq; });
+        var seq = max + 1;
+        return { iban: 'LU' + String(20 + (seq * 7) % 79) + ' 0019 4006 4475 ' + String(seq).padStart(4, '0'), seq: seq };
+    }
+    function xgAct(a, id) {
+        var c = H.cust(D, id); if (!c) return;
+        if (a === 'open' || a === 'plan') {
+            DDUI.modal({ title: (a === 'open' ? '开通 XGD 账户服务 · ' : '切换 XGD 套餐 · ') + c.name, width: 520,
+                body: '<div class="ddui-field"><label class="ddui-label">选择套餐</label>'
+                + '<label class="flex gap-3 p-3 rounded-8 border border-gray-200 mb-2 cursor-pointer"><input type="radio" name="xg-plan" value="A"' + (!c.xgd || c.xgd.plan !== 'B' ? ' checked' : '') + '/><span><b class="text-sm">Plan A · 全功能 LU IBAN</b><br/><span class="text-xs text-gray-400">\u20ac' + D.xgd.planA.monthly + '/月 · SEPA 收付 · SWIFT 收付 · 人民币结算回国</span></span></label>'
+                + '<label class="flex gap-3 p-3 rounded-8 border border-gray-200 cursor-pointer"><input type="radio" name="xg-plan" value="B"' + (c.xgd && c.xgd.plan === 'B' ? ' checked' : '') + '/><span><b class="text-sm">Plan B · 平台收款专用</b><br/><span class="text-xs text-gray-400">按账户数 \u20ac15/10/5 每户每月 · 仅电商平台入账 + 指定中国结算出款</span></span></label></div>',
+                actions: [{ text: '取消' }, { text: a === 'open' ? '确认开通' : '确认切换', type: 'primary', onClick: function (close, body) {
+                    var plan = body.querySelector('[name=xg-plan]:checked').value;
+                    reload(); c = H.cust(D, id);
+                    var isNew = !c.xgd || c.xgd.st !== 'active';
+                    var g = c.xgd || {};
+                    g.plan = plan; g.st = 'active';
+                    if (!g.iban) { var g2 = genIban(D); g.iban = g2.iban; g.seq = g2.seq; }
+                    g.at = new Date().toISOString().slice(0, 10);
+                    c.xgd = g;
+                    H.log(D, isNew ? '开通 XGD 账户服务' : '切换 XGD 套餐', c.name, 'Plan ' + plan + ' · ' + g.iban); H.save(D);
+                    RC.log(isNew ? '卡中台·开通 XGD 服务' : '卡中台·切换 XGD 套餐', c.name, 'Plan ' + plan + ' · ' + g.iban);
+                    close(); DDUI.toast(isNew ? '已开通，LU IBAN 已分配' : '套餐已切换', 'success'); renderXgd();
+                } }] });
+        } else if (a === 'off') {
+            DDUI.confirm('停用 XGD 服务', '停用后「' + c.name + '」的 LU IBAN 伞账户将暂停收付款，确认停用？', function () {
+                reload(); c = H.cust(D, id); c.xgd.st = 'suspended';
+                H.log(D, '停用 XGD 服务', c.name, c.xgd.iban || ''); H.save(D); RC.log('卡中台·停用 XGD 服务', c.name, '');
+                DDUI.toast('已停用', 'success'); renderXgd();
+            }, '停用');
+        }
+    }
+    function saveXgd() {
+        if (!rcNeed('config_edit')) return;
+        var x = D.xgd, chg = [];
+        function num(id) { var v = +document.getElementById(id).value; return isNaN(v) ? 0 : v; }
+        function txt(id) { return document.getElementById(id).value.trim(); }
+        if (num('xg-setup') !== x.setup.v) chg.push('接入费 \u20ac' + x.setup.v + ' \u2192 \u20ac' + num('xg-setup'));
+        if (num('xg-pa-m') !== x.planA.monthly) chg.push('Plan A 月费 \u20ac' + x.planA.monthly + ' \u2192 \u20ac' + num('xg-pa-m'));
+        x.setup.v = num('xg-setup'); x.quote = txt('xg-qo') || x.quote; x.ver = txt('xg-ver') || x.ver; x.eff = txt('xg-eff') || x.eff;
+        x.planA.monthly = num('xg-pa-m'); x.planA.extraIban = num('xg-pa-extra');
+        x.planA.open.forEach(function (t, i) { t.fee = num('xg-pa-open-' + i); });
+        x.planB.monthly.forEach(function (t, i) { t.fee = num('xg-pb-m-' + i); });
+        x.tx.forEach(function (t, i) { t.inn = txt('xg-tx-in-' + i); t.out = txt('xg-tx-out-' + i); });
+        x.note = document.getElementById('xg-note').value;
+        H.log(D, '更新 XGD 报价单', x.ver, chg.join('，') || '报价单内容更新'); H.save(D);
+        RC.log('卡中台·更新 XGD 报价单', x.ver, chg.join('，') || '内容更新');
+        DDUI.toast('XGD 报价单已保存', 'success'); renderXgd();
+    }
+    document.getElementById('xg-save').onclick = saveXgd;
 
     document.getElementById('cp-save').onclick = save;
     document.getElementById('cp-bulk').onclick = bulk;

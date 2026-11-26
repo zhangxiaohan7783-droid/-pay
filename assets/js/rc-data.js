@@ -609,6 +609,9 @@
       if (el && !el.hasChildNodes()) renderSwitcher(el);
       var sr = document.getElementById('rc-side-role');
       if (sr) sr.textContent = ROLES[role()].name;
+      /* 侧栏：当前菜单项滚入视野 */
+      var act = document.querySelector('#sidebar .ad-sidenav-active');
+      if (act && act.scrollIntoView) act.scrollIntoView({ block: 'center' });
     });
   }
 
