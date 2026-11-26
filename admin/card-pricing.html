@@ -87,6 +87,29 @@ body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #3
 <div class="space-y-6 hidden" id="view-xgd">
 <div class="grid grid-cols-2 xl:grid-cols-4 gap-4" id="xg-kpi"></div>
 
+<div class="bg-white rounded-8 custom-shadow overflow-hidden" id="xg-matrix">
+<div class="px-6 pt-5 flex flex-wrap items-center justify-between gap-3">
+<div><h3 class="font-bold">XGD 费率配置</h3><p class="text-xs text-gray-400 mt-0.5">左：XGD 报价成本 · 中：我方卖价（可调） · 右：调整后利润（按本月用量实时测算）</p></div>
+<div class="flex flex-wrap items-center gap-2"><label class="text-xs text-gray-400">适用对象</label><select class="ddui-input !w-auto min-w-[300px] !py-2 text-sm font-bold" id="xg-scope"></select></div>
+</div>
+<div class="grid lg:grid-cols-3 border-t border-gray-100 mt-4">
+<div class="border-r border-gray-100 bg-gray-50/40">
+<div class="h-[68px] px-5 flex items-center border-b border-gray-100"><div><p class="font-bold text-sm flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-gray-400"></span>供应商报价 · XGD Europe</p><p class="text-xs text-gray-400 mt-0.5">我方采购成本（EUR）</p></div></div>
+<div id="xg-col-cost"></div>
+</div>
+<div class="border-r border-gray-100">
+<div class="h-[68px] px-5 flex items-center border-b border-gray-100 bg-yellow-50/60"><div class="min-w-0"><p class="font-bold text-sm flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-primary"></span>我方卖价 · 向客户收取</p><p class="text-xs text-gray-400 mt-0.5 truncate" id="xg-sell-sub"></p></div></div>
+<div id="xg-col-sell"></div>
+<div class="px-5 py-4 flex justify-end gap-2 border-t border-gray-100" id="xg-sell-foot"><button class="px-4 py-2 rounded-8 border border-gray-200 text-sm font-bold hover:border-dark" id="xg-reset" type="button">撤销修改</button><button class="px-5 py-2 rounded-8 bg-primary text-dark text-sm font-bold hover:shadow" id="xg-save-sell" type="button">保存费率</button></div>
+</div>
+<div class="bg-green-50/20">
+<div class="h-[68px] px-5 flex items-center border-b border-gray-100"><div><p class="font-bold text-sm flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-green-500"></span>调整后利润</p><p class="text-xs text-gray-400 mt-0.5" id="xg-profit-sub"></p></div></div>
+<div id="xg-col-profit"></div>
+<div class="px-5 py-4 flex items-center justify-between border-t border-gray-100" id="xg-profit-tot"></div>
+</div>
+</div>
+</div>
+
 <div class="bg-white rounded-8 custom-shadow overflow-hidden" id="xg-quote">
 <div class="p-6 border-b border-gray-100 flex flex-wrap justify-between items-center gap-3">
 <div><h3 class="font-bold">XGD 报价单管理</h3><p class="text-xs text-gray-400 mt-0.5">报价单内容可维护；修改即时影响下方客户月费测算与新开通客户</p></div>
@@ -444,6 +467,7 @@ function rcNoPerm(){document.getElementById('rc-body').innerHTML='<div class="bg
             }).join('') + '</div>'
           + '<div class="ddui-field"><label class="ddui-label">备注</label><textarea class="ddui-input" id="xg-note" rows="2"' + (RO ? ' disabled' : '') + '>' + esc(x.note) + '</textarea></div>';
         document.getElementById('xg-save').classList.toggle('hidden', RO);
+        renderXgMatrix();
         document.getElementById('xg-cust').innerHTML = D.customers.map(function (c) {
             var g = c.xgd || { st: 'none' };
             var st = g.st === 'active' ? '<span class="px-2 py-0.5 rounded-full text-xs font-bold bg-green-50 text-green-600">已开通</span>'
@@ -465,6 +489,99 @@ function rcNoPerm(){document.getElementById('rc-body').innerHTML='<div class="bg
         }).join('');
         document.querySelectorAll('#xg-cust [data-xg]').forEach(function (b) { b.onclick = function () { xgAct(b.dataset.xg, b.dataset.id); }; });
         if (window.DDTableKit) DDTableKit.refresh(document.getElementById('xg-cust').closest('table'));
+    }
+    /* ---------- XGD 三栏：成本 | 卖价 | 利润（逻辑同 WasabiCard） ---------- */
+    var XGS = qs.get('xcust') || 'base';
+    var XROW = 'h-[76px] px-5 flex items-center gap-3 border-b border-gray-50';
+    function xgFmt(it, v) { return it.unit === 'pct' ? (+v).toFixed(2) + '%' : '\u20ac' + (+v).toFixed(2); }
+    function xgQty(it) {
+        var q = 0;
+        if (XGS !== 'base') { var u = H.xgUsage(D, XGS); return u ? (u[it.base] || 0) : 0; }
+        D.customers.forEach(function (c) {
+            if (!c.xgd || c.xgd.st !== 'active') return;
+            if (c.xgdOvr && c.xgdOvr[it.k] != null) return; /* 跟随基础的才计入基础口径 */
+            var u = H.xgUsage(D, c.id); q += u[it.base] || 0;
+        });
+        return q;
+    }
+    function xgVals() { var o = {}; document.querySelectorAll('#xg-col-sell [data-xin]').forEach(function (i) { o[i.dataset.xin] = i.value === '' ? NaN : +i.value; }); return o; }
+    function xgDirty() {
+        if (!document.querySelector('#xg-col-sell [data-xin]')) return false;
+        var v = xgVals();
+        return Object.keys(v).some(function (k) { return Math.abs((v[k] || 0) - H.xgSell(D, XGS === 'base' ? null : XGS, k).v) > 1e-9; });
+    }
+    function xgCalc() {
+        var v = xgVals(), tot = 0, html = '';
+        D.xgdItems.forEach(function (it) {
+            var cr = H.xgCost(D, it.k), sv = v[it.k], bad = isNaN(sv) || sv < 0;
+            var spread = bad ? 0 : sv - cr, q = xgQty(it);
+            var prof = it.unit === 'pct' ? q * spread / 100 : q * spread;
+            tot += prof;
+            var neg = spread < -1e-9, mk = document.querySelector('#xg-col-sell [data-xmk="' + it.k + '"]');
+            if (mk) mk.innerHTML = bad ? '<span class="text-red-500">请输入 \u2265 0 的数值</span>' : (cr > 0 ? '成本 ' + xgFmt(it, cr) + ' · ' : '成本为 0 · ') + (neg ? '亏损 ' : '加价 ') + xgFmt(it, Math.abs(spread));
+            var inp = document.querySelector('#xg-col-sell [data-xin="' + it.k + '"]');
+            if (inp) { inp.classList.toggle('border-red-300', neg || bad); inp.classList.toggle('text-red-500', neg || bad); }
+            html += '<div class="' + XROW + '"><div class="flex-1 min-w-0"><p class="text-sm font-bold ' + (neg ? 'text-red-500' : '') + '">' + (neg ? '低于成本 ' : '') + (it.unit === 'pct' ? (spread >= 0 ? '+' : '') + spread.toFixed(2) + '%' : (spread >= 0 ? '+\u20ac' : '-\u20ac') + Math.abs(spread).toFixed(2) + ' / ' + it.per) + '</p><p class="text-xs text-gray-400 truncate">本月' + it.baseLabel + ' ' + (it.unit === 'pct' ? '\u20ac' + q.toLocaleString('en-US') : q.toLocaleString('en-US') + ' ' + (it.per || '')) + '</p></div>'
+                + '<p class="text-base font-extrabold flex-none ' + (prof < 0 ? 'text-red-500' : (prof > 0 ? 'text-green-600' : 'text-gray-300')) + '">' + (prof ? '\u20ac' + Math.abs(prof).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '\u20ac0.00') + '</p></div>';
+        });
+        document.getElementById('xg-col-profit').innerHTML = html;
+        document.getElementById('xg-profit-tot').innerHTML = '<span class="text-xs text-gray-400">本月预估利润合计</span><b class="text-lg ' + (tot < 0 ? 'text-red-500' : 'text-accent1') + '">' + (tot < 0 ? '-' : '') + '\u20ac' + Math.abs(tot).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</b>';
+        document.getElementById('xg-profit-sub').textContent = XGS === 'base' ? '按本月跟随基础费率的 XGD 客户用量测算' : '按该客户本月用量测算';
+        var sb = document.getElementById('xg-save-sell'); if (sb) sb.classList.toggle('ring-2', xgDirty());
+    }
+    function renderXgMatrix() {
+        var sel = document.getElementById('xg-scope');
+        sel.innerHTML = '<option value="base">平台基础费率（默认适用全部客户）</option><optgroup label="客户单独费率">' + D.customers.map(function (c) {
+            var n = c.xgdOvr ? Object.keys(c.xgdOvr).length : 0;
+            return '<option value="' + c.id + '"' + (XGS === c.id ? ' selected' : '') + '>' + esc(c.name) + (n ? '（已单独设置 ' + n + ' 项）' : '（跟随基础）') + '</option>';
+        }).join('') + '</optgroup>';
+        sel.value = XGS;
+        sel.onchange = function () { if (xgDirty() && !confirm('当前 XGD 卖价有未保存修改，切换将放弃，继续？')) { sel.value = XGS; return; } XGS = sel.value; renderXgMatrix(); };
+        var c = XGS === 'base' ? null : H.cust(D, XGS);
+        document.getElementById('xg-col-cost').innerHTML = D.xgdItems.map(function (it) {
+            var cr = H.xgCost(D, it.k);
+            return '<div class="' + XROW + '"><div class="flex-1 min-w-0"><p class="text-sm font-bold truncate">' + it.label + '</p><p class="text-xs text-gray-400 truncate">' + (it.note || (it.unit === 'pct' ? '按金额' : '每' + it.per)) + '</p></div>'
+                + '<div class="text-right flex-none"><p class="text-base font-extrabold">' + xgFmt(it, cr) + '</p><p class="text-[11px] text-gray-400">' + (it.unit === 'pct' ? '按金额' : '每' + it.per) + '</p></div></div>';
+        }).join('');
+        document.getElementById('xg-col-sell').innerHTML = D.xgdItems.map(function (it) {
+            var sv = H.xgSell(D, c ? c.id : null, it.k), baseV = +(D.xgdSell[it.k] || 0);
+            var tag = c ? (sv.own ? '<span class="px-1.5 py-0.5 rounded bg-yellow-50 text-[11px] font-bold text-dark">单独</span>' : '<span class="px-1.5 py-0.5 rounded bg-gray-100 text-[11px] text-gray-400">跟随基础</span>') : '';
+            return '<div class="' + XROW + '"><div class="flex-1 min-w-0"><p class="text-sm font-bold truncate">' + it.label + ' ' + tag + '</p><p class="text-xs text-gray-400 truncate" data-xmk="' + it.k + '"></p></div>'
+                + '<div class="flex items-center gap-1.5 flex-none">' + (c && sv.own && !RO ? '<button class="w-7 h-7 rounded-8 text-gray-300 hover:text-dark hover:bg-gray-50" data-xrs="' + it.k + '" title="恢复为基础费率 ' + xgFmt(it, baseV) + '" type="button"><iconify-icon icon="solar:restart-linear"></iconify-icon></button>' : '')
+                + '<div class="relative"><span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400">' + (it.unit === 'pct' ? '' : '\u20ac') + '</span><input class="w-28 pl-6 pr-7 py-2 rounded-8 border border-gray-200 bg-gray-50 text-right text-sm font-bold focus:border-primary focus:bg-white outline-none" data-xin="' + it.k + '" type="number" min="0" step="0.01" value="' + sv.v + '"' + (RO ? ' disabled' : '') + '/><span class="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400">' + (it.unit === 'pct' ? '%' : '') + '</span></div></div></div>';
+        }).join('');
+        document.querySelectorAll('#xg-col-sell [data-xin]').forEach(function (i) { i.oninput = xgCalc; });
+        document.querySelectorAll('#xg-col-sell [data-xrs]').forEach(function (b) { b.onclick = function () {
+            var it = D.xgdItems.filter(function (x) { return x.k === b.dataset.xrs; })[0];
+            var i = document.querySelector('#xg-col-sell [data-xin="' + b.dataset.xrs + '"]');
+            i.value = D.xgdSell[b.dataset.xrs]; xgCalc(); DDUI.toast('已恢复为基础费率，保存后生效');
+        }; });
+        document.getElementById('xg-sell-sub').textContent = c ? '「' + c.name + '」单独费率 · 未单独设置的项跟随平台基础费率' : '平台基础费率 · 适用全部未单独设置的 XGD 客户';
+        document.getElementById('xg-sell-foot').classList.toggle('hidden', RO);
+        xgCalc();
+    }
+    function xgSaveSell() {
+        if (!rcNeed('config_edit')) return;
+        var v = xgVals(), keys = Object.keys(v), bad = keys.filter(function (k) { return isNaN(v[k]) || v[k] < 0; });
+        if (bad.length) { DDUI.toast('存在负数或空值，请检查', 'error'); return; }
+        if (!xgDirty()) { DDUI.toast('费率未修改'); return; }
+        var below = keys.filter(function (k) { return v[k] < H.xgCost(D, k); });
+        var go = function () {
+            reload(); var c = XGS === 'base' ? null : H.cust(D, XGS), chg = [];
+            keys.forEach(function (k) {
+                var old = H.xgSell(D, c ? c.id : null, k).v;
+                if (Math.abs(old - v[k]) < 1e-9) return;
+                var it = D.xgdItems.filter(function (x) { return x.k === k; })[0];
+                chg.push(it.label + ' ' + xgFmt(it, old) + ' \u2192 ' + xgFmt(it, v[k]));
+                if (!c) D.xgdSell[k] = v[k];
+                else { c.xgdOvr = c.xgdOvr || {}; if (Math.abs(v[k] - D.xgdSell[k]) < 1e-9) delete c.xgdOvr[k]; else c.xgdOvr[k] = v[k]; if (!Object.keys(c.xgdOvr).length) delete c.xgdOvr; }
+            });
+            H.log(D, c ? '客户 XGD 单独定价' : '调整 XGD 基础费率', c ? c.name : '平台基础费率', chg.join('，')); H.save(D);
+            RC.log(c ? '卡中台·客户 XGD 单独定价' : '卡中台·调整 XGD 基础费率', c ? c.name : 'XGD', chg.join('，'));
+            DDUI.toast('已保存 ' + chg.length + ' 项 XGD 费率', 'success'); renderXgd();
+        };
+        if (below.length) DDUI.confirm('有 ' + below.length + ' 项卖价低于 XGD 成本', '将产生亏损，确定保存吗？', go, '仍然保存');
+        else go();
     }
     function genIban(d2) {
         var max = 0; d2.customers.forEach(function (c) { if (c.xgd && c.xgd.seq > max) max = c.xgd.seq; });
@@ -512,11 +629,14 @@ function rcNoPerm(){document.getElementById('rc-body').innerHTML='<div class="bg
         x.planB.monthly.forEach(function (t, i) { t.fee = num('xg-pb-m-' + i); });
         x.tx.forEach(function (t, i) { t.inn = txt('xg-tx-in-' + i); t.out = txt('xg-tx-out-' + i); });
         x.note = document.getElementById('xg-note').value;
+        H.xgApplyQuote(D);
         H.log(D, '更新 XGD 报价单', x.ver, chg.join('，') || '报价单内容更新'); H.save(D);
         RC.log('卡中台·更新 XGD 报价单', x.ver, chg.join('，') || '内容更新');
         DDUI.toast('XGD 报价单已保存', 'success'); renderXgd();
     }
     document.getElementById('xg-save').onclick = saveXgd;
+    document.getElementById('xg-save-sell').onclick = xgSaveSell;
+    document.getElementById('xg-reset').onclick = function () { renderXgMatrix(); DDUI.toast('已撤销未保存的修改'); };
 
     document.getElementById('cp-save').onclick = save;
     document.getElementById('cp-bulk').onclick = bulk;

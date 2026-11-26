@@ -4,7 +4,7 @@
  * 后台 admin/card-pricing.html（报价与定价）、admin/card-recon.html（对账）写入/读取
  * 客户端 cards.html / store.js 只读取：当前主体虚拟卡开通状态（不展示费率）*/
 window.DDCardHub = (function () {
-    var KEY = 'dd-cardhub-v2', VER = 3;
+    var KEY = 'dd-cardhub-v2', VER = 4;
     function cp(o) { return JSON.parse(JSON.stringify(o)); }
 
     /* ---------- 供应商 ---------- */
@@ -37,6 +37,41 @@ window.DDCardHub = (function () {
         ],
         note: '代理行 / 中间行费用、换汇费、税费另计；报价为非约束性，以签署协议为准。'
     };
+    /* XGD 账户服务计费项（成本数值化，unit: pct=按金额% / fix=按笔/户固定 EUR）
+     * base 为月用量字段；成本与 d.xgd 报价单双向同步（报价单保存时回写） */
+    var XGD_ITEMS = [
+        { k: 'openFee', label: '开户费（一次性）', unit: 'fix', per: '户', base: 'newAccts', baseLabel: '本月新开户', tier: 'planA' },
+        { k: 'monthlyA', label: 'Plan A 月费', unit: 'fix', per: '户/月', base: 'acctsA', baseLabel: 'Plan A 账户' },
+        { k: 'extraIban', label: '额外 IBAN', unit: 'fix', per: '个/月', base: 'extraIbans', baseLabel: '额外 IBAN' },
+        { k: 'monthlyB', label: 'Plan B 月费', unit: 'fix', per: '户/月', base: 'acctsB', baseLabel: 'Plan B 账户', tier: 'planB' },
+        { k: 'sepaIn', label: 'SEPA 收款', unit: 'pct', base: 'sepaInVol', baseLabel: 'SEPA 收款额' },
+        { k: 'sepaOut', label: 'SEPA 付款', unit: 'fix', per: '笔', base: 'sepaOutN', baseLabel: 'SEPA 付款笔数' },
+        { k: 'swiftIn', label: 'SWIFT 收款', unit: 'pct', base: 'swiftInVol', baseLabel: 'SWIFT 收款额', note: '仅 Plan A' },
+        { k: 'swiftOut', label: 'SWIFT 付款', unit: 'fix', per: '笔', base: 'swiftOutN', baseLabel: 'SWIFT 付款笔数', note: '仅 Plan A' },
+        { k: 'cnyOut', label: '人民币结算回国', unit: 'pct', base: 'cnyVol', baseLabel: '人民币结算额', note: '成本每笔最低 EUR 10' },
+        { k: 'walletIn', label: '支付宝/微信收单', unit: 'pct', base: 'walletVol', baseLabel: '收单金额' }
+    ];
+    /* XGD 平台基础卖价（EUR） */
+    var XGD_SELL = { openFee: 250, monthlyA: 29, extraIban: 9, monthlyB: 25, sepaIn: 0.45, sepaOut: 1.2, swiftIn: 0.45, swiftOut: 35, cnyOut: 0.35, walletIn: 1.6 };
+    /* 报价单（文本）→ 计费项成本（数值） */
+    function xgdSyncCost(x, items, accts) {
+        /* 开户费按累计账户数取当前阶梯 */
+        var n = accts || 0, tier = x.planA.open.filter(function (t) { return n >= t.from && (!t.to || n <= t.to); })[0];
+        items.forEach(function (it) {
+            if (it.k === 'openFee') it.cost = tier ? tier.fee : 0;
+            else if (it.k === 'monthlyA') it.cost = x.planA.monthly;
+            else if (it.k === 'extraIban') it.cost = x.planA.extraIban;
+            else if (it.k === 'monthlyB') it.cost = x.planB.monthly[0].fee;
+            else if (it.k === 'sepaIn') it.cost = parseFloat(x.tx[0].inn) || 0;
+            else if (it.k === 'sepaOut') it.cost = parseFloat(String(x.tx[0].out).replace(/[^0-9.]/g, '')) || 0;
+            else if (it.k === 'swiftIn') it.cost = parseFloat(x.tx[1].inn) || 0;
+            else if (it.k === 'swiftOut') it.cost = parseFloat(String(x.tx[1].out).replace(/[^0-9.]/g, '')) || 0;
+            else if (it.k === 'cnyOut') it.cost = parseFloat(x.tx[3].out) || 0;
+            else if (it.k === 'walletIn') it.cost = parseFloat(x.tx[4].inn) || 0;
+        });
+        return items;
+    }
+
     var PRODUCTS = [
         { id: 'vsg', name: '新加坡虚拟卡', en: 'Virtual Card - Singapore', scheme: 'Visa', ccy: 'USD', kind: 'virtual', wallet: '支持 Apple Pay / Google Pay', note: '通用消费卡；汇率按 Visa 牌价直通', on: true },
         { id: 'vus', name: '美国媒体投放虚拟卡', en: 'Virtual Card - US & Media-buying', scheme: 'Mastercard', ccy: 'USD', kind: 'virtual', wallet: '不支持移动钱包', note: '主要用于美国境内 Meta / Google / AMS 广告投放，不适合美国境外交易', on: true },
@@ -109,7 +144,7 @@ window.DDCardHub = (function () {
     ];
 
     function seed() {
-        var d = { v: VER, supplier: cp(SUPPLIER), xgd: cp(XGD), products: cp(PRODUCTS), cost: cp(COST), base: cp(BASE), customers: cp(CUSTOMERS), recon: {}, supBill: {}, log: [] };
+        var d = { v: VER, supplier: cp(SUPPLIER), xgd: cp(XGD), xgdItems: xgdSyncCost(cp(XGD), cp(XGD_ITEMS)), xgdSell: cp(XGD_SELL), products: cp(PRODUCTS), cost: cp(COST), base: cp(BASE), customers: cp(CUSTOMERS), recon: {}, supBill: {}, log: [] };
         /* 已结账月份：锁定出账快照 + 供应商账单 */
         d.customers.forEach(function (c) {
             if (!c.products.length) return;
@@ -134,7 +169,7 @@ window.DDCardHub = (function () {
         return d;
     }
     function load() {
-        try { var d = JSON.parse(localStorage.getItem(KEY)); if (d && d.v === VER && d.customers && d.cost && d.base && d.fund) return d; } catch (e) {}
+        try { var d = JSON.parse(localStorage.getItem(KEY)); if (d && d.v === VER && d.customers && d.cost && d.base && d.fund && d.xgdItems && d.xgdSell) return d; } catch (e) {}
         var s = seed(); save(s); return s;
     }
     function save(d) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch (e) {} }
@@ -390,6 +425,46 @@ window.DDCardHub = (function () {
     }
     function fmtU(v) { return (+v || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USDT'; }
 
+    /* ---------- XGD 账户服务：用量 / 成本 / 卖价（三层模型同卡费） ---------- */
+    function xgAccounts(d) { return d.customers.filter(function (c) { return c.xgd && c.xgd.st === 'active'; }).length; }
+    function xgUsage(d, custId) {
+        var c = custOf(d, custId); if (!c) return null;
+        var scale = (c.scale && (c.scale.vsg || 0) + (c.scale.vus || 0) + (c.scale.psg || 0)) || 80000;
+        var h = 0; for (var i = 0; i < c.id.length; i++) h = (h * 31 + c.id.charCodeAt(i)) % 997;
+        var act = c.xgd && c.xgd.st === 'active';
+        var cm = now().slice(0, 7);
+        return {
+            newAccts: act && (c.xgd.at || '').slice(0, 7) === cm ? 1 : 0,
+            acctsA: act && c.xgd.plan === 'A' ? 1 : 0,
+            acctsB: act && c.xgd.plan === 'B' ? 1 : 0,
+            extraIbans: act ? h % 3 : 0,
+            sepaInVol: Math.round(scale * 0.5), sepaOutN: 15 + h % 60,
+            swiftInVol: Math.round(scale * 0.12), swiftOutN: h % 7,
+            cnyVol: Math.round(scale * 0.3), walletVol: Math.round(scale * 0.18)
+        };
+    }
+    function xgCost(d, k) {
+        var it = d.xgdItems.filter(function (x) { return x.k === k; })[0];
+        if (!it) return 0;
+        if (it.k === 'openFee') { /* 按累计账户数取阶梯 */
+            var n = xgAccounts(d) + 1, t = d.xgd.planA.open.filter(function (x) { return n >= x.from && (!x.to || n <= x.to); })[0];
+            return t ? t.fee : 0;
+        }
+        if (it.k === 'monthlyB') {
+            var nb = d.customers.filter(function (c) { return c.xgd && c.xgd.st === 'active' && c.xgd.plan === 'B'; }).length + 1;
+            var tb = d.xgd.planB.monthly.filter(function (x) { return nb >= x.from && (!x.to || nb <= x.to); })[0];
+            return tb ? tb.fee : d.xgdItems.filter(function (x) { return x.k === 'monthlyB'; })[0].cost;
+        }
+        return it.cost;
+    }
+    function xgSell(d, custId, k) {
+        var c = custId ? custOf(d, custId) : null;
+        if (c && c.xgdOvr && c.xgdOvr[k] != null) return { v: +c.xgdOvr[k], own: true };
+        return { v: +d.xgdSell[k], own: false };
+    }
+    /* 报价单表单保存后回写计费项成本 */
+    function xgApplyQuote(d) { d.xgdItems = xgdSyncCost(d.xgd, d.xgdItems, xgAccounts(d) + 1); }
+
     /* ---------- 客户端接口（只读开通状态，不暴露费率） ---------- */
     function forEnt(entId) {
         var d = load(), c = custOf(d, entId);
@@ -418,6 +493,7 @@ window.DDCardHub = (function () {
         load: load, save: save, log: log, reset: function () { MCACHE = {}; save(seed()); },
         cust: custOf, item: item, applies: applies, sell: sell, costOf: costOf, tierRate: tierRate, platformSpend: platformSpend,
         usage: usage, billLines: billLines, billCust: billCust, monthBill: monthBill, supplierCost: supplierCost, supplierSplit: supplierSplit, belowCost: belowCost,
-        forEnt: forEnt, apply: apply, customer: customer, fmtRate: fmtRate, money: money
+        forEnt: forEnt, apply: apply, customer: customer, fmtRate: fmtRate, money: money,
+        XGD_ITEMS: XGD_ITEMS, xgAccounts: xgAccounts, xgUsage: xgUsage, xgCost: xgCost, xgSell: xgSell, xgApplyQuote: xgApplyQuote
     };
 })();
