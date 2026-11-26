@@ -189,7 +189,17 @@
     if (table.getAttribute('data-tk') === 'off' || tb.getAttribute('data-tk') === 'off') return;
     if (table.closest('.ddui-box')) return; /* 弹窗内的表不增强 */
     var rows = dataRows(table);
-    if (rows.length === 0) return;
+    if (rows.length === 0) {
+      /* 无数据：插入「暂无数据」占位行，后续 refresh 有数据时自动清除 */
+      if (!tb.querySelector('tr.ddtk-empty')) {
+        var em0 = document.createElement('tr');
+        em0.className = 'ddtk-empty';
+        var cols0 = table.querySelectorAll('thead th').length || 6;
+        em0.innerHTML = '<td colspan="' + cols0 + '" class="ddtk-empty-td">' + T('暂无数据', 'No data') + '</td>';
+        tb.appendChild(em0);
+      }
+      return;
+    }
     if (rows.length < 4 && !table.hasAttribute('data-tk-force')) {
       /* 行太少的表只加计数条，不加搜索分页 */
     }

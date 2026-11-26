@@ -13,9 +13,11 @@ window.DDOb = (function () {
     document.head.appendChild(st);
   })();
 
-  var MANAGERS = ['陈晓', 'Lisa Chen', 'Marco Rossi', '王梓楠', '胡飞燕'];
-  var REVIEWERS = ['张明', '刘欣', 'Eva 温茜'];
-  var SUPERVISORS = ['李主管', 'vivian'];
+  /* 统一员工名单：rc-data.js RC.STAFF 为唯一真源（客户经理 / 预审员 / 开户主管三组） */
+  var _STAFF = (window.RC && RC.STAFF) || {};
+  var MANAGERS = _STAFF.managers || ['王梓楠', '胡飞燕', 'Lisa Chen', 'Marco Rossi'];
+  var REVIEWERS = _STAFF.reviewers || ['张明', '刘欣', 'Eva 温茜', 'Dave'];
+  var SUPERVISORS = _STAFF.obSupervisors || ['李主管', 'vivian'];
 
   /* 状态定义（与 BilinkPay 一致，Equals 换 Sokin） */
   var ST_PERSONAL = ['待管理员确认价格', '待预审', '已补件 · 待预审', '待主管终审', '退回补充资料', 'Sokin 草稿已创建｜待正式提交', '开户成功', '已驳回', '开户失败'];
@@ -975,7 +977,18 @@ window.DDOb = (function () {
     var id = new URLSearchParams(location.search).get('id') || '';
     var a = getApp(id);
     if (!a) {
-      mount.innerHTML = '<div class="bg-white rounded-8 custom-shadow p-14 text-center text-gray-400">未找到该申请，可能已被删除。<br/><a class="text-accent2 font-bold" href="ob-business.html">返回开户工作台</a></div>';
+      /* 无 id：渲染全部申请的开户操作审计索引 */
+      var all = load().apps;
+      mount.innerHTML = '<div class="bg-white rounded-8 custom-shadow overflow-hidden"><div class="p-6 border-b border-gray-100"><h3 class="font-bold text-gray-900">全部开户申请 · 操作审计索引</h3><p class="text-xs text-gray-400 mt-1">选择一条申请查看其完整操作留痕</p></div>' +
+      '<div class="overflow-x-auto"><table class="w-full min-w-[860px]"><thead class="bg-gray-50/80"><tr><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">申请号</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">名称</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">类型</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">状态</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">提交时间</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">操作</th></tr></thead><tbody>' +
+      all.map(function (x) {
+        return '<tr class="hover:bg-gray-50/60"><td class="py-3 px-4 text-sm border-t border-gray-50 font-mono font-bold">' + esc(x.id) + '</td>' +
+        '<td class="py-3 px-4 text-sm border-t border-gray-50">' + esc(x.name) + '</td>' +
+        '<td class="py-3 px-4 text-sm border-t border-gray-50">' + (x.type === 'personal' ? '个人' : '商业') + '</td>' +
+        '<td class="py-3 px-4 text-sm border-t border-gray-50">' + badge(x.status) + '</td>' +
+        '<td class="py-3 px-4 text-sm border-t border-gray-50">' + esc(x.ts) + '</td>' +
+        '<td class="py-3 px-4 text-sm border-t border-gray-50"><a class="text-xs font-bold text-accent2 hover:underline" href="ob-audit.html?id=' + encodeURIComponent(x.id) + '">操作留痕 →</a></td></tr>';
+      }).join('') + '</tbody></table></div></div>';
       return;
     }
     var isP = a.type === 'personal';

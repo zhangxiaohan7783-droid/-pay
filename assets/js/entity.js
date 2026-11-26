@@ -30,6 +30,10 @@ window.DDEnt = (function () {
             setTimeout(function () { location.href = obUrl(ent.id); }, 600);
             return;
         }
+        if (ent.status === 'review') {
+            if (window.DDUI) DDUI.toast('主体「' + ent.name + '」开户申请审核中，预计 1-2 个工作日', 'info');
+            return;
+        }
         if (!silent && window.DDUI) DDUI.toast('已切换至主体「' + ent.name + '」', 'success');
         try { document.dispatchEvent(new CustomEvent('dd-ent-change', { detail: ent })); } catch (e) {}
     }
@@ -63,7 +67,7 @@ window.DDEnt = (function () {
                 var on = x.id === e.id;
                 return '<button class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 text-left ent-item" data-id="' + x.id + '" type="button">' +
                     '<div class="w-7 h-7 rounded-8 flex items-center justify-center text-xs font-bold flex-none" style="background:' + (on ? '#FFD008' : '#f3f4f6') + ';color:#382b1b">' + x.name.charAt(0) + '</div>' +
-                    '<div class="flex-1 min-w-0"><p class="text-sm font-bold text-dark truncate">' + x.name + (x.status === 'pending' ? ' <span class="text-[10px] font-bold text-orange-500 bg-orange-50 px-1.5 py-0.5 rounded">开户中</span>' : '') + '</p><p class="text-[10px] text-gray-400">' + x.country + ' · ' + (x.vat || x.reg || '') + '</p></div>' +
+                    '<div class="flex-1 min-w-0"><p class="text-sm font-bold text-dark truncate">' + x.name + (x.status === 'pending' ? ' <span class="text-[10px] font-bold text-orange-500 bg-orange-50 px-1.5 py-0.5 rounded">开户中</span>' : x.status === 'review' ? ' <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">审核中</span>' : '') + '</p><p class="text-[10px] text-gray-400">' + x.country + ' · ' + (x.vat || x.reg || '') + '</p></div>' +
                     (on ? '<iconify-icon class="text-green-500 flex-none" icon="solar:check-circle-bold"></iconify-icon>' : '') +
                     (all().length > 1 && !on ? '<iconify-icon class="text-gray-300 hover:text-red-400 flex-none ent-del" data-id="' + x.id + '" icon="solar:trash-bin-trash-linear"></iconify-icon>' : '') +
                     '</button>';

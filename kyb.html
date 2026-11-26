@@ -304,12 +304,25 @@ document.addEventListener('input', obDraftQueue);
 document.addEventListener('change', obDraftQueue);
 function wizardDone() {
     try { localStorage.removeItem(OB_DRAFT_KEY); } catch (e) {}
+    var comp = (document.getElementById('b-name') || {}).value || '';
+    var country = (document.getElementById('b-country') || {}).value || '';
+    var industry = (document.getElementById('b-industry') || {}).value || '';
+    var hit = null;
     if (OB_ENT !== 'anon') {
         var l = [];
         try { l = JSON.parse(localStorage.getItem('dd-entities-v1') || '[]'); } catch (e) {}
-        var hit = l.find(function (e) { return e.id === OB_ENT; });
-        if (hit) { hit.status = 'active'; try { localStorage.setItem('dd-entities-v1', JSON.stringify(l)); } catch (e) {} }
+        hit = l.find(function (e) { return e.id === OB_ENT; });
+        if (hit) { hit.status = 'review'; if (comp) hit.name = comp; try { localStorage.setItem('dd-entities-v1', JSON.stringify(l)); } catch (e) {} }
     }
+    /* 提交后台开户审核队列（admin 开户管理 → 待初审） */
+    try {
+        var subs = JSON.parse(localStorage.getItem('dd-kyb-submissions-v1') || '[]');
+        var d = new Date(); function p(n) { return (n < 10 ? '0' : '') + n; }
+        subs.push({ id: '', type: 'business', company: comp || (hit ? hit.name : '') || '未命名企业', country: country || (hit ? hit.country : '') || '—', industry: industry || '—',
+            ts: d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()),
+            entId: OB_ENT, channel: 'sokin', docs: ['注册文件', 'BO 声明', '地址证明'] });
+        localStorage.setItem('dd-kyb-submissions-v1', JSON.stringify(subs));
+    } catch (e) {}
 }
 var _obNextOrig = obNext;
 obNext = function () {

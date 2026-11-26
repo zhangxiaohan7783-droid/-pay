@@ -183,10 +183,25 @@ function obRender(){
     document.getElementById('ob-nav').style.display = obStep === obTotal ? 'none' : 'flex';
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+function obSubmitClient(){
+    /* 提交后台开户审核队列（admin 开户管理 → 待初审） */
+    try {
+        var subs = JSON.parse(localStorage.getItem('dd-kyb-submissions-v1') || '[]');
+        var d = new Date(); function p(n){ return (n < 10 ? '0' : '') + n; }
+        subs.push({ id: '', type: 'personal',
+            name: (document.getElementById('k-sign-name') || {}).value || '个人客户',
+            country: (document.getElementById('k-addr-country') || {}).value || '—',
+            purpose: '个人开户',
+            ts: d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()),
+            entId: 'anon', channel: 'sokin', docs: ['身份证明', '地址证明'] });
+        localStorage.setItem('dd-kyb-submissions-v1', JSON.stringify(subs));
+    } catch (e) {}
+}
 function obNext(){
     var v = STEPS[obStep-1].validate;
     if (v && !v()) return;
     if (obStep < obTotal) { obStep++; obRender(); }
+    if (obStep === obTotal) obSubmitClient();
 }
 function obPrev(){ if (obStep > 1) { obStep--; obRender(); } }
 

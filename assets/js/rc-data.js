@@ -24,7 +24,7 @@
     'risk-alerts.html':     ['officer', 'supervisor', 'head', 'auditor', 'admin'],
     'risk-screening.html':  ['officer', 'reviewer', 'supervisor', 'head', 'auditor', 'admin'],
     'risk-ledger.html':     ['officer', 'reviewer', 'supervisor', 'head', 'auditor', 'admin'],
-    'risk-controls.html':   ['supervisor', 'head', 'auditor', 'admin'],
+    'risk-controls.html':   ['officer', 'supervisor', 'head', 'auditor', 'admin'],
     'risk-str.html':        ['supervisor', 'head', 'auditor', 'admin'],
     'risk-audit.html':      ['supervisor', 'head', 'auditor', 'admin'],
     'risk-config.html':     ['head', 'admin'],
@@ -42,8 +42,9 @@
     alert_assign:  ['supervisor', 'admin'],
     screen_mark:   ['officer', 'reviewer', 'supervisor', 'admin'],
     list_manage:   ['head', 'admin'],
-    control_apply: ['supervisor', 'head', 'admin'],
-    control_lift:  ['supervisor', 'head', 'admin'],
+    control_apply: ['officer', 'supervisor', 'head'],
+    control_approve: ['supervisor', 'head'],
+    control_lift:  ['supervisor', 'head'],
     str_draft:     ['officer', 'supervisor', 'head', 'admin'],
     str_submit:    ['head', 'admin'],
     audit_export:  ['supervisor', 'head', 'auditor', 'admin'],
@@ -60,13 +61,36 @@
   function setMenuRoles(page, roles) { var o = overrides(); o['menu:' + page] = roles; saveOverrides(o); }
   function resetOverrides() { try { localStorage.removeItem(OVR_KEY); } catch (e) {} }
 
-  function role() { var r = localStorage.getItem(ROLE_KEY); return ROLES[r] ? r : 'admin'; }
+  function role() { var r = localStorage.getItem(ROLE_KEY); return ROLES[r] ? r : 'supervisor'; }
   function setRole(r) { if (ROLES[r]) { localStorage.setItem(ROLE_KEY, r); log('切换角色', '系统', '当前角色 → ' + ROLES[r].name); location.reload(); } }
   /* 超管仅系统配置维护，禁止日常业务操作（PRD §3） */
-  var ADMIN_FORBID = ['kyc_edit', 'edd_review', 'edd_approve', 'alert_handle', 'alert_assign', 'screen_mark', 'control_apply', 'control_lift', 'str_draft', 'str_submit'];
+  var ADMIN_FORBID = ['kyc_edit', 'edd_review', 'edd_approve', 'alert_handle', 'alert_assign', 'screen_mark', 'control_apply', 'control_approve', 'control_lift', 'str_draft', 'str_submit'];
   function can(act) { var r = role(); if (r === 'admin' && ADMIN_FORBID.indexOf(act) > -1) return false; return actRoles(act).indexOf(r) > -1; }
   function canMenu(page) { return menuRoles(page).indexOf(role()) > -1; }
   function readonly() { return role() === 'auditor'; }
+
+  /* ================= 通用工具：真实日期 / 防重号 / 到期判断 ================= */
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function today() { var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function nowTs() { var d = new Date(); return today() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+  function nowShort() { return nowTs().slice(5); }
+  function addDays(dateStr, n) { var d = new Date(dateStr + 'T00:00:00'); d.setDate(d.getDate() + n); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function daysTo(dateStr) { if (!dateStr) return 9999; return Math.round((new Date(dateStr + 'T00:00:00') - new Date(today() + 'T00:00:00')) / 86400000); }
+  function dueState(dateStr, days) {
+    var n = daysTo(dateStr);
+    if (n < 0) return { cls: 'bg-red-50 text-red-500', label: '已逾期 ' + (-n) + ' 天', state: 'overdue' };
+    if (n <= (days || 7)) return { cls: 'bg-orange-50 text-orange-600', label: '临期（' + n + ' 天后）', state: 'soon' };
+    return { cls: 'bg-green-50 text-green-600', label: '正常', state: 'ok' };
+  }
+  /* 统一员工名单（后台平台侧；客户端团队成员与平台员工互不相干） */
+  var STAFF = {
+    managers: ['王梓楠', '胡飞燕', 'Lisa Chen', 'Marco Rossi'],
+    reviewers: ['张明', '刘欣', 'Eva 温茜', 'Dave'],
+    obSupervisors: ['李主管', 'vivian'],
+    officer: 'Maria Rossi',
+    supervisor: '陈晓',
+    head: '李强'
+  };
 
   /* ================= 审计日志（只增不删） ================= */
   var AUDIT_KEY = 'dd-rc-audit-v1';
@@ -84,36 +108,60 @@
   function log(act, target, detail) {
     var l = audit();
     var who = { officer: '风控专员', reviewer: '合规审核员', supervisor: '风控主管', head: '合规负责人', auditor: '审计岗', admin: '超级管理员' }[role()];
-    l.unshift({ ts: new Date().toISOString().slice(0, 16).replace('T', ' '), user: '演示账号', role: who, act: act, target: target, detail: detail });
+    l.unshift({ ts: nowTs(), user: '演示账号', role: who, act: act, target: target, detail: detail });
     try { localStorage.setItem(AUDIT_KEY, JSON.stringify(l)); } catch (e) {}
+  }
+
+  /* ================= 防重号 ID 生成 ================= */
+  function readRaw(key) { try { var v = JSON.parse(localStorage.getItem(key)); return v == null ? null : v; } catch (e) { return null; } }
+  function nextId(kind) {
+    var src = {
+      ALT: ['ALT-', alerts(), 4], CTL: ['CTL-', controls(), 3], STR: ['STR-2026-', strs(), 3],
+      EDD: ['EDD-', edd(), 4], CS: ['CS-', cases(), 5], MER: ['M-', merchants(), 4],
+      P: ['P-', readRaw('dd-ob-personal-v1') || [], 4], B: ['B-', readRaw('dd-ob-business-v1') || [], 4]
+    }[kind];
+    if (!src) { return kind + '-' + Date.now(); }
+    var max = 0;
+    src[1].forEach(function (x) { var m = String(x.id || '').match(/(\d+)$/); if (m) max = Math.max(max, +m[1]); });
+    var n = String(max + 1);
+    while (n.length < src[2]) n = '0' + n;
+    return src[0] + n;
   }
 
   /* ================= 商户风险档案 ================= */
   var MER_KEY = 'dd-rc-merchants-v1';
   var LEVELS = { low: { label: '低风险', cls: 'bg-green-50 text-green-600' }, mid: { label: '中风险', cls: 'bg-yellow-50 text-yellow-600' }, high: { label: '高风险', cls: 'bg-orange-50 text-orange-600' }, critical: { label: '极高风险', cls: 'bg-red-50 text-red-500' } };
   var MER_SEED = [
-    { id: 'M-1001', name: 'Flash Commerce S.r.l.', country: '意大利', reg: 'MI-2598741', vat: 'IT09876543210', industry: '电商零售', level: 'low', score: 22, kyc: '已通过', reviewDue: '2027-05-12', onboard: '2026-05-12', control: '无', tags: ['SEPA 常用', '正常交易模式'],
+    { id: 'M-1001', name: 'Flash Commerce S.r.l.', country: '意大利', reg: 'MI-2598741', vat: 'IT09876543210', industry: '电商零售', level: 'low', score: 22, kyc: '已通过', reviewDue: '2027-05-12', onboard: '2026-05-12', control: '无', tags: ['SEPA 常用', '正常交易模式'], entId: 'flash',
+      mf: { country: 0, industry: 0.2, scale: 0.4, pep: 0, bo: 0.4, pattern: 0.2 },
       bo: [{ name: '小涵总', share: '65%', id: 'IT-护照·隐去', layer: 1 }, { name: 'Holding Alpha Ltd（香港）', share: '35%', layer: 1, children: [{ name: '陈某', share: '100%', layer: 2 }] }],
       docs: ['公司章程', 'VAT 证书', '注册地址证明', 'BO 声明'], upstream: '深圳 3C 供应商 ×12', downstream: '欧盟终端消费者' },
-    { id: 'M-1002', name: 'Fast Discount S.r.l.', country: '意大利', reg: 'MI-2611345', vat: 'IT11223344556', industry: '折扣电商', level: 'high', score: 71, kyc: '已通过', reviewDue: '2026-12-01', onboard: '2026-06-01', control: '加强监控', tags: ['快进快出', '夜间交易占比高'],
+    { id: 'M-1002', name: 'Fast Discount S.r.l.', country: '意大利', reg: 'MI-2611345', vat: 'IT11223344556', industry: '折扣电商', level: 'high', score: 71, kyc: '已通过', reviewDue: '2026-12-01', onboard: '2026-06-01', control: '加强监控', tags: ['快进快出', '夜间交易占比高'], entId: 'fast',
+      mf: { country: 0, industry: 0.3, scale: 0.6, pep: 0, bo: 0.1, pattern: 1 },
       bo: [{ name: '小涵总', share: '80%', id: 'IT-护照·隐去', layer: 1 }, { name: '李某', share: '20%', layer: 1 }],
       docs: ['公司章程', 'VAT 证书', '注册地址证明'], upstream: '土耳其服装供应商 ×5', downstream: '意大利/法国消费者' },
-    { id: 'M-1003', name: 'Goden S.r.l.', country: '意大利', reg: 'MI-2633720', vat: 'IT66778899001', industry: '奢侈品贸易', level: 'mid', score: 48, kyc: '已通过', reviewDue: '2027-02-18', onboard: '2026-08-18', control: '无', tags: ['高客单价'],
+    { id: 'M-1003', name: 'Goden S.r.l.', country: '意大利', reg: 'MI-2633720', vat: 'IT66778899001', industry: '奢侈品贸易', level: 'mid', score: 48, kyc: '已通过', reviewDue: '2027-02-18', onboard: '2026-08-18', control: '无', tags: ['高客单价'], entId: 'goden',
+      mf: { country: 0, industry: 0.7, scale: 0.6, pep: 0, bo: 0, pattern: 0.4 },
       bo: [{ name: '小涵总', share: '100%', id: 'IT-护照·隐去', layer: 1 }],
       docs: ['公司章程', 'VAT 证书', '品牌授权书'], upstream: '意大利品牌方 ×8', downstream: '中国跨境电商' },
     { id: 'M-1004', name: 'Baltic Trade SIA', country: '拉脱维亚', reg: 'LV-40103998877', vat: 'LV40103998877', industry: '大宗商品贸易', level: 'critical', score: 88, kyc: 'EDD 进行中', reviewDue: '2026-11-20', onboard: '2026-10-30', control: '禁止出金', tags: ['高风险注册地', 'BO 信息不透明', 'PEP 关联待核实'],
+      mf: { country: 1, industry: 0.8, scale: 0.5, pep: 0.6, bo: 1, pattern: 0.7 },
       bo: [{ name: 'Oleg V.', share: '51%', id: '待核实', layer: 1 }, { name: 'ShellCo Cyprus Ltd', share: '49%', layer: 1, children: [{ name: '未知', share: '—', layer: 2 }] }],
       docs: ['公司章程'], upstream: '未提供', downstream: '未提供' },
     { id: 'M-1005', name: 'Nordic Luxury GmbH', country: '德国', reg: 'HRB-88213', vat: 'DE314159265', industry: '奢侈品零售', level: 'high', score: 76, kyc: '已通过', reviewDue: '2026-11-25', onboard: '2026-04-02', control: '禁止出金', tags: ['EDD 逾期未补'],
+      mf: { country: 0, industry: 0.7, scale: 0.6, pep: 0, bo: 0, pattern: 0.3 },
       bo: [{ name: 'Anna K.', share: '100%', id: 'DE-护照·隐去', layer: 1 }],
       docs: ['公司章程', 'VAT 证书'], upstream: '瑞士手表经销商 ×3', downstream: '欧洲高净值客户' },
     { id: 'M-1006', name: 'Iberia Textiles SL', country: '西班牙', reg: 'B-87654321', vat: 'ESB87654321', industry: '纺织品贸易', level: 'mid', score: 45, kyc: '已通过', reviewDue: '2027-01-15', onboard: '2026-07-15', control: '无', tags: ['季节性波动'],
+      mf: { country: 0, industry: 0.4, scale: 0.4, pep: 0, bo: 0, pattern: 0.4 },
       bo: [{ name: 'Carlos M.', share: '60%', layer: 1 }, { name: 'Lucia F.', share: '40%', layer: 1 }],
       docs: ['公司章程', 'VAT 证书', '仓储合同'], upstream: '葡萄牙纺织厂 ×6', downstream: '欧洲批发商' },
     { id: 'M-1007', name: 'Alpine Foods GmbH', country: '奥地利', reg: 'FN-556677a', vat: 'ATU77889900', industry: '食品进出口', level: 'low', score: 18, kyc: '已通过', reviewDue: '2027-08-09', onboard: '2026-02-09', control: '无', tags: ['长期稳定'],
+      mf: { country: 0, industry: 0.1, scale: 0.2, pep: 0, bo: 0, pattern: 0.1 },
       bo: [{ name: 'Franz H.', share: '100%', layer: 1 }],
       docs: ['公司章程', 'VAT 证书', '食品经营许可'], upstream: '奥地利农场合作社', downstream: '中欧商超' },
     { id: 'M-1008', name: 'Emerald Retail Ltd', country: '爱尔兰', reg: 'IE-667788', vat: 'IE9988776X', industry: '电商零售', level: 'mid', score: 52, kyc: '复审待办', reviewDue: '2026-11-18', onboard: '2025-11-20', control: '仅入金', tags: ['年度复审到期'],
+      mf: { country: 0, industry: 0.2, scale: 0.3, pep: 0, bo: 0, pattern: 0.3 },
       bo: [{ name: 'Sean O.', share: '100%', layer: 1 }],
       docs: ['公司章程', 'VAT 证书'], upstream: '英国供应商 ×4', downstream: '爱尔兰消费者' }
   ];
@@ -128,10 +176,12 @@
   var ALT_KEY = 'dd-rc-alerts-v1';
   var ALT_STATUS = { new: { label: '新告警', cls: 'bg-red-50 text-red-500' }, investigating: { label: '调查中', cls: 'bg-blue-50 text-blue-600' }, pending_approval: { label: '待审批', cls: 'bg-yellow-50 text-yellow-600' }, concluded: { label: '已结论', cls: 'bg-green-50 text-green-600' } };
   var ALT_SEED = [
-    { id: 'ALT-2095', ts: '2026-11-13 08:20', mer: 'M-1004 Baltic Trade SIA', rule: 'R-02 高风险地域交易', level: 'critical', amt: '€86,000 收款', status: 'new', assignee: '', auto: true, detail: '交易对手注册地为高风险司法辖区（离岸金融中心），且与商户申报业务不符。', txs: ['TX-88231', 'TX-88240'] },
-    { id: 'ALT-2094', ts: '2026-11-12 22:41', mer: 'M-1002 Fast Discount S.r.l.', rule: 'R-04 快进快出', level: 'high', amt: '€42,800 转出', status: 'investigating', assignee: 'Maria Rossi', auto: true, detail: '3 笔收单入账后 2 小时内 98% 转出至同一新收款方。', txs: ['TX-88190', 'TX-88191', 'TX-88195'] },
-    { id: 'ALT-2093', ts: '2026-11-12 18:05', mer: 'M-1005 Nordic Luxury GmbH', rule: 'R-01 大额交易', level: 'high', amt: '€120,000 付款', status: 'pending_approval', assignee: 'Maria Rossi', auto: true, detail: '单笔付款超过商户近 90 天日均交易额 20 倍。', txs: ['TX-88250'] },
-    { id: 'ALT-2091', ts: '2026-11-11 14:32', mer: 'M-1003 Goden S.r.l.', rule: 'R-07 拆分交易', level: 'mid', amt: '9 × €9,500', status: 'concluded', assignee: 'Maria Rossi', auto: true, detail: '同日 9 笔 €9,500 付款疑似规避大额审查阈值，客户提供采购合同佐证，结论：误报。', txs: ['TX-88101~88109'] },
+    { id: 'ALT-2098', ts: '2026-11-26 09:02', mer: 'M-1001 Flash Commerce S.r.l.', rule: 'R-19 USDT 入金 KYT 高风险', level: 'high', amt: '12,000 USDT', status: 'new', assignee: '', auto: true, src: 'kyt', srcId: 'KYT-DEP-20261126-010', detail: '卡中台 USDT 归集链路：入金 KYT 风险分 86，来源地址 2 跳内关联混币服务，已自动暂挂待人工处置。', txs: [], caseRef: '' },
+    { id: 'ALT-2096', ts: '2026-11-25 21:14', mer: 'Lumen Digital Ltd（卡平台客户）', rule: 'R-16 虚拟卡拒付率异常', level: 'high', amt: '月拒付率 1.31%', status: 'new', assignee: '', auto: true, src: 'cardhub', srcId: 'KYT-DEP-20261125-011', detail: 'WasabiCard 卡台客户 Lumen Digital 月拒付率 1.31%，超阈值 0.9%，其虚拟卡功能已自动冻结、一笔 USDT 入金暂挂。', txs: [], caseRef: '' },
+    { id: 'ALT-2095', ts: '2026-11-13 08:20', mer: 'M-1004 Baltic Trade SIA', rule: 'R-02 高风险地域交易', level: 'critical', amt: '€86,000 收款', status: 'new', assignee: '', auto: true, detail: '交易对手注册地为高风险司法辖区（离岸金融中心），且与商户申报业务不符。', txs: ['TX-87601', 'TX-87602'] },
+    { id: 'ALT-2094', ts: '2026-11-12 22:41', mer: 'M-1002 Fast Discount S.r.l.', rule: 'R-04 快进快出', level: 'high', amt: '€42,800 转出', status: 'investigating', assignee: 'Maria Rossi', auto: true, detail: '3 笔收单入账后 2 小时内 98% 转出至同一新收款方。', txs: ['TX-87611', 'TX-87612', 'TX-87613'], caseId: 'CS-88210' },
+    { id: 'ALT-2093', ts: '2026-11-12 18:05', mer: 'M-1005 Nordic Luxury GmbH', rule: 'R-01 大额交易', level: 'high', amt: '€120,000 付款', status: 'pending_approval', assignee: 'Maria Rossi', auto: true, detail: '单笔付款超过商户近 90 天日均交易额 20 倍。', txs: ['TX-87621'] },
+    { id: 'ALT-2091', ts: '2026-11-11 14:32', mer: 'M-1003 Goden S.r.l.', rule: 'R-07 拆分交易', level: 'mid', amt: '9 × €9,500', status: 'concluded', assignee: 'Maria Rossi', auto: true, detail: '同日 9 笔 €9,500 付款疑似规避大额审查阈值，客户提供采购合同佐证，结论：误报。', txs: ['TX-87631~87639'] },
     { id: 'ALT-2088', ts: '2026-11-10 09:12', mer: 'M-1008 Emerald Retail Ltd', rule: 'R-11 商户信息变更', level: 'mid', amt: '—', status: 'concluded', assignee: '陈晓', auto: true, detail: '注册地址变更至共享办公地址，已电话核实并更新档案。', txs: [] }
   ];
   function alerts() {
@@ -174,30 +224,146 @@
       { name: 'OFAC SDN', src: '美国财政部', updated: '2026-11-12', entries: 12480, on: true },
       { name: 'UN Security Council', src: '联合国安理会', updated: '2026-11-10', entries: 1024, on: true },
       { name: 'EU Consolidated', src: '欧盟委员会', updated: '2026-11-11', entries: 4877, on: true },
+      { name: 'UK HMT (OFSI)', src: '英国财政部', updated: '2026-11-12', entries: 3210, on: true },
+      { name: '链上地址黑名单（USDT 钱包筛查）', src: 'OFAC Crypto + 自建暗网/混币库', updated: '2026-11-13', entries: 5682, on: true },
       { name: 'PEP 数据库', src: '商用数据源', updated: '2026-11-08', entries: 1842300, on: true },
       { name: '自定义风险名单', src: '平台自建', updated: '2026-11-09', entries: 47, on: true }
     ]
   };
   function screening() {
-    try { var d = JSON.parse(localStorage.getItem(SCR_KEY)); if (d && d.records) return d; } catch (e) {}
+    var d = null;
+    try { d = JSON.parse(localStorage.getItem(SCR_KEY)); } catch (e) {}
+    if (d && d.records) {
+      var changed = false;
+      SCR_SEED.lists.forEach(function (s) { if (!d.lists.filter(function (x) { return x.name === s.name; }).length) { d.lists.push(s); changed = true; } });
+      if (changed) saveScreening(d);
+      return d;
+    }
     return JSON.parse(JSON.stringify(SCR_SEED));
   }
   function saveScreening(d) { try { localStorage.setItem(SCR_KEY, JSON.stringify(d)); } catch (e) {} }
 
-  /* ================= 账户管控 ================= */
+  /* ================= 账户管控（申请 → 主管审批 → 负责人批准 → 生效 → 解除） ================= */
   var CTL_KEY = 'dd-rc-controls-v1';
   var CTL_TYPES = { deposit_only: '仅入金', no_withdraw: '禁止出金', suspend: '暂停账户', freeze: '冻结资金', none: '无管控' };
+  var CTL_STATUS = {
+    pending_sv: { label: '待主管审批', cls: 'bg-yellow-50 text-yellow-600' },
+    pending_head: { label: '待负责人批准', cls: 'bg-purple-50 text-purple-600' },
+    active: { label: '生效中', cls: 'bg-red-50 text-red-500' },
+    lifted: { label: '已解除', cls: 'bg-gray-100 text-gray-500' },
+    rejected: { label: '已驳回', cls: 'bg-gray-100 text-gray-400' }
+  };
   var CTL_SEED = [
-    { id: 'CTL-701', mer: 'M-1004 Baltic Trade SIA', type: 'no_withdraw', reason: 'EDD 材料未完成，BO 穿透存在不透明层', by: '陈晓（风控主管）', ts: '2026-11-05 14:20', status: '生效中', approve: '陈晓 → 李强（合规负责人）已批准' },
-    { id: 'CTL-702', mer: 'M-1005 Nordic Luxury GmbH', type: 'no_withdraw', reason: 'EDD 补充材料逾期未提交', by: '陈晓（风控主管）', ts: '2026-11-11 17:30', status: '生效中', approve: '陈晓 → 李强 已批准' },
-    { id: 'CTL-699', mer: 'M-1008 Emerald Retail Ltd', type: 'deposit_only', reason: '年度复审到期，暂停出金以外的操作', by: 'Maria Rossi（风控专员）', ts: '2026-11-08 09:40', status: '生效中', approve: '陈晓 已批准' },
-    { id: 'CTL-688', mer: 'M-1003 Goden S.r.l.', type: 'deposit_only', reason: '拆分交易告警调查期间临时管控', by: 'Maria Rossi', ts: '2026-11-10 10:05', status: '已解除', approve: '陈晓 已批准；2026-11-11 误报结论后解除' }
+    { id: 'CTL-705', mer: 'M-1002 Fast Discount S.r.l.', type: 'no_withdraw', reason: 'R-04 快进快出告警（ALT-2094）调查期间申请出金管控', by: 'Maria Rossi（风控专员）', ts: '2026-11-24 10:12', status: 'pending_sv', approve: 'Maria Rossi 申请 → 待风控主管审批', src: 'ALT-2094', prev: '加强监控' },
+    { id: 'CTL-701', mer: 'M-1004 Baltic Trade SIA', type: 'no_withdraw', reason: 'EDD 材料未完成，BO 穿透存在不透明层', by: '陈晓（风控主管）', ts: '2026-11-05 14:20', status: 'active', approve: '陈晓 → 李强（合规负责人）已批准', prev: '加强监控' },
+    { id: 'CTL-702', mer: 'M-1005 Nordic Luxury GmbH', type: 'no_withdraw', reason: 'EDD 补充材料逾期未提交', by: '陈晓（风控主管）', ts: '2026-11-11 17:30', status: 'active', approve: '陈晓 → 李强 已批准', prev: '无' },
+    { id: 'CTL-699', mer: 'M-1008 Emerald Retail Ltd', type: 'deposit_only', reason: '年度复审到期，暂停出金以外的操作', by: 'Maria Rossi（风控专员）', ts: '2026-11-08 09:40', status: 'active', approve: '陈晓 审批 → 李强 已批准', prev: '无' },
+    { id: 'CTL-688', mer: 'M-1003 Goden S.r.l.', type: 'deposit_only', reason: '拆分交易告警调查期间临时管控', by: 'Maria Rossi', ts: '2026-11-10 10:05', status: 'lifted', approve: '陈晓 审批 → 李强 批准；2026-11-11 误报结论后由陈晓解除', prev: '无', liftNote: 'ALT-2091 结论误报，解除并恢复商户状态' }
   ];
   function controls() {
     try { var d = JSON.parse(localStorage.getItem(CTL_KEY)); if (Array.isArray(d) && d.length) return d; } catch (e) {}
     return CTL_SEED.slice();
   }
   function saveControls(l) { try { localStorage.setItem(CTL_KEY, JSON.stringify(l)); } catch (e) {} }
+  function ctlStatus(c) { return CTL_STATUS[c.status] || { label: c.status, cls: 'bg-gray-100 text-gray-500' }; }
+  /* 解除后恢复：商户状态 = 其余生效管控中最强的一个，否则恢复为管控前状态 */
+  var CTL_RANK = { freeze: 4, suspend: 3, no_withdraw: 2, deposit_only: 1 };
+  function restoreMerchant(merId, excludeId, prev) {
+    var best = null;
+    controls().forEach(function (c) {
+      if (c.id === excludeId || c.status !== 'active') return;
+      if (c.mer.indexOf(merId) === 0 && (!best || (CTL_RANK[c.type] || 0) > (CTL_RANK[best] || 0))) best = c.type;
+    });
+    var ms = merchants();
+    ms.forEach(function (m) { if (m.id === merId) m.control = best ? CTL_TYPES[best] : (prev || '无'); });
+    saveMerchants(ms);
+  }
+  function applyControl(merId, type, reason, src) {
+    var m = merchant(merId); if (!m) return null;
+    var rn = ROLES[role()].name;
+    var st = role() === 'supervisor' ? 'pending_head' : 'pending_sv';
+    var rec = { id: nextId('CTL'), mer: merId + ' ' + m.name, type: type, reason: reason, by: rn + '（' + ROLES[role()].name + '）', ts: nowTs(), status: st,
+      approve: rn + (st === 'pending_head' ? '（主管）发起 → 待合规负责人批准' : ' 申请 → 待风控主管审批'), src: src || '', prev: m.control };
+    var l = controls(); l.unshift(rec); saveControls(l);
+    log('新建管控申请', rec.mer, CTL_TYPES[type] + '：' + reason + '（' + ctlStatus(rec).label + '）');
+    return rec;
+  }
+  function approveControl(id, pass, note) {
+    var l = controls(), rec = l.filter(function (x) { return x.id === id; })[0];
+    if (!rec) return null;
+    var rn = ROLES[role()].name;
+    if (!pass) {
+      rec.status = 'rejected'; rec.approve += '；' + rn + ' 驳回' + (note ? '：' + note : '');
+      saveControls(l); log('管控审批驳回', id, note || ''); return rec;
+    }
+    if (rec.status === 'pending_sv') {
+      rec.status = 'pending_head'; rec.approve += '；' + rn + '（主管）审批通过 → 待合规负责人批准';
+      saveControls(l); log('管控主管审批通过', id, '');
+    } else if (rec.status === 'pending_head') {
+      rec.status = 'active'; rec.approve += '；' + rn + '（负责人）批准生效';
+      var merId = rec.mer.split(' ')[0];
+      var ms = merchants(); ms.forEach(function (m) { if (m.id === merId) m.control = CTL_TYPES[rec.type]; }); saveMerchants(ms);
+      saveControls(l); log('管控批准生效', id, CTL_TYPES[rec.type] + ' 已对商户生效');
+    }
+    return rec;
+  }
+  function liftControl(id, note) {
+    var l = controls(), rec = l.filter(function (x) { return x.id === id; })[0];
+    if (!rec) return null;
+    var rn = ROLES[role()].name;
+    rec.status = 'lifted'; rec.liftNote = note; rec.approve += '；' + rn + ' 解除：' + note;
+    saveControls(l);
+    var merId = rec.mer.split(' ')[0];
+    restoreMerchant(merId, id, rec.prev);
+    log('解除管控', id, note + '（商户状态已恢复）');
+    return rec;
+  }
+
+  /* ================= 案件管理（告警 → 案件 → STR/管控） ================= */
+  var CASE_KEY = 'dd-rc-cases-v1';
+  var CASE_STATUS = {
+    open: { label: '待认领', cls: 'bg-red-50 text-red-500' },
+    handling: { label: '处理中', cls: 'bg-blue-50 text-blue-600' },
+    pending_close: { label: '待关闭', cls: 'bg-yellow-50 text-yellow-600' },
+    escalated: { label: '已升级合规负责人', cls: 'bg-purple-50 text-purple-600' },
+    closed: { label: '已关闭', cls: 'bg-green-50 text-green-600' }
+  };
+  var CASE_SEED = [
+    { id: 'CS-88210', kind: '交易风险', mer: 'M-1002 Fast Discount S.r.l.', title: '快进快出疑似过账', level: 'high', status: 'handling', owner: 'Maria Rossi', ts: '2026-11-12 22:50', sla: '2026-11-27', alerts: ['ALT-2094'], txs: ['TX-87611', 'TX-87612', 'TX-87613'], strId: '', ctlId: 'CTL-705', notes: [{ ts: '2026-11-13 09:10', by: 'Maria Rossi', text: '已认领，调取 3 笔交易流水与收款方信息；已申请出金管控待审批' }] },
+    { id: 'CS-88207', kind: '名单命中', mer: 'M-1004 Baltic Trade SIA', title: 'BO 疑似 PEP 命中（HIT-881）', level: 'critical', status: 'handling', owner: 'Maria Rossi', ts: '2026-11-12 16:00', sla: '2026-11-26', alerts: [], txs: [], strId: '', ctlId: '', notes: [{ ts: '2026-11-12 16:00', by: 'Maria Rossi', text: '要求客户补充 Oleg V. 身份证明与履职情况说明' }] },
+    { id: 'CS-88205', kind: 'USDT KYT', mer: 'M-1001 Flash Commerce S.r.l.', title: 'USDT 入金来源地址关联混币服务', level: 'high', status: 'open', owner: '', ts: '2026-11-26 09:02', sla: '2026-11-30', alerts: ['ALT-2098'], txs: [], strId: '', ctlId: '', notes: [] },
+    { id: 'CS-88199', kind: '交易风险', mer: 'M-1005 Nordic Luxury GmbH', title: '大额付款超日均 20 倍', level: 'high', status: 'pending_close', owner: 'Maria Rossi', ts: '2026-11-12 18:30', sla: '2026-11-25', alerts: ['ALT-2093'], txs: ['TX-87621'], strId: '', ctlId: '', notes: [{ ts: '2026-11-13 11:00', by: 'Maria Rossi', text: '客户提供采购合同与发票，交易背景属实，建议放行并提交关闭' }] },
+    { id: 'CS-88190', kind: '交易风险', mer: 'M-1003 Goden S.r.l.', title: '拆分交易调查', level: 'mid', status: 'closed', owner: 'Maria Rossi', ts: '2026-11-11 15:00', sla: '2026-11-20', alerts: ['ALT-2091'], txs: ['TX-87631~87639'], strId: '', ctlId: 'CTL-688', notes: [{ ts: '2026-11-11 17:20', by: 'Maria Rossi', text: '结论误报，临时管控已解除，案件关闭归档' }] }
+  ];
+  function cases() {
+    try { var d = JSON.parse(localStorage.getItem(CASE_KEY)); if (Array.isArray(d) && d.length) return d; } catch (e) {}
+    return CASE_SEED.slice();
+  }
+  function saveCases(l) { try { localStorage.setItem(CASE_KEY, JSON.stringify(l)); } catch (e) {} }
+  /* 告警建案：回写 alert.caseId，案件状态待认领 */
+  function caseFromAlert(alertId) {
+    var as = alerts(), a = as.filter(function (x) { return x.id === alertId; })[0];
+    if (!a) return null;
+    if (a.caseId) return cases().filter(function (x) { return x.id === a.caseId; })[0] || null;
+    var mid = (a.mer.match(/^M-\d+/) || [''])[0];
+    var c = { id: nextId('CS'), kind: a.src === 'kyt' ? 'USDT KYT' : (a.src === 'cardhub' ? '卡平台' : '交易风险'), mer: a.mer, title: a.rule + ' · ' + (mid ? merchant(mid) && merchant(mid).name || a.mer : a.mer),
+      level: a.level, status: 'open', owner: '', ts: nowTs(), sla: addDays(today(), 4), alerts: [a.id], txs: a.txs || [], strId: '', ctlId: '', notes: [{ ts: nowTs(), by: ROLES[role()].name, text: '由告警 ' + a.id + ' 立案调查' }] };
+    var l = cases(); l.unshift(c); saveCases(l);
+    a.caseId = c.id; if (a.status === 'new') { a.status = 'investigating'; }
+    saveAlerts(as);
+    log('告警建案', a.id, '→ 案件 ' + c.id);
+    return c;
+  }
+  /* 案件生成 STR 草稿（回写 strId） */
+  function strFromCase(caseId, title, summary) {
+    var l = cases(), c = l.filter(function (x) { return x.id === caseId; })[0];
+    if (!c) return null;
+    var s = { id: nextId('STR'), mer: c.mer, title: title || c.title, status: '草稿', created: today(), by: ROLES[role()].name, authority: 'UIF（意大利金融情报局）', summary: summary || (c.title + '；关联告警 ' + c.alerts.join('、') + '，案件 ' + c.id), caseId: c.id };
+    var ls = strs(); ls.unshift(s); saveStrs(ls);
+    c.strId = s.id; saveCases(l);
+    log('案件生成 STR 草稿', c.id, '→ ' + s.id);
+    return s;
+  }
 
   /* ================= STR 上报 ================= */
   var STR_KEY = 'dd-rc-str-v1';
@@ -229,10 +395,23 @@
     { code: 'R-12', name: '交易行为偏离画像', cond: '月度交易模式与历史画像偏离度 > 60%（币种/地域/对手方）', act: '告警', level: 'mid', on: true, auto: true },
     { code: 'R-13', name: 'EDD 逾期未补', cond: 'EDD 工单超期 5 个工作日未提交材料', act: '告警+建议管控', level: 'high', on: true, auto: true },
     { code: 'R-14', name: '复审到期', cond: '商户风险复审到期日前 7 天提醒', act: '复核', level: 'low', on: true, auto: true },
-    { code: 'R-15', name: '退款率异常', cond: '收单商户月退款率 > 8% 或环比上升 3 倍', act: '告警', level: 'mid', on: false, auto: true }
+    { code: 'R-15', name: '退款率异常', cond: '收单商户月退款率 > 8% 或环比上升 3 倍', act: '告警', level: 'mid', on: false, auto: true },
+    { code: 'R-16', name: '虚拟卡拒付率异常', cond: '卡平台客户月拒付率 > 阈值（默认 0.9%）', act: '告警+冻结卡功能', level: 'high', on: true, auto: true },
+    { code: 'R-17', name: '卡授权拒绝率异常', cond: '1 小时内授权拒绝率 > 阈值（默认 15%）且 ≥ 5 笔', act: '告警', level: 'mid', on: true, auto: true },
+    { code: 'R-18', name: 'BIN 攻击（测卡）', cond: '同一 BIN 段 10 分钟内 ≥ 阈值（默认 10 笔）小额试探授权', act: '拦截+告警', level: 'critical', on: true, auto: true },
+    { code: 'R-19', name: 'USDT 入金 KYT 高风险', cond: 'KYT 风险分 ≥ 阈值（默认 70）或来源关联混币/暗网', act: '拦截+告警', level: 'high', on: true, auto: true },
+    { code: 'R-20', name: '钱包地址命中名单', cond: 'USDT 充提地址命中链上地址黑名单（制裁/暗网/混币）', act: '拦截+告警', level: 'critical', on: true, auto: true },
+    { code: 'R-21', name: '卡片异地消费', cond: '卡消费商户所在地与卡片常用地区不一致', act: '复核', level: 'low', on: true, auto: true }
   ];
   function rules() {
-    try { var d = JSON.parse(localStorage.getItem(RULE_KEY)); if (Array.isArray(d) && d.length) return d; } catch (e) {}
+    var d = null;
+    try { d = JSON.parse(localStorage.getItem(RULE_KEY)); } catch (e) {}
+    if (Array.isArray(d) && d.length) {
+      var changed = false;
+      RULE_SEED.forEach(function (s) { if (!d.filter(function (x) { return x.code === s.code; }).length) { d.push(s); changed = true; } });
+      if (changed) saveRules(d);
+      return d;
+    }
     return RULE_SEED.slice();
   }
   function saveRules(l) { try { localStorage.setItem(RULE_KEY, JSON.stringify(l)); } catch (e) {} }
@@ -272,14 +451,125 @@
       { c: 'FATF 黑名单辖区', lv: '极高（禁止入网）' }
     ],
     industryRisk: [['电商零售', '低'], ['食品进出口', '低'], ['纺织品贸易', '中'], ['奢侈品贸易', '高'], ['大宗商品', '高'], ['虚拟资产相关', '极高']],
-    thresholds: { bigAmount: 50000, fastInOutRatio: 90, fastInOutHours: 24, splitMin: 3, nightRatio: 40, refundRate: 8 },
+    thresholds: { bigAmount: 50000, fastInOutRatio: 90, fastInOutHours: 24, splitMin: 3, nightRatio: 40, refundRate: 8, chargebackRate: 0.9, authDeclineRate: 15, binAttackMin: 10, kytHold: 70 },
     switches: { autoAlert: true, autoIntercept: true, dailyBatch: true, reviewReminder: true }
   };
   function config() {
-    try { var d = JSON.parse(localStorage.getItem(CFG_KEY)); if (d && d.reviewCycle) return d; } catch (e) {}
+    var d = null;
+    try { d = JSON.parse(localStorage.getItem(CFG_KEY)); } catch (e) {}
+    if (d && d.reviewCycle) {
+      var changed = false;
+      Object.keys(CFG_SEED.thresholds).forEach(function (k) { if (d.thresholds[k] === undefined) { d.thresholds[k] = CFG_SEED.thresholds[k]; changed = true; } });
+      Object.keys(CFG_SEED.switches).forEach(function (k) { if (d.switches[k] === undefined) { d.switches[k] = CFG_SEED.switches[k]; changed = true; } });
+      if (changed) saveConfig(d);
+      return d;
+    }
     return JSON.parse(JSON.stringify(CFG_SEED));
   }
   function saveConfig(d) { try { localStorage.setItem(CFG_KEY, JSON.stringify(d)); } catch (e) {} }
+
+  /* ================= 评分计算（权重真正参与计算） ================= */
+  function scoreOf(m) {
+    var cfg = scoreCfg();
+    var base = 0;
+    cfg.factors.forEach(function (f) { base += ((m.mf && m.mf[f.key]) || 0) * f.weight; });
+    /* 动态事件加成：生效管控 +15；EDD 逾期 +15；未结告警按级加分（封顶 +25） */
+    var adj = 0;
+    if (m.control && m.control !== '无') adj += 15;
+    edd().forEach(function (e) {
+      if (e.mer.indexOf(m.id) === 0 && e.status !== '已完成' && daysTo(e.due) < 0) adj += 15;
+    });
+    var altAdj = 0;
+    alerts().forEach(function (a) {
+      if (a.mer.indexOf(m.id) !== 0) return;
+      if (a.status !== 'new' && a.status !== 'investigating' && a.status !== 'pending_approval') return;
+      altAdj += a.level === 'critical' ? 12 : a.level === 'high' ? 8 : 4;
+    });
+    adj += Math.min(altAdj, 25);
+    return Math.max(0, Math.min(100, Math.round(base + adj)));
+  }
+  function levelOf(score) {
+    var ths = scoreCfg().thresholds;
+    for (var i = ths.length - 1; i >= 0; i--) {
+      var lo = parseInt(String(ths[i].range).split(/[–-]/)[0], 10);
+      if (score >= lo) return ths[i].level;
+    }
+    return 'low';
+  }
+
+  /* ================= 客户端数据桥接（admin 读取客户端 localStorage） ================= */
+  var ENT_MER = { flash: 'M-1001', fast: 'M-1002', goden: 'M-1003' };
+  function clientRiskTx() { return readRaw('dd-risk-tx-v1') || []; }
+  function saveClientRiskTx(l) { try { localStorage.setItem('dd-risk-tx-v1', JSON.stringify(l)); } catch (e) {} }
+  var client = {
+    ENT_MER: ENT_MER,
+    entities: function () { return readRaw('dd-entities-v1') || []; },
+    riskTx: clientRiskTx,
+    subs: function () { return readRaw('dd-subaccounts') || []; },
+    pools: function () { return readRaw('dd-card-pools-v1') || []; },
+    cards: function () { return readRaw('dd-cards') || []; },
+    cardhub: function () { return readRaw('dd-cardhub-v2'); },
+    kybSubs: function () { return readRaw('dd-kyb-submissions-v1') || []; },
+    /* 后台处理客户端「平台审核中」交易：放行 / 拒绝（回写客户端） */
+    txAct: function (id, action, note) {
+      var l = clientRiskTx(), t = l.filter(function (x) { return x.id === id; })[0];
+      if (!t) return null;
+      var rn = ROLES[role()].name;
+      if (action === 'release') {
+        t.status = 'released';
+        t.timeline.push({ t: nowShort(), s: note || ('平台人工审核通过（' + rn + '），交易已放行') });
+      } else if (action === 'reject') {
+        t.status = 'rejected';
+        t.timeline.push({ t: nowShort(), s: note || ('平台审核未通过（' + rn + '），交易已拒绝，资金原路退回') });
+      } else if (action === 'docs') {
+        t.status = 'pending_docs';
+        t.timeline.push({ t: nowShort(), s: note || ('平台要求补充材料（' + rn + '），已通知客户') });
+      }
+      saveClientRiskTx(l);
+      log('交易审核·' + (action === 'release' ? '放行' : action === 'reject' ? '拒绝' : '要求补件'), id, note || t.type + ' ' + t.cp);
+      return t;
+    }
+  };
+
+  /* ================= 自动扫描：客户端交易 + USDT KYT → 告警 =================
+   * 读取合规配置：switches.autoAlert 总开关；规则 on/off 生效；阈值参与判定 */
+  function scan() {
+    var cfg = config(), sw = cfg.switches || {};
+    if (sw.autoAlert === false) return 0;
+    var rmap = {}; rules().forEach(function (r) { rmap[r.code] = r; });
+    var haveTx = {};
+    alerts().forEach(function (a) { (a.txs || []).forEach(function (t) { haveTx[t] = 1; }); if (a.srcId) haveTx[a.srcId] = 1; });
+    var added = [], la = alerts();
+    /* 1) 客户端被风控的交易（待补材料/待确认/审核中）→ 告警 */
+    clientRiskTx().forEach(function (t) {
+      if (['released', 'rejected'].indexOf(t.status) > -1) return;
+      if (haveTx[t.id]) return;
+      var code = (t.rules && t.rules[0] || '').slice(0, 4);
+      var rule = rmap[code];
+      if (!rule || rule.on === false) return;
+      var mid = ENT_MER[t.ent || 'flash'] || 'M-1001';
+      var m = merchant(mid);
+      var rec = { id: nextId('ALT'), ts: nowTs(), mer: mid + ' ' + (m ? m.name : t.ent || '客户端主体'), rule: code + ' ' + rule.name,
+        level: rule.level, amt: (t.amt < 0 ? '−' : '+') + ' ' + (t.ccy || '€') + ' ' + Math.abs(t.amt).toLocaleString('en-US'), status: 'new', assignee: '', auto: true,
+        src: 'client', srcId: t.id, detail: t.note || t.type + ' · ' + t.cp, txs: [t.id] };
+      la.unshift(rec); added.push(rec.id);
+    });
+    /* 2) 卡中台 USDT 归集：KYT 暂挂的入金 → R-19 告警 */
+    var ch = client.cardhub();
+    if (ch && ch.fund && ch.fund.deps) {
+      ch.fund.deps.forEach(function (d) {
+        if (d.st !== 'held') return;
+        var key = 'KYT-' + d.id;
+        if (haveTx[key]) return;
+        var rec = { id: nextId('ALT'), ts: nowTs(), mer: '卡中台 · ' + d.cust + ' 专属钱包', rule: 'R-19 USDT 入金 KYT 高风险',
+          level: 'high', amt: Number(d.amt).toLocaleString('en-US') + ' USDT', status: 'new', assignee: '', auto: true,
+          src: 'kyt', srcId: key, detail: d.hold || ('KYT 风险分 ' + d.kyt + '，入金已暂挂'), txs: [] };
+        la.unshift(rec); added.push(rec.id);
+      });
+    }
+    if (added.length) { saveAlerts(la); log('自动扫描', '客户端交易与 USDT 归集', '新增告警 ' + added.length + ' 条：' + added.join('、')); }
+    return added.length;
+  }
 
   /* ================= 角色切换器（页头挂载） ================= */
   function renderSwitcher(el) {
@@ -303,19 +593,42 @@
     document.addEventListener('click', function () { menu.classList.add('hidden'); });
   }
 
+  /* ================= 数据版本迁移（结构升级后重置演示数据，审计留痕保留） ================= */
+  var DATA_VER = 2;
+  try {
+    if (localStorage.getItem('dd-rc-dataver') !== String(DATA_VER)) {
+      ['dd-rc-merchants-v1', 'dd-rc-alerts-v1', 'dd-rc-edd-v1', 'dd-rc-screening-v1', 'dd-rc-controls-v1', 'dd-rc-str-v1', 'dd-rc-rules-v1', 'dd-rc-score-v1', 'dd-rc-config-v1', 'dd-rc-cases-v1', 'dd-ob-personal-v1', 'dd-ob-business-v1'].forEach(function (k) { localStorage.removeItem(k); });
+      localStorage.setItem('dd-rc-dataver', String(DATA_VER));
+    }
+  } catch (e) {}
+
+  /* 页头角色切换器自动挂载（带 #rc-role-slot 的页面无需手动调用） */
+  if (typeof document !== 'undefined') {
+    document.addEventListener('DOMContentLoaded', function () {
+      var el = document.getElementById('rc-role-slot');
+      if (el && !el.hasChildNodes()) renderSwitcher(el);
+      var sr = document.getElementById('rc-side-role');
+      if (sr) sr.textContent = ROLES[role()].name;
+    });
+  }
+
   window.RC = {
     ROLES: ROLES, role: role, setRole: setRole, can: can, canMenu: canMenu, readonly: readonly,
     MENU_ACL: MENU_ACL, ACT_ACL: ACT_ACL, actRoles: actRoles, menuRoles: menuRoles, setActRoles: setActRoles, setMenuRoles: setMenuRoles, resetOverrides: resetOverrides,
     audit: audit, log: log,
+    today: today, nowTs: nowTs, nowShort: nowShort, addDays: addDays, daysTo: daysTo, dueState: dueState, nextId: nextId, STAFF: STAFF,
     merchants: merchants, saveMerchants: saveMerchants, merchant: merchant, LEVELS: LEVELS,
     alerts: alerts, saveAlerts: saveAlerts, ALT_STATUS: ALT_STATUS,
     edd: edd, saveEdd: saveEdd,
     screening: screening, saveScreening: saveScreening,
-    controls: controls, saveControls: saveControls, CTL_TYPES: CTL_TYPES,
+    controls: controls, saveControls: saveControls, CTL_TYPES: CTL_TYPES, CTL_STATUS: CTL_STATUS, ctlStatus: ctlStatus,
+    applyControl: applyControl, approveControl: approveControl, liftControl: liftControl,
+    cases: cases, saveCases: saveCases, CASE_STATUS: CASE_STATUS, caseFromAlert: caseFromAlert, strFromCase: strFromCase,
     strs: strs, saveStrs: saveStrs,
     rules: rules, saveRules: saveRules,
-    scoreCfg: scoreCfg, saveScoreCfg: saveScoreCfg,
+    scoreCfg: scoreCfg, saveScoreCfg: saveScoreCfg, scoreOf: scoreOf, levelOf: levelOf,
     config: config, saveConfig: saveConfig,
+    client: client, scan: scan,
     renderSwitcher: renderSwitcher
   };
 })();

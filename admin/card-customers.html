@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>客户卡台 - 叮当支付内部运营后台</title>
+<script src="../assets/vendor/tailwindcss.js"></script>
+<script>tailwind.config = { theme: { extend: { colors: { primary: '#FFD008', dark: '#382b1b', accent1: '#FF8106', accent2: '#00B7EC', accent3: '#B786D6' }, borderRadius: { '8': '8px' } } } }</script>
+<script src="../assets/vendor/iconify-icon.min.js"></script>
+<style>
+body { font-family: 'Inter', 'PingFang SC', -apple-system, sans-serif; color: #382b1b; background-color: #f5f4f0; }
+.custom-shadow { box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); }
+.rounded-8 { border-radius: 8px; }
+</style>
+<link rel="stylesheet" href="../assets/css/apple.css" data-dd-apple="1"/>
+</head>
+<body class="bg-gray-50">
+<div class="flex min-h-screen">
+<style>
+.ad-sidenav-link{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;color:#9ca3af;font-size:14px;line-height:1.4;transition:background .15s,color .15s;text-decoration:none}
+.ad-sidenav-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.ad-sidenav-active,.ad-sidenav-active:hover{background:#FFD008;color:#382b1b;font-weight:600}
+.ad-sidenav-sec{padding:16px 12px 6px;font-size:11px;font-weight:600;color:#6b7280;letter-spacing:.05em}
+.ad-noscroll{scrollbar-width:none;-ms-overflow-style:none}
+.ad-noscroll::-webkit-scrollbar{display:none}
+</style>
+<aside class="w-64 flex-none hidden lg:flex flex-col" id="sidebar" style="background:#241d12"><div class="p-6 flex items-center space-x-3"><a class="flex items-center space-x-3" href="index.html"><img alt="Dingdang Pay" class="h-9 w-auto" src="../assets/img/logo-h-rev.png"/></a></div><div class="flex-1 overflow-y-auto px-4 py-2 ad-noscroll"><nav class="space-y-1"><a class="ad-sidenav-link" href="index.html"><iconify-icon class="text-xl" icon="solar:widget-bold"></iconify-icon><span>运营总览</span></a><div class="ad-sidenav-sec">平台运营</div><a class="ad-sidenav-link" href="op-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>平台运营总看板</span></a><a class="ad-sidenav-link" href="op-customers.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>客户主体总览</span></a><a class="ad-sidenav-link" href="op-channels.html"><iconify-icon class="text-xl" icon="solar:globus-bold"></iconify-icon><span>渠道管理</span></a><a class="ad-sidenav-link" href="op-roles.html"><iconify-icon class="text-xl" icon="solar:lock-password-bold"></iconify-icon><span>角色权限配置</span></a><a class="ad-sidenav-link" href="op-export.html"><iconify-icon class="text-xl" icon="solar:download-square-bold"></iconify-icon><span>监管数据包导出</span></a><div class="ad-sidenav-sec">卡中台</div><a class="ad-sidenav-link" href="card-pricing.html"><iconify-icon class="text-xl" icon="solar:card-transfer-bold"></iconify-icon><span>卡费定价</span></a><a class="ad-sidenav-link" href="card-recon.html"><iconify-icon class="text-xl" icon="solar:calculator-bold"></iconify-icon><span>卡费对账</span></a><a class="ad-sidenav-link ad-sidenav-active" href="card-customers.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>客户卡台</span></a><a class="ad-sidenav-link" href="card-fund.html"><iconify-icon class="text-xl" icon="solar:wallet-money-bold"></iconify-icon><span>USDT 资金归集</span></a><div class="ad-sidenav-sec">客户与开户</div><div class="ad-sidenav-sec">个人开户管理</div><a class="ad-sidenav-link" href="ob-personal-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>个人开户总看板</span></a><a class="ad-sidenav-link" href="ob-personal.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>个人开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-personal-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>个人开户资料归档</span></a><a class="ad-sidenav-link" href="ob-personal-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>个人主管终审</span></a><a class="ad-sidenav-link" href="ob-personal-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>个人审核记录</span></a><a class="ad-sidenav-link" href="ob-personal-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>个人开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-personal-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>个人批量处理</span></a><a class="ad-sidenav-link" href="ob-personal-templates.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>驳回话术模板</span></a><a class="ad-sidenav-link" href="ob-personal-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>个人复审台账</span></a><div class="ad-sidenav-sec">商业开户管理</div><a class="ad-sidenav-link" href="ob-business-dash.html"><iconify-icon class="text-xl" icon="solar:pie-chart-2-bold"></iconify-icon><span>商业开户总看板</span></a><a class="ad-sidenav-link" href="ob-business.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>商业开户审核工作台</span></a><a class="ad-sidenav-link" href="ob-business-archive.html"><iconify-icon class="text-xl" icon="solar:archive-bold"></iconify-icon><span>商业开户资料归档</span></a><a class="ad-sidenav-link" href="ob-business-final.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>商业主管终审</span></a><a class="ad-sidenav-link" href="ob-business-log.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>商业审核记录</span></a><a class="ad-sidenav-link" href="ob-business-sokin.html"><iconify-icon class="text-xl" icon="solar:cloud-check-bold"></iconify-icon><span>商业开户 Sokin</span></a><a class="ad-sidenav-link" href="ob-business-xgd.html"><iconify-icon class="text-xl" icon="solar:globus-bold"></iconify-icon><span>XGD 开户管理</span></a><a class="ad-sidenav-link" href="ob-business-xgd-form.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>XGD 开户表单</span></a><a class="ad-sidenav-link" href="ob-business-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>商业 EDD 工单</span></a><a class="ad-sidenav-link" href="ob-business-batch.html"><iconify-icon class="text-xl" icon="solar:checklist-bold"></iconify-icon><span>商业批量处理</span></a><a class="ad-sidenav-link" href="ob-business-reject.html"><iconify-icon class="text-xl" icon="solar:shield-cross-bold"></iconify-icon><span>拒户原因库</span></a><a class="ad-sidenav-link" href="ob-business-review.html"><iconify-icon class="text-xl" icon="solar:restart-bold"></iconify-icon><span>商业复审台账</span></a><a class="ad-sidenav-link" href="ob-audit.html"><iconify-icon class="text-xl" icon="solar:clipboard-list-bold"></iconify-icon><span>开户操作审计</span></a><a class="ad-sidenav-link" href="ob-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>开户配置</span></a><a class="ad-sidenav-link" href="business.html"><iconify-icon class="text-xl" icon="solar:buildings-2-bold"></iconify-icon><span>商业客户管理</span></a><a class="ad-sidenav-link" href="personal.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>个人客户管理</span></a><div class="ad-sidenav-sec">风控与合规</div><a class="ad-sidenav-link" href="risk.html"><iconify-icon class="text-xl" icon="solar:shield-warning-bold"></iconify-icon><span>风控总览</span></a><a class="ad-sidenav-link" href="risk-kyc.html"><iconify-icon class="text-xl" icon="solar:user-id-bold"></iconify-icon><span>商户KYC档案</span></a><a class="ad-sidenav-link" href="risk-score.html"><iconify-icon class="text-xl" icon="solar:slider-minimalistic-horizontal-bold"></iconify-icon><span>风险评分配置</span></a><a class="ad-sidenav-link" href="risk-edd.html"><iconify-icon class="text-xl" icon="solar:folder-with-files-bold"></iconify-icon><span>EDD 强化尽调</span></a><a class="ad-sidenav-link" href="risk-alerts.html"><iconify-icon class="text-xl" icon="solar:bell-bing-bold"></iconify-icon><span>交易风控告警</span></a><a class="ad-sidenav-link" href="risk-screening.html"><iconify-icon class="text-xl" icon="solar:radar-2-bold"></iconify-icon><span>名单筛查</span></a><a class="ad-sidenav-link" href="risk-ledger.html"><iconify-icon class="text-xl" icon="solar:notebook-bold"></iconify-icon><span>商户风险台账</span></a><a class="ad-sidenav-link" href="risk-controls.html"><iconify-icon class="text-xl" icon="solar:lock-bold"></iconify-icon><span>账户管控中心</span></a><a class="ad-sidenav-link" href="risk-str.html"><iconify-icon class="text-xl" icon="solar:document-add-bold"></iconify-icon><span>STR 可疑上报</span></a><a class="ad-sidenav-link" href="risk-audit.html"><iconify-icon class="text-xl" icon="solar:document-text-bold"></iconify-icon><span>审计日志</span></a><a class="ad-sidenav-link" href="risk-config.html"><iconify-icon class="text-xl" icon="solar:settings-bold"></iconify-icon><span>合规配置</span></a><a class="ad-sidenav-link" href="risk-review.html"><iconify-icon class="text-xl" icon="solar:clipboard-check-bold"></iconify-icon><span>交易审核工作台</span></a><a class="ad-sidenav-link" href="risk-cases.html"><iconify-icon class="text-xl" icon="solar:danger-triangle-bold"></iconify-icon><span>案件管理</span></a><a class="ad-sidenav-link" href="risk-learn.html"><iconify-icon class="text-xl" icon="solar:square-academic-cap-bold"></iconify-icon><span>学习中心</span></a><div class="ad-sidenav-sec">安全与服务</div><a class="ad-sidenav-link" href="cs.html"><iconify-icon class="text-xl" icon="solar:headphones-round-sound-bold"></iconify-icon><span>客服管理</span></a><div class="ad-sidenav-sec">团队与账务</div><a class="ad-sidenav-link" href="managers.html"><iconify-icon class="text-xl" icon="solar:user-speak-bold"></iconify-icon><span>客户经理管理</span></a><a class="ad-sidenav-link" href="staff.html"><iconify-icon class="text-xl" icon="solar:users-group-rounded-bold"></iconify-icon><span>员工管理</span></a><a class="ad-sidenav-link" href="bills.html"><iconify-icon class="text-xl" icon="solar:bill-list-bold"></iconify-icon><span>账单管理</span></a><a class="ad-sidenav-link" href="licenses.html"><iconify-icon class="text-xl" icon="solar:verified-check-bold"></iconify-icon><span>牌照管理</span></a></nav></div><div class="p-4" style="border-top:1px solid rgba(255,255,255,.08)"><div class="flex items-center space-x-3 p-2 rounded-lg" style="background:rgba(255,255,255,.05)"><div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold" style="background:#FFD008;color:#382b1b">涵</div><div class="flex-1 min-w-0"><p class="text-sm font-semibold truncate text-white">运营-小涵</p><p class="text-xs text-gray-500 truncate" id="rc-side-role">—</p></div><a href="login.html" class="text-gray-500 hover:text-red-400" title="退出登录"><iconify-icon icon="solar:logout-3-bold"></iconify-icon></a></div></div></aside>
+<main class="flex-1 flex flex-col min-w-0">
+<header class="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 lg:px-8 flex-none">
+<div class="flex items-center">
+<button class="lg:hidden p-2 -ml-2 text-gray-500" onclick="toggleSidebar()"><iconify-icon class="text-2xl" icon="solar:hamburger-menu-bold"></iconify-icon></button>
+<h1 class="text-lg font-bold ml-2">客户卡台</h1>
+</div>
+<div class="flex items-center space-x-4">
+<div id="rc-role-slot"></div>
+<span class="text-xs text-gray-400 hidden md:block">卡中台 · 金额单位 USD · 操作全程留痕</span>
+</div>
+</header>
+<div class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6" id="rc-body">
+
+<div class="grid grid-cols-2 xl:grid-cols-5 gap-4" id="cc-kpi"></div>
+<div class="bg-white rounded-8 custom-shadow overflow-hidden">
+<div class="p-6 border-b border-gray-100 flex flex-wrap justify-between items-center gap-3"><div><h3 class="font-bold">客户虚拟卡开通与定价</h3><p class="text-xs text-gray-400 mt-0.5">每个客户 = XGD 伞账户（LU IBAN 收付款）+ WasabiCard 伞账户（发卡 / 卡资金池）· 开通、下线即时同步 Web 客户端</p></div>
+<div class="flex flex-wrap items-center gap-2"><select class="ddui-input !w-auto !py-2 text-sm" id="cc-st"><option value="all">全部状态</option><option value="on">已开通</option><option value="pending">待审批</option><option value="off">已下线</option><option value="none">未开通</option></select><input class="ddui-input !w-60 !py-2 text-sm" id="cc-q" placeholder="搜索客户 / IBAN / 伞账户号"/></div></div>
+<div class="overflow-x-auto"><table class="w-full min-w-[1280px]"><thead class="bg-gray-50/80"><tr>
+<th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">客户</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">XGD 伞账户</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">WasabiCard 伞账户</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">虚拟卡功能</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">开通卡种</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">费率</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400">卡可用余额</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400">本月交易额</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400">本月利润</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400">操作</th>
+</tr></thead><tbody id="cc-tb"></tbody></table></div>
+</div>
+<div class="bg-white rounded-8 custom-shadow p-6"><div class="flex justify-between items-center mb-2"><h3 class="font-bold">开通与定价操作记录</h3><span class="text-xs text-gray-400">最近 12 条 · 全量见审计日志</span></div><div id="cc-log"></div></div>
+
+</div>
+</main>
+<div class="fixed inset-0 bg-black/50 z-40 hidden lg:hidden" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+</div>
+<script src="../assets/js/ui.js"></script>
+<script src="../assets/js/rc-data.js"></script>
+<script src="../assets/js/card-hub.js"></script>
+<script>
+function toggleSidebar(){var s=document.getElementById('sidebar'),b=document.getElementById('sidebar-backdrop');if(!s)return;s.classList.toggle('hidden');s.classList.toggle('fixed');s.classList.toggle('inset-y-0');s.classList.toggle('left-0');s.classList.toggle('z-50');if(b)b.classList.toggle('hidden');}
+RC.renderSwitcher(document.getElementById('rc-role-slot'));
+var sr=document.getElementById('rc-side-role');if(sr)sr.textContent=RC.ROLES[RC.role()].name;
+</script>
+<script>
+(function () {
+  var H = window.DDCardHub; var d = H.load();
+  var STF = 'all';
+  var ST = { on: ['已开通', 'bg-green-50 text-green-600'], pending: ['待审批', 'bg-yellow-50 text-yellow-600'], off: ['已下线', 'bg-gray-100 text-gray-500'], none: ['未开通', 'bg-gray-50 text-gray-400'] };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function save() { H.save(d); draw(); }
+  function alog(act, target, detail) { H.log(d, act, target, detail || ''); if (window.RC) RC.log('卡中台·' + act, target, detail || ''); }
+  function prodName(id) { var p = d.products.filter(function (x) { return x.id === id; })[0]; return p ? p.name : id; }
+  function ovrCount(c) { var n = 0; Object.keys(c.ovr || {}).forEach(function (p) { n += Object.keys(c.ovr[p]).length; }); return n; }
+  function draw() {
+    var ms = d.customers;
+    var kpis = [['客户总数', ms.length, '#00B7EC'], ['已开通', ms.filter(function (x) { return x.status === 'on'; }).length, '#16a34a'], ['待审批', ms.filter(function (x) { return x.status === 'pending'; }).length, '#eab308'], ['已下线', ms.filter(function (x) { return x.status === 'off'; }).length, '#6b7280'], ['未开通', ms.filter(function (x) { return x.status === 'none'; }).length, '#9ca3af']];
+    document.getElementById('cc-kpi').innerHTML = kpis.map(function (k) {
+      return '<div class="bg-white rounded-8 custom-shadow p-5"><p class="text-xs text-gray-400">' + k[0] + '</p><p class="text-3xl font-extrabold mt-2" style="color:' + k[2] + '">' + k[1] + '</p></div>';
+    }).join('');
+    var list = ms.filter(function (c) { return STF === 'all' || c.status === STF; });
+    document.getElementById('cc-tb').innerHTML = list.map(function (c) {
+      var st = ST[c.status];
+      var xgd = c.xgd && c.xgd.st === 'active' ? '<span class="font-mono text-xs">' + esc(c.xgd.iban || '') + '</span><br/><span class="text-[10px] text-gray-400">Plan ' + c.xgd.plan + ' · ' + c.xgd.at + '</span>'
+        : c.xgd && c.xgd.st === 'pending' ? '<span class="text-xs text-yellow-600 font-bold">开通中</span>' : '<span class="text-xs text-gray-300">未开通</span>';
+      var wsb = c.wsb && c.wsb.st !== 'none' ? '<span class="font-mono text-xs">' + esc(c.wsb.id || '') + '</span> <span class="text-[10px] font-bold ' + (c.wsb.st === 'frozen' ? 'text-red-500' : 'text-green-600') + '">' + (c.wsb.st === 'frozen' ? '已冻结' : '正常') + '</span>' : '<span class="text-xs text-gray-300">未开通</span>';
+      var prods = (c.products || []).map(function (p) { return '<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-500 mr-1">' + prodName(p) + '</span>'; }).join('') || '<span class="text-xs text-gray-300">—</span>';
+      var ops = '';
+      if (c.status === 'pending') ops = '<button class="text-xs font-bold text-green-600 hover:underline" data-approve="' + c.id + '">审批开通</button> <button class="text-xs font-bold text-red-500 hover:underline ml-1" data-reject="' + c.id + '">驳回</button>';
+      else if (c.status === 'none') ops = '<button class="text-xs font-bold text-accent2 hover:underline" data-open="' + c.id + '">开通</button>';
+      else if (c.status === 'on') ops = '<a class="text-xs font-bold text-accent2 hover:underline" href="card-pricing.html?cust=' + c.id + '">定价</a> <button class="text-xs font-bold text-red-500 hover:underline ml-1" data-off="' + c.id + '">下线</button>';
+      else if (c.status === 'off') ops = '<button class="text-xs font-bold text-green-600 hover:underline" data-reopen="' + c.id + '">恢复开通</button>';
+      return '<tr class="hover:bg-gray-50/60"><td class="py-3 px-4 text-sm border-t border-gray-50"><b>' + esc(c.name) + '</b><br/><span class="text-xs text-gray-400">' + c.country + ' · 客户经理 ' + esc(c.mgr || '—') + '</span></td>' +
+        '<td class="py-3 px-4 text-sm border-t border-gray-50">' + xgd + '</td>' +
+        '<td class="py-3 px-4 text-sm border-t border-gray-50">' + wsb + '</td>' +
+        '<td class="py-3 px-4 text-sm border-t border-gray-50">' + prods + '</td>' +
+        '<td class="py-3 px-4 text-sm border-t border-gray-50">' + (c.cardBal != null ? H.money(c.cardBal) : '—') + '</td>' +
+        '<td class="py-3 px-4 text-sm border-t border-gray-50">' + (ovrCount(c) ? '<span class="text-xs font-bold text-orange-600">' + ovrCount(c) + ' 项</span>' : '<span class="text-xs text-gray-300">基础价</span>') + '</td>' +
+        '<td class="py-3 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium ' + st[1] + '">' + st[0] + '</span>' + (c.reason ? '<br/><span class="text-[10px] text-gray-400">' + esc(c.reason) + '</span>' : '') + '</td>' +
+        '<td class="py-3 px-4 text-sm border-t border-gray-50 whitespace-nowrap">' + ops + '</td></tr>';
+    }).join('');
+    if (window.DDTableKit) DDTableKit.refresh(document.querySelector('#cc-tb').closest('table'));
+    bind();
+    document.getElementById('cc-log').innerHTML = d.log.slice(0, 12).map(function (l) {
+      return '<div class="flex gap-3 py-2 border-b border-gray-50"><span class="text-xs text-gray-400 font-mono flex-none">' + l.t + '</span><span class="text-sm"><b>' + esc(l.act) + '</b> · ' + esc(l.target) + ' <span class="text-xs text-gray-400">' + esc(l.detail) + ' · ' + esc(l.who) + '</span></span></div>';
+    }).join('') || '<p class="text-sm text-gray-400 py-4 text-center">暂无记录</p>';
+  }
+  function activate(c) {
+    var today = new Date().toISOString().slice(0, 10);
+    c.status = 'on'; c.since = today;
+    if (!c.wsb || c.wsb.st === 'none') c.wsb = { id: 'WUA-' + (100200 + Math.floor(Math.random() * 700)), st: 'active', at: today };
+    else c.wsb.st = 'active';
+    if (!c.xgd || c.xgd.st === 'none') c.xgd = { plan: 'A', st: 'pending', at: '' };
+    H.fund.genWallet(d, c.id);
+  }
+  function bind() {
+    document.querySelectorAll('[data-approve]').forEach(function (b) { b.onclick = function () {
+      DDUI.confirm('审批开通', '确认为该客户开通虚拟卡？将创建 WasabiCard 伞账户并生成 USDT 专属充值地址。', function () {
+        var c = H.cust(d, b.dataset.approve); activate(c);
+        alog('审批开通', c.name, 'XGD Plan ' + (c.xgd.plan || 'A') + ' · Wasabi ' + c.wsb.id + ' · 卡种 ' + (c.products || []).map(prodName).join('、') || '待定');
+        save(); DDUI.toast('已开通', 'success');
+      }, '开通');
+    }; });
+    document.querySelectorAll('[data-reject]').forEach(function (b) { b.onclick = function () {
+      var c = H.cust(d, b.dataset.reject);
+      c.status = 'none'; c.applied = '';
+      alog('驳回开通申请', c.name, c.applyNote || '');
+      save(); DDUI.toast('已驳回', 'success');
+    }; });
+    document.querySelectorAll('[data-open]').forEach(function (b) { b.onclick = function () {
+      var c = H.cust(d, b.dataset.open);
+      DDUI.modal({ title: '开通虚拟卡 · ' + c.name, width: 480,
+        body: '<div class="ddui-field"><label class="ddui-label">开通卡种</label><div class="space-y-2">' + d.products.map(function (p) {
+          return '<label class="flex items-center gap-2 text-sm"><input type="checkbox" class="cc-prod" value="' + p.id + '"/>' + p.name + '（' + p.scheme + ' · ' + p.ccy + '）</label>';
+        }).join('') + '</div></div>' +
+        '<div class="ddui-field"><label class="ddui-label">最大开卡数</label><input class="ddui-input" id="cc-max" type="number" value="' + (c.maxCards || 50) + '"/></div>',
+        actions: [{ text: '取消' }, { text: '确认开通', type: 'primary', onClick: function (close, body) {
+          var ps = []; body.querySelectorAll('.cc-prod, .cc-prod2, .cc-prod-x, .cc-prod').forEach(function () {});
+          body.querySelectorAll('input.cc-prod, input[type=checkbox]').forEach(function (x) { if (x.checked) ps.push(x.value); });
+          if (!ps.length) { DDUI.toast('请选择卡种', 'error'); return; }
+          c.products = ps; c.maxCards = +body.querySelector('#cc-max').value || 50;
+          activate(c);
+          alog('开通虚拟卡', c.name, '卡种 ' + ps.map(prodName).join('、') + ' · 最大 ' + c.maxCards + ' 张');
+          close(); save(); DDUI.toast('已开通', 'success');
+        } }] });
+    }; });
+    document.querySelectorAll('[data-off]').forEach(function (b) { b.onclick = function () {
+      DDUI.modal({ title: '下线客户 · ' + b.dataset.off, width: 440,
+        body: '<textarea class="ddui-input" id="cc-off-note" rows="3" placeholder="下线理由（留痕）"></textarea>',
+        actions: [{ text: '取消' }, { text: '确认下线', type: 'primary', onClick: function (close, body) {
+          var note = body.querySelector('#cc-off-note').value.trim();
+          if (!note) { DDUI.toast('请填写理由', 'error'); return; }
+          var c = H.cust(d, b.dataset.off);
+          c.status = 'off'; c.mode = 'freeze'; c.reason = note; c.offAt = new Date().toISOString().slice(0, 10);
+          if (c.wsb) c.wsb.st = 'frozen';
+          alog('下线客户', c.name, note);
+          close(); save(); DDUI.toast('已下线，卡功能与入金已冻结', 'success');
+        } }] });
+    }; });
+    document.querySelectorAll('[data-reopen]').forEach(function (b) { b.onclick = function () {
+      DDUI.confirm('恢复开通', '确认恢复该客户的虚拟卡功能？', function () {
+        var c = H.cust(d, b.dataset.reopen);
+        c.status = 'on'; c.mode = ''; c.reason = '';
+        if (c.wsb) c.wsb.st = 'active';
+        alog('恢复开通', c.name, '');
+        save(); DDUI.toast('已恢复', 'success');
+      }, '恢复');
+    }; });
+  }
+  document.getElementById('cc-st').onchange = function () { STF = this.value; draw(); };
+  draw();
+})();
+
+</script>
+<script src="../assets/js/i18n.js"></script>
+</body>
+</html>

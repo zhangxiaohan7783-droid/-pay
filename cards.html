@@ -88,6 +88,7 @@
 <div class="flex flex-wrap items-end justify-between gap-4"><div><h2 class="text-2xl font-extrabold text-dark">虚拟银行卡</h2><p class="text-sm text-gray-500 mt-1">开通虚拟卡并用共享资金池统一管理预算：多张卡共用一个池余额，池的额度、预警与冻结对池内所有卡同时生效。</p></div>
 <div class="flex items-center gap-2"><button class="px-4 py-2.5 text-sm font-bold border border-gray-200 bg-white rounded-8 hover:border-dark transition-colors whitespace-nowrap" id="btn-new-pool" type="button">+ 新建资金池</button><button class="bg-primary text-dark font-bold px-5 py-2.5 rounded-8 hover:shadow-lg transition-all text-sm whitespace-nowrap" id="btn-new-card" type="button">+ 开通虚拟卡 <span class="opacity-60 font-normal" id="card-count"></span></button></div></div>
 <div class="hidden" id="ch-banner"></div>
+<div id="usdt-panel"></div>
 <div class="space-y-6" id="ch-main">
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="ch-kpi"></div>
 <div class="bg-white rounded-8 custom-shadow">
@@ -252,7 +253,40 @@
         try { history.replaceState(null, '', location.pathname + (v === 'cards' ? '' : '?tab=' + v)); } catch (e) {}
     }
     function renderPane() { if (VIEW === 'cards') render(); else if (VIEW === 'pools') renderPools(); else renderRel(); }
-    function renderAll() { renderBanner(); if (!document.getElementById('ch-main').classList.contains('hidden')) { renderKpi(); renderPane(); } document.getElementById('card-count').textContent = '(' + load().length + '/' + (hub().maxCards || 100) + ')'; }
+    /* ---------- USDT 专属充值地址（卡中台归集链路） ---------- */
+    function renderUsdt() {
+        var el = document.getElementById('usdt-panel');
+        if (!el) return;
+        var h = hub();
+        if (h.status !== 'on' || !h.wallet) { el.innerHTML = ''; return; }
+        var w = h.wallet, deps = h.deps || [];
+        el.innerHTML = '<div class="bg-white rounded-8 custom-shadow p-6 mb-6">'
+            + '<div class="flex flex-wrap justify-between items-center gap-3 mb-4"><div><h3 class="font-bold text-dark">USDT 专属充值钱包</h3><p class="text-xs text-gray-400 mt-0.5">向该地址转入 USDT（' + w.chain + '），链上确认后自动归集入卡资金池</p></div>'
+            + '<button class="bg-primary text-dark font-bold px-4 py-2 rounded-8 text-sm hover:shadow" id="usdt-sim" type="button">模拟一笔入金</button></div>'
+            + '<div class="flex flex-wrap items-center gap-3 bg-gray-50 rounded-8 p-4"><iconify-icon class="text-2xl text-accent2" icon="solar:wallet-money-bold"></iconify-icon>'
+            + '<span class="font-mono text-sm font-bold break-all flex-1 min-w-[220px]">' + w.addr + '</span>'
+            + '<button class="px-3 py-1.5 rounded-8 text-xs font-bold bg-white border border-gray-200 hover:bg-gray-100" id="usdt-copy" type="button">复制地址</button>'
+            + '<span class="text-xs text-gray-400">单笔最低 ' + w.min + ' USDT</span></div>'
+            + (deps.length ? '<p class="text-xs font-bold text-gray-400 mt-4 mb-2">最近入金</p>' + deps.slice(0, 5).map(function (x) {
+                return '<div class="flex items-center justify-between gap-3 py-2 border-b border-gray-50 text-sm"><span class="font-mono text-xs">' + x.id + '</span><b>' + fmt(x.amt) + ' USDT</b><span class="text-xs ' + (x.st === 'held' ? 'text-red-500 font-bold' : 'text-gray-400') + '">' + x.label + '</span></div>';
+            }).join('') : '<p class="text-xs text-gray-400 mt-4">暂无入金记录</p>')
+            + '</div>';
+        document.getElementById('usdt-copy').onclick = function () {
+            try { navigator.clipboard.writeText(w.addr); DDUI.toast('地址已复制', 'success'); } catch (e) { DDUI.toast(w.addr, 'info'); }
+        };
+        document.getElementById('usdt-sim').onclick = function () {
+            DDUI.modal({ title: '模拟 USDT 入金', width: 420,
+                body: '<div class="ddui-field"><label class="ddui-label">金额 (USDT)</label><input class="ddui-input" id="usdt-amt" type="number" min="' + w.min + '" value="1000"/></div><p class="text-xs text-gray-400">演示：发起后将经过链上确认与 KYT 筛查，可在后台「USDT 资金归集」查看全链路状态。</p>',
+                actions: [{ text: '取消' }, { text: '发起入金', type: 'primary', onClick: function (close, body) {
+                    var v = parseFloat(body.querySelector('#usdt-amt').value);
+                    if (!(v >= w.min)) { DDUI.toast('最低 ' + w.min + ' USDT', 'error'); return; }
+                    var r = DDCardHub.simDeposit(DDEnt.current().id, v);
+                    if (!r.ok) { DDUI.toast(r.msg, 'error'); return; }
+                    close(); renderUsdt(); DDUI.toast('入金 ' + r.id + ' 已发起（' + r.st + '）', 'success');
+                } }] });
+        };
+    }
+    function renderAll() { renderBanner(); renderUsdt(); if (!document.getElementById('ch-main').classList.contains('hidden')) { renderKpi(); renderPane(); } document.getElementById('card-count').textContent = '(' + load().length + '/' + (hub().maxCards || 100) + ')'; }
 
     /* ---------- 卡片列表 ---------- */
     function miniCard(c) {
@@ -788,7 +822,7 @@
     document.getElementById('card-search').addEventListener('input', function () { if (VIEW === 'pools') renderPools(); else render(); });
     document.addEventListener('dd-ent-change', renderAll);
     window.DDCardsPage = { openPool: openPool, poolForm: poolForm, poolAct: poolAct, setView: setView, renderAll: renderAll, changeSource: changeSource };
-    renderBanner();
+    renderBanner(); renderUsdt();
     if (!document.getElementById('ch-main').classList.contains('hidden')) { renderKpi(); setView(['cards', 'pools', 'rel'].indexOf(VIEW) > -1 ? VIEW : 'cards'); }
     document.getElementById('card-count').textContent = '(' + load().length + '/' + (hub().maxCards || 100) + ')';
     if (Q.get('pool')) openPool(Q.get('pool'));

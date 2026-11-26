@@ -225,7 +225,7 @@
     '冻结金额 $1,250.00': 'Frozen $1,250.00', '包含 2 笔进行中的争议订单保证金': 'Includes margin for 2 disputed orders',
     '查看全部交易': 'View All Transactions',
     '充值 - 银行转账': 'Deposit - Bank Transfer', '提现 - 招商银行 (8888)': 'Withdrawal - CMB (8888)',
-    '收单结算入账': 'Acquiring Settlement', '货币兑换 USD → EUR': 'Exchange USD → EUR', '手续费扣款': 'Fee Deduction',
+    '收单结算入账': 'Acquiring Settlement', '换汇 USD → EUR': 'Exchange USD → EUR', '手续费扣款': 'Fee Deduction',
     '账户充值': 'Deposit', '充值币种': 'Currency', '充值方式': 'Method', '充值金额': 'Amount',
     '余额提现': 'Withdraw', '提现账户': 'Account', '提现金额': 'Amount', '确认充值': 'Confirm',
     '提交提现申请': 'Submit', '新增币种账户': 'Add Currency Account', '开通账户': 'Open Account',
@@ -411,7 +411,7 @@
     '总资产估值 (EUR)': 'Total balance (EUR)', '我的账户': 'My Accounts', '全部': 'All', '新增币种': 'Add currency', '新增币种账户': 'Add currency account', '速汇中国 · 微信到账': 'China Express · to WeChat', '欧元直达微信/银行卡，最快 5 分钟': 'EUR to WeChat/bank card in as fast as 5 min', '去付款': 'Pay now',
     '最近交易': 'Recent Activity', '查看全部': 'See all', '请在手机上使用相机扫码': 'Use your phone camera to scan', '瑞士法郎': 'Swiss Franc', '港币': 'Hong Kong Dollar', '新加坡元': 'Singapore Dollar', '日元': 'Japanese Yen',
     '已开通全部可用币种': 'All currencies already enabled', '免费开通 · 即时生效': 'Free · instant', '欧元账户': 'EUR Account', '美元账户': 'USD Account', '英镑账户': 'GBP Account', 'USDT 钱包': 'USDT Wallet',
-    '管理': 'Manage', '银行卡': 'Cards', '交易记录': 'Transactions', '货币兑换': 'Exchange', '账户名': 'Account name', '钱包地址': 'Wallet address', '复制': 'Copy', '已复制': 'Copied', '已复制到剪贴板': 'Copied to clipboard', '可用余额': 'Available balance',
+    '管理': 'Manage', '银行卡': 'Cards', '交易记录': 'Transactions', '换汇': 'Exchange', '账户名': 'Account name', '钱包地址': 'Wallet address', '复制': 'Copy', '已复制': 'Copied', '已复制到剪贴板': 'Copied to clipboard', '可用余额': 'Available balance',
     '交易': 'Activity', '暂无交易': 'No transactions', '该账户还没有任何交易记录': 'This account has no transactions yet', '去收款': 'Receive money', '暂无记录': 'No records', '该分类下还没有交易': 'No transactions in this category',
     '收入': 'In', '支出': 'Out', '兑换': 'FX', '搜索交易': 'Search transactions', '交易详情': 'Details', '交易状态': 'Status', '交易渠道': 'Channel', '交易时间': 'Time', '交易单号': 'Reference', '手续费': 'Fee', '付款账户': 'From account',
     '已完成': 'Completed', '处理中': 'Processing', '失败': 'Failed', '收款人微信账户未实名，资金已原路退回。请核对收款信息后重试。': 'The recipient\'s WeChat account is unverified; funds were returned. Check the details and retry.',
@@ -868,7 +868,7 @@
   // dd-client-v3:end
   // dd-exchange:start
   Object.assign(DICT, {
-      "资产兑换": "Asset Exchange",
+      "换汇": "Currency Exchange",
       "法币 / 稳定币兑换": "Fiat / Stablecoin Exchange",
       "法币互换 · 法币与稳定币 · 币币兑换，实时行情，极低点差": "Fiat-to-fiat, fiat-stablecoin and crypto swaps with live rates and minimal spreads",
       "¥ CNY 人民币": "¥ CNY Chinese Yuan",
