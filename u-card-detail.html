@@ -251,6 +251,21 @@
     };
 
     /* ---------- 操作 ---------- */
+    function actWallet(c, kind) {
+        DDUI.modal({
+            title: (c.wallet ? '解绑' : '绑定') + (kind === 'apple' ? 'Apple Pay' : 'Google Pay'),
+            body: c.wallet
+                ? '<p style="font-size:14px;color:#4b5563;line-height:1.7">解绑后该卡将不能在 ' + (c.wallet === 'apple' ? 'Apple Pay' : 'Google Pay') + ' 中继续线下刷卡。</p>'
+                : '<p style="font-size:14px;color:#4b5563;line-height:1.7">将该卡添加到 ' + (kind === 'apple' ? 'Apple Pay' : 'Google Pay') + ' 移动钱包，添加后即可在线下 POS 拍卡消费。</p>',
+            actions: [{ text: '取消' }, { text: c.wallet ? '确认解绑' : '确认绑定', type: 'primary', onClick: function (close) {
+                var d = uc(), cc = d.cards.filter(function (x) { return x.no === no && x.ent === ent().id; })[0];
+                cc.wallet = c.wallet ? '' : kind;
+                ucLog(d, cc.wallet ? '绑定移动钱包' : '解绑移动钱包', 0, cc.no + ' · ' + (cc.wallet === 'apple' ? 'Apple Pay' : cc.wallet === 'google' ? 'Google Pay' : ''));
+                ucWrite(d); close(); render();
+                DDUI.toast(cc.wallet ? '已绑定 ' + (cc.wallet === 'apple' ? 'Apple Pay' : 'Google Pay') : '已解绑移动钱包', 'success');
+            } }]
+        });
+    }
     function actOwner(c) {
         var opts = '<option value="">取消关联</option>' + DDTeam.load().map(function (m) {
             return '<option value="' + m.id + '"' + (c.owner === m.id ? ' selected' : '') + '>' + m.name + '（' + m.role + '）</option>';
@@ -284,39 +299,68 @@
         );
     }
 
-    /* ---------- 卡信息模块（含三档限额行内调整） ---------- */
+    /* ---------- 卡信息模块（品牌 VI：深棕头部 + 限额高亮块，含三档限额行内调整） ---------- */
+    function kvRow(label, valHtml) {
+        return '<div class="flex items-center justify-between py-2.5 border-b border-gray-50 last:border-0"><span class="text-xs text-gray-400">' + label + '</span><b class="text-sm text-dark font-semibold text-right">' + valHtml + '</b></div>';
+    }
     function infoHtml(c) {
         var d = uc(), p = poolOf(d, c.pool);
-        var head = '<div class="flex items-center justify-between mb-2"><p class="font-bold text-dark">卡信息</p>'
+        var head = '<div class="px-5 py-3.5 flex items-center justify-between" style="background:linear-gradient(90deg,#382b1b,#4d3c22)">'
+            + '<p class="font-bold text-sm flex items-center gap-2" style="color:#FFD008"><iconify-icon icon="solar:card-bold"></iconify-icon>卡信息</p>'
             + (editing
-                ? '<div class="flex gap-2"><button class="text-xs font-bold text-gray-500 hover:text-dark" id="ci-cancel" type="button">取消</button><button class="text-xs font-bold bg-primary text-dark px-3 py-1.5 rounded-8 hover:shadow" id="ci-save" type="button">保存</button></div>'
-                : '<button class="text-xs font-bold text-accent2 hover:underline" id="ci-edit" type="button">调整</button>')
+                ? '<div class="flex gap-2"><button class="text-xs font-bold px-3 py-1.5 rounded-8 border border-white/30 text-white/80 hover:text-white" id="ci-cancel" type="button">取消</button><button class="text-xs font-bold px-3 py-1.5 rounded-8" style="background:#FFD008;color:#382b1b" id="ci-save" type="button">保存</button></div>'
+                : '<button class="text-xs font-bold px-3 py-1.5 rounded-8 border border-white/30 text-white/80 hover:text-white hover:border-white/60 transition-colors" id="ci-edit" type="button">调整限额</button>')
             + '</div>';
         var limRows;
         if (editing) {
-            limRows = '<div class="kv"><span>单笔限额 (USDT)</span><b><input class="ddui-input" id="ci-tx" type="number" min="1" value="' + c.limitTx + '" style="width:130px;padding:4px 8px;text-align:right"/></b></div>'
-                + '<div class="kv"><span>日限额 (USDT)</span><b><input class="ddui-input" id="ci-day" type="number" min="1" value="' + c.limitDay + '" style="width:130px;padding:4px 8px;text-align:right"/></b></div>'
-                + '<div class="kv"><span>月限额 (USDT)</span><b><input class="ddui-input" id="ci-mon" type="number" min="1" value="' + c.limit + '" style="width:130px;padding:4px 8px;text-align:right"/></b></div>'
-                + '<p style="font-size:11px;color:#9ca3af;margin-top:6px">需满足：单笔限额 ≤ 日限额 ≤ 月限额</p>';
+            limRows = '<div class="rounded-8 p-3.5 space-y-2.5" style="background:#FFF9E6;border:1px solid rgba(255,208,8,.45)">'
+                + '<div class="flex items-center justify-between"><span class="text-xs text-gray-500">单笔限额 (USDT)</span><input class="ddui-input" id="ci-tx" type="number" min="1" value="' + c.limitTx + '" style="width:130px;padding:4px 8px;text-align:right"/></div>'
+                + '<div class="flex items-center justify-between"><span class="text-xs text-gray-500">日限额 (USDT)</span><input class="ddui-input" id="ci-day" type="number" min="1" value="' + c.limitDay + '" style="width:130px;padding:4px 8px;text-align:right"/></div>'
+                + '<div class="flex items-center justify-between"><span class="text-xs text-gray-500">月限额 (USDT)</span><input class="ddui-input" id="ci-mon" type="number" min="1" value="' + c.limit + '" style="width:130px;padding:4px 8px;text-align:right"/></div>'
+                + '<p style="font-size:11px;color:#9ca3af">需满足：单笔限额 ≤ 日限额 ≤ 月限额</p></div>';
         } else {
-            limRows = '<div class="kv"><span>单笔限额</span><b>' + fmt(c.limitTx) + ' USDT</b></div>'
-                + '<div class="kv"><span>日限额</span><b>' + fmt(c.limitDay) + ' USDT</b></div>'
-                + '<div class="kv"><span>月限额</span><b>' + fmt(c.limit) + ' USDT</b></div>';
+            limRows = '<div class="rounded-8 p-3.5 grid grid-cols-3 gap-2 text-center" style="background:#FFF9E6;border:1px solid rgba(255,208,8,.45)">'
+                + '<div><p class="text-[10px] text-gray-400 mb-0.5">单笔限额</p><p class="text-sm font-extrabold text-dark">' + fmt(c.limitTx) + '</p></div>'
+                + '<div class="border-x border-yellow-100"><p class="text-[10px] text-gray-400 mb-0.5">日限额</p><p class="text-sm font-extrabold text-dark">' + fmt(c.limitDay) + '</p></div>'
+                + '<div><p class="text-[10px] text-gray-400 mb-0.5">月限额</p><p class="text-sm font-extrabold text-dark">' + fmt(c.limit) + '</p></div></div>';
         }
         var spend = 0;
         uc().log.forEach(function (l) { if (l.ent === ent().id && l.type === '消费' && l.note.indexOf(c.no.slice(-4)) > -1) spend += l.amt; });
+        var walletRow = '';
+        if (c.type === 'offline') {
+            walletRow = '<div class="py-2.5 border-b border-gray-50"><div class="flex items-center justify-between"><span class="text-xs text-gray-400">移动钱包</span>'
+                + (c.wallet
+                    ? '<b class="text-sm text-dark font-semibold">' + (c.wallet === 'apple' ? ' Apple Pay' : '■ Google Pay') + ' <span class="text-green-600 text-xs">已绑定</span></b>'
+                    : '<span class="text-xs text-gray-300">未绑定</span>')
+                + '</div>'
+                + '<div class="flex gap-2 mt-2">'
+                + (c.wallet
+                    ? '<button class="flex-1 text-xs font-bold border border-gray-200 rounded-8 py-1.5 text-gray-500 hover:text-dark" id="cd-unwallet" type="button">解绑' + (c.wallet === 'apple' ? ' Apple Pay' : ' Google Pay') + '</button>'
+                    : '<button class="flex-1 text-xs font-bold border border-gray-200 rounded-8 py-1.5 text-gray-600 hover:border-dark transition-colors" id="cd-wa" type="button"> 绑定 Apple Pay</button><button class="flex-1 text-xs font-bold border border-gray-200 rounded-8 py-1.5 text-gray-600 hover:border-dark transition-colors" id="cd-wg" type="button">■ 绑定 Google Pay</button>')
+                + '</div></div>';
+        }
         return head
-            + '<div class="kv"><span>绑定资金池</span><b><a class="text-accent2 hover:underline" href="u-card.html?tab=pools">' + (p ? esc(p.name) : '未绑定') + '</a></b></div>'
-            + '<div class="kv"><span>类型</span><b>' + (c.type === 'offline' ? '线下消费卡' : '线上付款卡') + '</b></div>'
-            + '<div class="kv"><span>格式</span><b>虚拟卡 · USDT</b></div>'
-            + limRows
-            + '<div class="kv"><span>本月消费</span><b>' + fmt(spend) + ' USDT</b></div>'
-            + '<div class="kv"><span>关联人员</span><b>' + (c.owner ? esc(DDTeam.name(c.owner)) : '<span class="text-gray-300">未关联</span>') + '</b></div>'
-            + '<div class="kv"><span>状态</span><b>' + (c.frozen ? '<span class="text-red-500">已冻结</span>' : '<span class="text-green-600">正常</span>') + '</b></div>';
+            + '<div class="p-5">'
+            + kvRow('绑定资金池', '<a class="text-accent2 hover:underline" href="u-card.html?tab=pools">' + (p ? esc(p.name) : '未绑定') + '</a>')
+            + kvRow('卡组织', c.brand === 'Visa' ? '<span class="italic font-extrabold" style="color:#1A1F71">VISA</span>' : '<span class="font-extrabold" style="color:#EB001B">Master</span><span class="font-extrabold" style="color:#F79E1B">card</span>')
+            + kvRow('类型', c.type === 'offline' ? '线下消费卡 · 支持 Apple Pay / Google Pay' : '线上付款卡 · 仅线上消费')
+            + kvRow('格式', '虚拟卡 · USDT')
+            + '<div class="py-2.5 border-b border-gray-50">' + limRows + '</div>'
+            + kvRow('本月消费', fmt(spend) + ' USDT')
+            + kvRow('关联人员', c.owner ? esc(DDTeam.name(c.owner)) : '<span class="text-gray-300">未关联</span>')
+            + kvRow('状态', c.frozen ? '<span class="text-red-500">已冻结</span>' : '<span class="text-green-600">正常</span>')
+            + walletRow
+            + '</div>';
     }
     function bindInfo(c) {
         var eb = document.getElementById('ci-edit');
         if (eb) eb.onclick = function () { editing = true; render(); };
+        var wa = document.getElementById('cd-wa');
+        if (wa) wa.onclick = function () { actWallet(c, 'apple'); };
+        var wg = document.getElementById('cd-wg');
+        if (wg) wg.onclick = function () { actWallet(c, 'google'); };
+        var uw = document.getElementById('cd-unwallet');
+        if (uw) uw.onclick = function () { actWallet(c, c.wallet); };
         var sb = document.getElementById('ci-save');
         if (sb) sb.onclick = function () {
             var tx = parseFloat(document.getElementById('ci-tx').value);
@@ -363,12 +407,14 @@
             + '<div class="grid lg:grid-cols-3 gap-6 items-start"><div class="space-y-6">'
             + '<div class="bg-white rounded-8 custom-shadow p-6">'
             + '<div class="rounded-8 p-6 mx-auto" style="background:linear-gradient(135deg,#382b1b 0%,#4d3c22 55%,#241c0f 100%);color:#fff;max-width:340px;aspect-ratio:8/5;display:flex;flex-direction:column;justify-content:space-between">'
-            + '<div class="flex justify-between items-start"><span class="text-xs font-bold" style="color:#FFD008">Dingdang U 卡 · ' + (c.type === 'offline' ? '线下消费卡' : '线上付款卡') + '</span><span class="text-lg font-extrabold" style="color:#FFD008">₮</span></div>'
+            + '<div class="flex justify-between items-start"><span class="text-xs font-bold" style="color:#FFD008">Dingdang U 卡 · ' + (c.type === 'offline' ? '线下消费卡' : '线上付款卡') + '</span><span class="flex items-center gap-1.5"><span class="text-lg font-extrabold" style="color:#FFD008">₮</span><span class="text-sm font-extrabold italic">' + (c.brand === 'Visa' ? 'VISA' : 'Mastercard') + '</span></span></div>'
             + '<p class="font-mono text-lg tracking-widest" id="cd-pan">' + panText(c) + '</p>'
-            + '<div class="flex gap-8 text-xs"><div><p style="opacity:.6">有效期</p><p class="font-bold" id="cd-exp">' + (revealed ? cardExp(c) : '** / **') + '</p></div><div><p style="opacity:.6">CVV</p><p class="font-bold" id="cd-cvv">' + (revealed ? cardCvv(c) : '***') + '</p></div><div><p style="opacity:.6">状态</p><p class="font-bold">' + (c.frozen ? '已冻结' : '正常') + '</p></div></div></div>'
+            + '<div class="flex justify-between items-end"><div class="flex gap-6 text-xs"><div><p style="opacity:.6">有效期</p><p class="font-bold" id="cd-exp">' + (revealed ? cardExp(c) : '** / **') + '</p></div><div><p style="opacity:.6">CVV</p><p class="font-bold" id="cd-cvv">' + (revealed ? cardCvv(c) : '***') + '</p></div><div><p style="opacity:.6">状态</p><p class="font-bold">' + (c.frozen ? '已冻结' : '正常') + '</p></div></div>'
+            + (c.type === 'offline' ? '<span class="text-[10px] px-1.5 py-0.5 rounded" style="background:rgba(255,208,8,.18);color:#FFD008">' + (c.wallet ? (c.wallet === 'apple' ? ' Apple Pay' : '■ Google Pay') : '可绑 Apple Pay') + '</span>' : '')
+            + '</div></div>'
             + (revealed ? '<p class="text-xs text-gray-400 mt-3 text-center">卡号与 CVV 为敏感信息，请勿泄露；本次查看已通过双因子验证。</p>' : '<p class="text-xs text-gray-400 mt-3 text-center">完整卡号、有效期与 CVV 需通过「查看卡信息」双因子验证后展示。</p>')
             + '</div>'
-            + '<div class="bg-white rounded-8 custom-shadow p-6">' + infoHtml(c) + '</div></div>'
+            + '<div class="bg-white rounded-8 custom-shadow overflow-hidden">' + infoHtml(c) + '</div></div>'
 
             + '<div class="lg:col-span-2 bg-white rounded-8 custom-shadow p-6">'
             + '<div class="flex items-center justify-between mb-4"><p class="font-bold text-dark">卡流水</p><p class="text-xs text-gray-400">近 10 笔交易 · 可逐笔上传凭证/发票</p></div>'
