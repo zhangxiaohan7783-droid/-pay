@@ -91,12 +91,17 @@
 <div class="space-y-6" id="ch-main">
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="ch-kpi"></div>
 <div class="bg-white rounded-8 custom-shadow">
-<div class="flex flex-wrap items-center justify-between gap-3 px-5 border-b border-gray-100"><div class="flex items-center gap-4" id="ch-tabs"><button data-v="cards" type="button">卡片</button><button data-v="pools" type="button">共享资金池</button><button data-v="rel" type="button">关联关系</button></div>
+<div class="flex flex-wrap items-center justify-between gap-3 px-5 border-b border-gray-100"><div class="flex items-center gap-4" id="ch-tabs"><button data-v="cards" type="button">卡片</button><button data-v="pools" type="button">共享资金池</button><button data-v="rel" type="button">关联关系</button><button data-v="users" type="button">用户</button><button data-v="tx" type="button">流水</button></div>
 <div class="relative py-2" id="card-search-wrap"><svg class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input autocomplete="off" class="w-56 pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-8 text-sm focus:outline-none focus:border-accent2 transition-colors" id="card-search" placeholder="搜索卡号 / 资金池 / 成员"/></div></div>
 <div id="pane-cards"><div class="flex items-center gap-2 px-5 py-3" id="card-tabs"><button class="px-3 py-1.5 text-xs rounded-full transition-colors bg-dark text-white font-bold" data-tp="ALL" type="button">全部 <span id="ct-all"></span></button><button class="px-3 py-1.5 text-xs rounded-full transition-colors bg-gray-100 text-gray-500 hover:bg-gray-200" data-tp="online" type="button">线上付款卡</button><button class="px-3 py-1.5 text-xs rounded-full transition-colors bg-gray-100 text-gray-500 hover:bg-gray-200" data-tp="offline" type="button">线下消费卡</button></div>
 <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs text-gray-400 border-y border-gray-100 bg-gray-50/60"><th class="px-5 py-3 font-semibold">卡面</th><th class="px-3 py-3 font-semibold">卡组织</th><th class="px-3 py-3 font-semibold">类型</th><th class="px-3 py-3 font-semibold">资金来源</th><th class="px-3 py-3 font-semibold">持卡人</th><th class="px-3 py-3 font-semibold text-right">月限额</th><th class="px-3 py-3 font-semibold text-right">可用额度</th><th class="px-3 py-3 font-semibold text-right">本月花费</th><th class="px-5 py-3 font-semibold text-right">操作</th></tr></thead><tbody id="card-tbody"></tbody></table></div></div>
 <div class="hidden p-5" id="pane-pools"></div>
 <div class="hidden p-5" id="pane-rel"></div>
+<div class="hidden" id="pane-users"><div class="overflow-x-auto"><table class="w-full min-w-[760px]"><thead class="bg-gray-50/80"><tr><th class="text-left py-3 px-5 text-xs font-semibold text-gray-400 uppercase">用户</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">角色</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">关联卡片</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">关联资金池</th><th class="text-right py-3 px-5 text-xs font-semibold text-gray-400 uppercase">可消费余额</th></tr></thead><tbody id="ch-users"></tbody></table></div></div>
+<div class="hidden" id="pane-tx">
+<div class="flex items-center gap-2 px-5 py-3" id="ch-tx-filter"><button class="px-3 py-1.5 text-xs rounded-full transition-colors bg-dark text-white font-bold" data-f="all" type="button">全部</button><button class="px-3 py-1.5 text-xs rounded-full transition-colors bg-gray-100 text-gray-500 hover:bg-gray-200" data-f="topup" type="button">充值</button><button class="px-3 py-1.5 text-xs rounded-full transition-colors bg-gray-100 text-gray-500 hover:bg-gray-200" data-f="transfer" type="button">资金池划转</button><button class="px-3 py-1.5 text-xs rounded-full transition-colors bg-gray-100 text-gray-500 hover:bg-gray-200" data-f="spend" type="button">消费</button></div>
+<div class="overflow-x-auto"><table class="w-full min-w-[760px]"><thead class="bg-gray-50/80"><tr><th class="text-left py-3 px-5 text-xs font-semibold text-gray-400 uppercase">时间</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">类型</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">摘要</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400 uppercase">金额</th><th class="text-left py-3 px-5 text-xs font-semibold text-gray-400 uppercase">关联</th></tr></thead><tbody id="ch-tx"></tbody></table></div>
+</div>
 
 </div>
 <div class="bg-white rounded-8 custom-shadow p-6"><p class="font-bold text-dark mb-4">两种卡型</p><div class="grid md:grid-cols-2 gap-4 text-sm"><div class="rounded-8 border border-gray-100 p-5"><div class="flex items-center gap-3 mb-2"><div class="w-9 h-9 rounded-8 flex items-center justify-center" style="background:rgba(0,183,236,.12);color:#0089b3"><iconify-icon class="text-xl" icon="solar:global-linear"></iconify-icon></div><p class="font-bold text-dark">线上付款卡</p></div><p class="text-gray-500 leading-relaxed">仅支持线上消费：广告投放、SaaS 订阅、电商采购等场景，即开即用。</p></div><div class="rounded-8 border border-gray-100 p-5"><div class="flex items-center gap-3 mb-2"><div class="w-9 h-9 rounded-8 flex items-center justify-center" style="background:rgba(255,129,6,.12);color:#d16500"><iconify-icon class="text-xl" icon="solar:smartphone-linear"></iconify-icon></div><p class="font-bold text-dark">线下消费卡</p></div><p class="text-gray-500 leading-relaxed">除线上消费外，可绑定 Apple Pay / Google Pay，在手机钱包中线下刷卡消费。</p></div></div></div>
@@ -245,13 +250,13 @@
             var on = b.dataset.v === v;
             b.className = 'px-3 py-3.5 text-sm border-b-2 -mb-px transition-colors ' + (on ? 'border-dark font-bold text-dark' : 'border-transparent text-gray-400 hover:text-gray-600');
         });
-        ['cards', 'pools', 'rel'].forEach(function (k) { document.getElementById('pane-' + k).classList.toggle('hidden', k !== v); });
+        ['cards', 'pools', 'rel', 'users', 'tx'].forEach(function (k) { document.getElementById('pane-' + k).classList.toggle('hidden', k !== v); });
         document.getElementById('card-search-wrap').classList.toggle('invisible', v !== 'cards' && v !== 'pools');
         document.getElementById('card-search').placeholder = v === 'pools' ? '搜索资金池 / 卡号' : '搜索卡号 / 资金池 / 成员';
         renderPane();
         try { history.replaceState(null, '', location.pathname + (v === 'cards' ? '' : '?tab=' + v)); } catch (e) {}
     }
-    function renderPane() { if (VIEW === 'cards') render(); else if (VIEW === 'pools') renderPools(); else renderRel(); }
+    function renderPane() { if (VIEW === 'cards') render(); else if (VIEW === 'pools') renderPools(); else if (VIEW === 'users') renderUsers(); else if (VIEW === 'tx') renderTx(); else renderRel(); }
     function renderAll() { renderBanner(); if (!document.getElementById('ch-main').classList.contains('hidden')) { renderKpi(); renderPane(); } document.getElementById('card-count').textContent = '(' + load().length + '/' + (hub().maxCards || 100) + ')'; }
 
     /* ---------- 卡片列表 ---------- */
@@ -644,6 +649,99 @@
 
     /* ---------- 关联关系图 ---------- */
     var EDGES = [];
+    /* ---------- 用户视图：按持卡人汇总可消费余额 / 关联卡 / 关联池 ---------- */
+    function renderUsers() {
+        var tb = document.getElementById('ch-users');
+        var cards = load(), pools = DDPools.load();
+        var rows = DDTeam.load().map(function (m) {
+            return { name: m.name, role: m.role, cards: cards.filter(function (c) { return c.owner === m.id; }) };
+        });
+        var unassigned = cards.filter(function (c) { return !c.owner; });
+        if (unassigned.length) rows.push({ name: '未分配', role: '—', cards: unassigned });
+        tb.innerHTML = rows.map(function (r) {
+            var av = 0, poolNames = [], cardNos = [];
+            r.cards.forEach(function (c) {
+                av += avail(c);
+                cardNos.push(c.no.slice(-4));
+                var p = c.pool ? DDPools.get(c.pool) : null;
+                if (p && poolNames.indexOf(p.name) < 0) poolNames.push(p.name);
+            });
+            return '<tr class="hover:bg-gray-50/60">'
+                + '<td class="py-3 px-5 text-sm border-t border-gray-50 font-medium text-gray-800">' + esc(r.name) + '</td>'
+                + '<td class="py-3 px-4 text-sm border-t border-gray-50">' + esc(r.role) + '</td>'
+                + '<td class="py-3 px-4 text-sm border-t border-gray-50">' + (cardNos.length ? cardNos.map(function (n) { return '<span class="font-mono text-xs bg-gray-50 border border-gray-100 rounded px-1.5 py-0.5 mr-1">' + n + '</span>'; }).join('') : '<span class="text-gray-300">—</span>') + '</td>'
+                + '<td class="py-3 px-4 text-sm border-t border-gray-50">' + (poolNames.length ? esc(poolNames.join('、')) : '<span class="text-gray-300">—</span>') + '</td>'
+                + '<td class="py-3 px-5 text-sm border-t border-gray-50 text-right font-bold ' + (av > 0 ? 'text-green-600' : 'text-gray-300') + '">€ ' + fmt(av) + '</td>'
+                + '</tr>';
+        }).join('');
+    }
+
+    /* ---------- 流水视图：充值 / 资金池划转 / 消费 ---------- */
+    var TX_CAT = { topup: ['充值', 'bg-green-50 text-green-600'], transfer: ['资金池划转', 'bg-blue-50 text-accent2'], spend: ['消费', 'bg-orange-50 text-orange-500'] };
+    var txFilter = 'all';
+    /* 卡消费种子（演示逐笔，按卡尾号归属） */
+    var CARD_SPEND_LOG = [
+        { t: '2026-11-25 14:22', no: '6021', m: 'Meta Ads', amt: 1580.00, cur: 'EUR' },
+        { t: '2026-11-24 09:15', no: '8842', m: 'Amazon 采购', amt: 1150.00, cur: 'EUR' },
+        { t: '2026-11-22 17:40', no: '7468', m: 'Google Ads', amt: 1260.00, cur: 'EUR' },
+        { t: '2026-11-20 11:08', no: '3317', m: 'UPS 运费', amt: 1280.00, cur: 'USD' },
+        { t: '2026-11-18 16:33', no: '6021', m: 'TikTok Ads', amt: 240.00, cur: 'EUR' },
+        { t: '2026-11-15 10:51', no: '8842', m: 'AWS 云服务', amt: 482.40, cur: 'EUR' },
+        { t: '2026-11-12 08:29', no: '7468', m: '差旅酒店', amt: 1200.00, cur: 'EUR' },
+        { t: '2026-11-09 13:47', no: '3317', m: 'FedEx 运费', amt: 500.00, cur: 'USD' },
+        { t: '2026-11-06 15:19', no: '8842', m: 'Google Ads', amt: 980.00, cur: 'EUR' },
+        { t: '2026-11-03 09:26', no: '6021', m: 'Meta Ads', amt: 320.30, cur: 'EUR' }
+    ];
+    /* 池充值/划转种子（与池创建时间对齐；运行时操作经 DDPools.addLog 追加合并） */
+    var POOL_TX_SEED = [
+        { t: '2026-10-09 10:02', cat: 'transfer', text: '创建资金池 · 广告投放共享池（初始划入）', amt: 18450.00, cur: 'EUR', ref: 'POOL-01' },
+        { t: '2026-10-21 15:40', cat: 'transfer', text: '创建资金池 · 欧洲电商采购池（初始划入）', amt: 6200.00, cur: 'EUR', ref: 'POOL-02' },
+        { t: '2026-11-02 09:18', cat: 'transfer', text: '创建资金池 · 门店备用金池（初始划入）', amt: 1800.00, cur: 'USD', ref: 'POOL-03' },
+        { t: '2026-11-15 16:20', cat: 'topup', text: '充值 · 广告投放共享池（来自 广告投放专用户）', amt: 5000.00, cur: 'EUR', ref: 'POOL-01' },
+        { t: '2026-11-20 11:36', cat: 'topup', text: '充值 · 欧洲电商采购池（来自 欧洲电商事业部）', amt: 3000.00, cur: 'EUR', ref: 'POOL-02' },
+        { t: '2026-11-24 10:05', cat: 'topup', text: '自动充值 · 广告投放共享池（余额低于预警线触发）', amt: 5000.00, cur: 'EUR', ref: 'POOL-01' }
+    ];
+    function txRows() {
+        var rows = [];
+        POOL_TX_SEED.forEach(function (x) { rows.push(x); });
+        DDPools.load().forEach(function (p) {
+            DDPools.log(p.id).forEach(function (l) {
+                var cat = l.type === '创建' ? 'transfer' : 'topup';
+                rows.push({ t: l.t, cat: cat, text: l.type + ' · ' + p.name + (l.note ? '（' + l.note + '）' : ''), amt: l.amt, cur: p.cur, ref: p.id });
+            });
+        });
+        CARD_SPEND_LOG.forEach(function (x) {
+            rows.push({ t: x.t, cat: 'spend', text: x.m, amt: x.amt, cur: x.cur, ref: '卡 ' + x.no });
+        });
+        rows.sort(function (a, b) { return a.t < b.t ? 1 : -1; });
+        return rows;
+    }
+    function renderTx() {
+        var tb = document.getElementById('ch-tx');
+        var rows = txRows().filter(function (r) { return txFilter === 'all' || r.cat === txFilter; });
+        document.querySelectorAll('#ch-tx-filter button').forEach(function (b) {
+            var on = b.dataset.f === txFilter;
+            b.className = 'px-3 py-1.5 text-xs rounded-full transition-colors ' + (on ? 'bg-dark text-white font-bold' : 'bg-gray-100 text-gray-500 hover:bg-gray-200');
+        });
+        if (!rows.length) {
+            tb.innerHTML = '<tr><td colspan="5" class="py-10 text-center text-sm text-gray-400">暂无流水记录</td></tr>';
+            return;
+        }
+        tb.innerHTML = rows.map(function (r) {
+            var c = TX_CAT[r.cat];
+            var amtTxt = (r.cat === 'topup' ? '+' : r.cat === 'spend' ? '−' : '') + money(r.amt, r.cur);
+            var amtCls = r.cat === 'topup' ? 'text-green-600' : r.cat === 'spend' ? 'text-dark' : 'text-accent2';
+            return '<tr class="hover:bg-gray-50/60">'
+                + '<td class="py-3 px-5 text-sm border-t border-gray-50">' + esc(r.t) + '</td>'
+                + '<td class="py-3 px-4 text-sm border-t border-gray-50"><span class="px-2 py-0.5 rounded-full text-xs font-medium ' + c[1] + '">' + c[0] + '</span></td>'
+                + '<td class="py-3 px-4 text-sm border-t border-gray-50">' + esc(r.text) + '</td>'
+                + '<td class="py-3 px-4 text-sm border-t border-gray-50 text-right font-bold ' + amtCls + '">' + amtTxt + '</td>'
+                + '<td class="py-3 px-5 text-sm border-t border-gray-50 text-xs text-gray-400">' + esc(r.ref) + '</td>'
+                + '</tr>';
+        }).join('');
+    }
+    document.querySelectorAll('#ch-tx-filter button').forEach(function (b) { b.addEventListener('click', function () { txFilter = b.dataset.f; renderTx(); }); });
+
     function renderRel() {
         var pools = DDPools.load(), cards = load(), subs = DDSubs.load(), team = DDTeam.load();
         var useSubs = subs.filter(function (s) { return pools.some(function (p) { return p.sub === s.id; }) || cards.some(function (c) { return !c.pool && c.sub === s.id; }); });
@@ -789,7 +887,7 @@
     document.addEventListener('dd-ent-change', renderAll);
     window.DDCardsPage = { openPool: openPool, poolForm: poolForm, poolAct: poolAct, setView: setView, renderAll: renderAll, changeSource: changeSource };
     renderBanner();
-    if (!document.getElementById('ch-main').classList.contains('hidden')) { renderKpi(); setView(['cards', 'pools', 'rel'].indexOf(VIEW) > -1 ? VIEW : 'cards'); }
+    if (!document.getElementById('ch-main').classList.contains('hidden')) { renderKpi(); setView(['cards', 'pools', 'rel', 'users', 'tx'].indexOf(VIEW) > -1 ? VIEW : 'cards'); }
     document.getElementById('card-count').textContent = '(' + load().length + '/' + (hub().maxCards || 100) + ')';
     if (Q.get('pool')) openPool(Q.get('pool'));
 })();
