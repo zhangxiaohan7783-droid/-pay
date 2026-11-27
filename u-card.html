@@ -43,7 +43,7 @@
         .dd-op-menu button.danger { color: #dc2626; }
         /* 行可点击 */
         #card-tbody tr[data-no] { cursor: pointer; }
-</style>
+.dd-minicard{width:118px;aspect-ratio:8/5;border-radius:8px;padding:7px 9px;color:#fff;display:flex;flex-direction:column;justify-content:space-between;font-size:8px;line-height:1.25;box-shadow:0 2px 6px rgba(0,0,0,.12);flex:none}.dd-minicard.uc{background:linear-gradient(135deg,#382b1b,#4d3c22)}.dd-minicard.uc .mc-top span{color:#FFD008}.dd-minicard.uc .mc-top b{color:rgba(255,255,255,.85)}.dd-minicard.frozen{background:linear-gradient(135deg,#6b7280,#9ca3af)}.dd-minicard .mc-top{display:flex;justify-content:space-between;align-items:center;opacity:.85}.dd-minicard .mc-top b{font-style:italic;font-size:9px}.dd-minicard .mc-no{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.08em;font-weight:700}.dd-minicard .mc-bot{display:flex;justify-content:space-between;align-items:center}.dd-minicard .mc-st{font-weight:700;color:#FFD008}.dd-minicard.frozen .mc-st{color:#fecaca}#uc-cards tr[data-no]{cursor:pointer}</style>
 <link rel="stylesheet" href="assets/css/apple.css" data-dd-apple="1"/>
 </head>
 <body class="bg-gray-50">
@@ -109,7 +109,7 @@
 <div class="bg-white rounded-8 custom-shadow">
 <div class="flex flex-wrap items-center justify-between gap-3 px-5 border-b border-gray-100"><div class="flex items-center gap-4" id="uc-tabs"><button data-v="cards" type="button">卡片</button><button data-v="pools" type="button">资金池</button><button data-v="users" type="button">用户</button><button data-v="deps" type="button">入金记录</button><button data-v="tx" type="button">流水</button></div>
 <p class="text-xs text-gray-400 py-2" id="uc-tab-hint"></p></div>
-<div id="pane-cards"><div class="overflow-x-auto"><table class="w-full min-w-[860px]"><thead class="bg-gray-50/80"><tr><th class="text-left py-3 px-5 text-xs font-semibold text-gray-400 uppercase">卡号</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">类型</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">资金池</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">持卡人</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400 uppercase">月限额</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400 uppercase">可消费额度</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">状态</th><th class="text-right py-3 px-5 text-xs font-semibold text-gray-400 uppercase">操作</th></tr></thead><tbody id="uc-cards"></tbody></table></div></div>
+<div id="pane-cards"><div class="overflow-x-auto"><table class="w-full min-w-[1000px]"><thead class="bg-gray-50/80"><tr><th class="text-left py-3 px-5 text-xs font-semibold text-gray-400 uppercase">卡面</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">卡号</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">类型</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">资金池</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">持卡人</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400 uppercase">月限额</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400 uppercase">可消费额度</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">状态</th><th class="text-right py-3 px-5 text-xs font-semibold text-gray-400 uppercase">操作</th></tr></thead><tbody id="uc-cards"></tbody></table></div></div>
 <div class="hidden p-5" id="pane-pools"><div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4" id="uc-pools"></div></div>
 <div class="hidden" id="pane-users"><div class="overflow-x-auto"><table class="w-full min-w-[760px]"><thead class="bg-gray-50/80"><tr><th class="text-left py-3 px-5 text-xs font-semibold text-gray-400 uppercase">用户</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">角色</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">关联卡片</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">关联资金池</th><th class="text-right py-3 px-5 text-xs font-semibold text-gray-400 uppercase">可消费余额</th></tr></thead><tbody id="uc-users"></tbody></table></div></div>
 <div class="hidden" id="pane-deps"><div class="overflow-x-auto"><table class="w-full min-w-[720px]"><thead class="bg-gray-50/80"><tr><th class="text-left py-3 px-5 text-xs font-semibold text-gray-400 uppercase">入金单号</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">时间</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400 uppercase">金额</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">状态</th><th class="text-left py-3 px-5 text-xs font-semibold text-gray-400 uppercase">链上哈希</th></tr></thead><tbody id="uc-deps"></tbody></table></div></div>
@@ -186,9 +186,9 @@
                 { id: 'UP-02', ent: 'flash', name: '采购备用 USDT 池', bal: 5000, monthLimit: 10000, spentM: 0, alert: 1000, frozen: false, ts: '2026-11-20', note: '' }
             ],
             cards: [
-                { no: '5399 **** **** 2066', ent: 'flash', brand: 'Visa', type: 'online', pool: 'UP-01', limit: 8000, frozen: false, owner: 'U-02', ts: '2026-11-06' },
-                { no: '5399 **** **** 7813', ent: 'flash', brand: 'Mastercard', type: 'online', pool: 'UP-01', limit: 15000, frozen: false, owner: 'U-03', ts: '2026-11-09' },
-                { no: '5399 **** **** 3350', ent: 'flash', brand: 'Visa', type: 'offline', pool: 'UP-02', limit: 3000, frozen: false, owner: '', ts: '2026-11-21' }
+                { no: '5399 **** **** 2066', ent: 'flash', brand: 'Visa', type: 'online', pool: 'UP-01', limit: 8000, limitTx: 2000, limitDay: 4000, frozen: false, owner: 'U-02', ts: '2026-11-06' },
+                { no: '5399 **** **** 7813', ent: 'flash', brand: 'Mastercard', type: 'online', pool: 'UP-01', limit: 15000, limitTx: 5000, limitDay: 8000, frozen: false, owner: 'U-03', ts: '2026-11-09' },
+                { no: '5399 **** **** 3350', ent: 'flash', brand: 'Visa', type: 'offline', pool: 'UP-02', limit: 3000, limitTx: 1000, limitDay: 2000, frozen: false, owner: '', ts: '2026-11-21' }
             ],
             log: [
                 { t: '2026-11-05 09:02', ent: 'flash', type: '创建资金池', amt: 30000, note: '广告投放 USDT 池（UP-01）' },
@@ -201,7 +201,7 @@
             ]
         };
     }
-    function uc() { var d = ucRead(); if (!d) { d = ucSeed(); ucWrite(d); } return d; }
+    function uc() { var d = ucRead(); if (!d) { d = ucSeed(); ucWrite(d); } d.cards.forEach(function (c) { if (!c.limitTx) c.limitTx = c.limit; if (!c.limitDay) c.limitDay = c.limit; }); return d; }
     function myPools(d) { return d.pools.filter(function (p) { return p.ent === ent().id; }); }
     function myCards(d) { return d.cards.filter(function (c) { return c.ent === ent().id; }); }
     function poolOf(d, id) { return d.pools.filter(function (p) { return p.id === id && p.ent === ent().id; })[0] || null; }
@@ -296,15 +296,19 @@
     function renderCards(d) {
         var tb = document.getElementById('uc-cards'), list = myCards(d);
         if (!list.length) {
-            tb.innerHTML = '<tr><td colspan="8" class="py-10 text-center text-sm text-gray-400">暂无 U 卡，点击右上角「开通 U 卡」</td></tr>';
+            tb.innerHTML = '<tr><td colspan="9" class="py-10 text-center text-sm text-gray-400">暂无 U 卡，点击右上角「开通 U 卡」</td></tr>';
             return;
         }
         tb.innerHTML = list.map(function (c) {
             var p = poolOf(d, c.pool);
             var av = cardAvail(d, c);
             var stCls = c.frozen ? 'bg-red-50 text-red-500' : 'bg-green-50 text-green-600';
-            return '<tr class="hover:bg-gray-50/60">'
-                + '<td class="py-3 px-5 text-sm border-t border-gray-50"><span class="font-mono text-xs font-bold">' + esc(c.no) + '</span><span class="ml-1 text-xs text-gray-400">' + esc(c.brand) + '</span></td>'
+            return '<tr class="hover:bg-gray-50/60" data-no="' + esc(c.no) + '">'
+                + '<td class="py-3 px-5 border-t border-gray-50"><div class="dd-minicard uc' + (c.frozen ? ' frozen' : '') + '">'
+                + '<div class="mc-top"><span>Dingdang U 卡</span><b>' + (c.brand === 'Visa' ? 'VISA' : 'Mastercard') + '</b></div>'
+                + '<div class="mc-no">•••• ' + c.no.slice(-4) + '</div>'
+                + '<div class="mc-bot"><span>' + (c.type === 'offline' ? '线下消费卡' : '线上付款卡') + '</span><span class="mc-st">' + (c.frozen ? '已冻结' : '● 正常') + '</span></div></div></td>'
+                + '<td class="py-3 px-4 text-sm border-t border-gray-50"><span class="font-mono text-xs font-bold">' + esc(c.no) + '</span></td>'
                 + '<td class="py-3 px-4 text-sm border-t border-gray-50">' + (c.type === 'offline' ? '线下消费卡' : '线上付款卡') + '</td>'
                 + '<td class="py-3 px-4 text-sm border-t border-gray-50">' + (p ? esc(p.name) : '<span class="text-gray-300">未绑定</span>') + '</td>'
                 + '<td class="py-3 px-4 text-sm border-t border-gray-50">' + (c.owner ? esc(DDTeam.name(c.owner)) : '<span class="text-gray-300">—</span>') + '</td>'
@@ -315,13 +319,20 @@
                 + '</tr>';
         }).join('');
         tb.querySelectorAll('[data-ca]').forEach(function (b) {
-            b.onclick = function () {
+            b.onclick = function (e) {
+                e.stopPropagation();
                 var d0 = uc(), c = d0.cards.filter(function (x) { return x.no === b.dataset.no && x.ent === ent().id; })[0];
                 if (!c) return;
                 c.frozen = !c.frozen;
                 ucLog(d0, c.frozen ? '冻结卡片' : '解冻卡片', 0, c.no);
                 ucWrite(d0); render();
                 DDUI.toast(c.frozen ? '卡片已冻结' : '卡片已解冻', 'success');
+            };
+        });
+        tb.querySelectorAll('tr[data-no]').forEach(function (tr) {
+            tr.onclick = function (e) {
+                if (e.target.closest('button') || e.target.closest('a')) return;
+                location.href = 'u-card-detail.html?no=' + encodeURIComponent(tr.dataset.no);
             };
         });
     }
