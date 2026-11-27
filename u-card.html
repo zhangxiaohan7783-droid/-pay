@@ -96,7 +96,7 @@
 </div>
 <div class="bg-white rounded-8 custom-shadow p-5"><div class="flex items-center justify-between mb-3"><span class="text-sm text-gray-500">可用余额</span><div class="w-9 h-9 bg-yellow-50 text-dark rounded-8 flex items-center justify-center"><iconify-icon class="text-lg" icon="solar:wallet-money-bold"></iconify-icon></div></div><p class="text-xl font-bold text-dark" id="uc-kpi-avail">0.00 USDT</p><p class="text-xs text-gray-400 mt-1.5">已加载入金 − 已划入资金池</p></div>
 <div class="bg-white rounded-8 custom-shadow p-5"><div class="flex items-center justify-between mb-3"><span class="text-sm text-gray-500">累计入金（已加载）</span><div class="w-9 h-9 bg-yellow-50 text-dark rounded-8 flex items-center justify-center"><iconify-icon class="text-lg" icon="solar:download-bold"></iconify-icon></div></div><p class="text-xl font-bold text-dark" id="uc-kpi-in">0.00 USDT</p><p class="text-xs text-gray-400 mt-1.5" id="uc-kpi-in-n">共 0 笔</p></div>
-<div class="bg-white rounded-8 custom-shadow p-5"><div class="flex items-center justify-between mb-3"><span class="text-sm text-gray-500">归集处理中</span><div class="w-9 h-9 bg-yellow-50 text-dark rounded-8 flex items-center justify-center"><iconify-icon class="text-lg" icon="solar:refresh-circle-bold"></iconify-icon></div></div><p class="text-xl font-bold text-dark" id="uc-kpi-pend">0.00 USDT</p><p class="text-xs text-gray-400 mt-1.5">链上确认 / 归集 / 划转 / 加载途中</p></div>
+<div class="bg-white rounded-8 custom-shadow p-5"><div class="flex items-center justify-between mb-3"><span class="text-sm text-gray-500">累计消费</span><div class="w-9 h-9 bg-yellow-50 text-dark rounded-8 flex items-center justify-center"><iconify-icon class="text-lg" icon="solar:cart-large-bold"></iconify-icon></div></div><p class="text-xl font-bold text-dark" id="uc-kpi-spent">0.00 USDT</p><p class="text-xs text-gray-400 mt-1.5">全部资金池本月已用合计</p></div>
 </div>
 <div class="bg-white rounded-8 custom-shadow p-6">
 <div class="flex flex-wrap justify-between items-center gap-3 mb-4"><div><h3 class="font-bold text-dark">USDT 专属充值钱包</h3><p class="text-xs text-gray-400 mt-0.5">向该地址转入 USDT（<span id="uc-chain">TRON · TRC-20</span>），链上确认后自动归集入卡资金池</p></div>
@@ -106,11 +106,12 @@
 <button class="px-3 py-1.5 rounded-8 text-xs font-bold bg-white border border-gray-200 hover:bg-gray-100" id="uc-copy" type="button">复制地址</button>
 <span class="text-xs text-gray-400">单笔最低 <span id="uc-min">10</span> USDT</span></div>
 </div>
-<div class="flex items-center justify-between"><h3 class="font-bold text-dark">U 卡资金池</h3><p class="text-xs text-gray-400">资金从可用余额划入；池内所有卡共用余额</p></div>
-<div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4" id="uc-pools"></div>
-<div class="bg-white rounded-8 custom-shadow overflow-hidden">
-<div class="flex items-center justify-between px-5 py-4 border-b border-gray-100"><p class="font-bold text-dark">我的 U 卡</p><p class="text-xs text-gray-400" id="uc-card-count"></p></div>
-<div class="overflow-x-auto"><table class="w-full min-w-[860px]"><thead class="bg-gray-50/80"><tr><th class="text-left py-3 px-5 text-xs font-semibold text-gray-400 uppercase">卡号</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">类型</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">资金池</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">持卡人</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400 uppercase">月限额</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400 uppercase">可消费额度</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">状态</th><th class="text-right py-3 px-5 text-xs font-semibold text-gray-400 uppercase">操作</th></tr></thead><tbody id="uc-cards"></tbody></table></div>
+<div class="bg-white rounded-8 custom-shadow">
+<div class="flex flex-wrap items-center justify-between gap-3 px-5 border-b border-gray-100"><div class="flex items-center gap-4" id="uc-tabs"><button data-v="cards" type="button">卡片</button><button data-v="pools" type="button">资金池</button><button data-v="users" type="button">用户</button></div>
+<p class="text-xs text-gray-400 py-2" id="uc-tab-hint"></p></div>
+<div id="pane-cards"><div class="overflow-x-auto"><table class="w-full min-w-[860px]"><thead class="bg-gray-50/80"><tr><th class="text-left py-3 px-5 text-xs font-semibold text-gray-400 uppercase">卡号</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">类型</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">资金池</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">持卡人</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400 uppercase">月限额</th><th class="text-right py-3 px-4 text-xs font-semibold text-gray-400 uppercase">可消费额度</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">状态</th><th class="text-right py-3 px-5 text-xs font-semibold text-gray-400 uppercase">操作</th></tr></thead><tbody id="uc-cards"></tbody></table></div></div>
+<div class="hidden p-5" id="pane-pools"><div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4" id="uc-pools"></div></div>
+<div class="hidden" id="pane-users"><div class="overflow-x-auto"><table class="w-full min-w-[760px]"><thead class="bg-gray-50/80"><tr><th class="text-left py-3 px-5 text-xs font-semibold text-gray-400 uppercase">用户</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">角色</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">关联卡片</th><th class="text-left py-3 px-4 text-xs font-semibold text-gray-400 uppercase">关联资金池</th><th class="text-right py-3 px-5 text-xs font-semibold text-gray-400 uppercase">可消费余额</th></tr></thead><tbody id="uc-users"></tbody></table></div></div>
 </div>
 <div class="bg-white rounded-8 custom-shadow overflow-hidden">
 <div class="flex items-center justify-between px-5 py-4 border-b border-gray-100"><p class="font-bold text-dark">入金记录</p><p class="text-xs text-gray-400">链上确认 → 归集 → 划转 → 加载 全链路状态</p></div>
@@ -220,6 +221,19 @@
     function availBal(d) { return Math.max(0, loadedTotal() - poolSum(d)); }
 
     /* ---------- 渲染 ---------- */
+    var VIEW = 'cards';
+    function setView(v) {
+        VIEW = v;
+        document.querySelectorAll('#uc-tabs button').forEach(function (b) {
+            var on = b.dataset.v === v;
+            b.className = 'px-3 py-3.5 text-sm border-b-2 -mb-px transition-colors ' + (on ? 'border-dark font-bold text-dark' : 'border-transparent text-gray-400 hover:text-gray-600');
+        });
+        ['cards', 'pools', 'users'].forEach(function (k) { document.getElementById('pane-' + k).classList.toggle('hidden', k !== v); });
+        var d = uc();
+        document.getElementById('uc-tab-hint').textContent = v === 'cards' ? ('共 ' + myCards(d).length + ' 张卡')
+            : v === 'pools' ? '资金从可用余额划入；池内所有卡共用余额'
+            : '按持卡人汇总可消费余额与关联关系';
+    }
     function render() {
         var h = ensureWallet(), w = h.wallet, deps = h.deps || [];
         var e = ent(), d = uc();
@@ -228,18 +242,18 @@
         document.getElementById('uc-addr').textContent = w.addr;
         document.getElementById('uc-chain').textContent = w.chain;
         document.getElementById('uc-min').textContent = w.min;
-        var inSum = 0, inN = 0, pend = 0;
-        deps.forEach(function (x) {
-            if (x.st === 'loaded') { inSum += x.amt; inN++; }
-            else if (x.st !== 'held' && x.st !== 'refunded') pend += x.amt;
-        });
+        var inSum = 0, inN = 0;
+        deps.forEach(function (x) { if (x.st === 'loaded') { inSum += x.amt; inN++; } });
+        var spent = 0; myPools(d).forEach(function (p) { spent += p.spentM; });
         document.getElementById('uc-kpi-in').textContent = fmt(inSum) + ' USDT';
         document.getElementById('uc-kpi-in-n').textContent = '共 ' + inN + ' 笔';
-        document.getElementById('uc-kpi-pend').textContent = fmt(pend) + ' USDT';
+        document.getElementById('uc-kpi-spent').textContent = fmt(spent) + ' USDT';
         document.getElementById('uc-kpi-avail').textContent = fmt(availBal(d)) + ' USDT';
         renderPools(d);
         renderCards(d);
+        renderUsers(d);
         renderDeps(deps);
+        setView(VIEW);
     }
 
     function renderPools(d) {
@@ -269,7 +283,6 @@
 
     function renderCards(d) {
         var tb = document.getElementById('uc-cards'), list = myCards(d);
-        document.getElementById('uc-card-count').textContent = '共 ' + list.length + ' 张';
         if (!list.length) {
             tb.innerHTML = '<tr><td colspan="8" class="py-10 text-center text-sm text-gray-400">暂无 U 卡，点击右上角「开通 U 卡」</td></tr>';
             return;
@@ -299,6 +312,34 @@
                 DDUI.toast(c.frozen ? '卡片已冻结' : '卡片已解冻', 'success');
             };
         });
+    }
+
+    /* ---------- 用户视图：按持卡人汇总可消费余额 / 关联卡 / 关联池 ---------- */
+    function renderUsers(d) {
+        var tb = document.getElementById('uc-users');
+        var cards = myCards(d);
+        var rows = DDTeam.load().map(function (m) {
+            var mine = cards.filter(function (c) { return c.owner === m.id; });
+            return { name: m.name, role: m.role, cards: mine };
+        });
+        var unassigned = cards.filter(function (c) { return !c.owner; });
+        if (unassigned.length) rows.push({ name: '未分配', role: '—', cards: unassigned });
+        tb.innerHTML = rows.map(function (r) {
+            var av = 0, poolNames = [], cardNos = [];
+            r.cards.forEach(function (c) {
+                av += cardAvail(d, c);
+                cardNos.push(c.no.slice(-4));
+                var p = poolOf(d, c.pool);
+                if (p && poolNames.indexOf(p.name) < 0) poolNames.push(p.name);
+            });
+            return '<tr class="hover:bg-gray-50/60">'
+                + '<td class="py-3 px-5 text-sm border-t border-gray-50 font-medium text-gray-800">' + esc(r.name) + '</td>'
+                + '<td class="py-3 px-4 text-sm border-t border-gray-50">' + esc(r.role) + '</td>'
+                + '<td class="py-3 px-4 text-sm border-t border-gray-50">' + (cardNos.length ? cardNos.map(function (n) { return '<span class="font-mono text-xs bg-gray-50 border border-gray-100 rounded px-1.5 py-0.5 mr-1">' + n + '</span>'; }).join('') : '<span class="text-gray-300">—</span>') + '</td>'
+                + '<td class="py-3 px-4 text-sm border-t border-gray-50">' + (poolNames.length ? esc(poolNames.join('、')) : '<span class="text-gray-300">—</span>') + '</td>'
+                + '<td class="py-3 px-5 text-sm border-t border-gray-50 text-right font-bold ' + (av > 0 ? 'text-green-600' : 'text-gray-300') + '">' + fmt(av) + ' USDT</td>'
+                + '</tr>';
+        }).join('');
     }
 
     function renderDeps(deps) {
@@ -421,6 +462,7 @@
     }
 
     /* ---------- 顶部按钮 ---------- */
+    document.querySelectorAll('#uc-tabs button').forEach(function (b) { b.onclick = function () { setView(b.dataset.v); }; });
     document.getElementById('uc-new-pool').onclick = poolForm;
     document.getElementById('uc-new-card').onclick = cardForm;
     document.getElementById('uc-copy').onclick = function () {
