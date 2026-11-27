@@ -119,9 +119,9 @@
     var fmt = DDSubs.fmt;
     var no = new URLSearchParams(location.search).get('no') || '';
     var SPEND = { '8842': 15562.40, '3317': 6280.00, '9905': 0 };
-    var revealed = false;
+    var revealed = false, editing = false;
 
-    function card() { return load().filter(function (x) { return x.no === no; })[0]; }
+    function card() { var c = load().filter(function (x) { return x.no === no; })[0]; if (c) { if (!c.limitTx) c.limitTx = c.limit; if (!c.limitDay) c.limitDay = c.limit; } return c; }
     function subOf(c) { return DDSubs.load().filter(function (a) { return a.id === c.sub; })[0] || { name: c.sub }; }
     function cardPan(c) {
         var tail = c.no.slice(-4);
@@ -206,25 +206,60 @@
     };
 
     /* ---------- 操作 ---------- */
-    function actLimit(c) {
-        DDUI.modal({
-            title: '调整月限额',
-            body: '<div class="ddui-field"><label class="ddui-label">月限额 (EUR)</label>'
-                + '<input class="ddui-input" id="lm-v" type="number" min="1" value="' + c.limit + '"/>'
-                + '<p class="ddui-err" id="lm-err" style="display:none">请输入大于 0 的限额</p></div>'
-                + '<p style="font-size:12px;color:#9ca3af">限额作用于绑定的子账户余额，超过限额的消费会被拒绝。</p>',
-            actions: [{ text: '取消' }, {
-                text: '保存', type: 'primary', onClick: function (close, body) {
-                    var v = parseFloat(body.querySelector('#lm-v').value);
-                    body.querySelector('#lm-err').style.display = v > 0 ? 'none' : 'block';
-                    if (!(v > 0)) return;
-                    var list = load();
-                    list.filter(function (x) { return x.no === no; })[0].limit = v;
-                    save(list); close(); render();
-                    DDUI.toast('限额已更新', 'success');
-                }
-            }]
-        });
+    /* ---------- 卡信息模块（品牌 VI：深棕头部 + 三档限额行内调整，同 U 卡） ---------- */
+    function kvRow(label, valHtml) {
+        return '<div class="flex items-center justify-between py-2.5 border-b border-gray-50 last:border-0"><span class="text-xs text-gray-400">' + label + '</span><b class="text-sm text-dark font-semibold text-right">' + valHtml + '</b></div>';
+    }
+    function infoHtml(c, sub, sp) {
+        var head = '<div class="px-5 py-3.5 flex items-center justify-between" style="background:linear-gradient(90deg,#382b1b,#4d3c22)">'
+            + '<p class="font-bold text-sm flex items-center gap-2" style="color:#FFD008"><iconify-icon icon="solar:card-bold"></iconify-icon>卡信息</p>'
+            + (editing
+                ? '<div class="flex gap-2"><button class="text-xs font-bold px-3 py-1.5 rounded-8 border border-white/30 text-white/80 hover:text-white" id="ci-cancel" type="button">取消</button><button class="text-xs font-bold px-3 py-1.5 rounded-8" style="background:#FFD008;color:#382b1b" id="ci-save" type="button">保存</button></div>'
+                : '<button class="text-xs font-bold px-3 py-1.5 rounded-8 border border-white/30 text-white/80 hover:text-white hover:border-white/60 transition-colors" id="ci-edit" type="button">调整限额</button>')
+            + '</div>';
+        var limRows;
+        if (editing) {
+            limRows = '<div class="rounded-8 p-3.5 space-y-2.5" style="background:#FFF9E6;border:1px solid rgba(255,208,8,.45)">'
+                + '<div class="flex items-center justify-between"><span class="text-xs text-gray-500">单笔限额 (EUR)</span><input class="ddui-input" id="ci-tx" type="number" min="1" value="' + c.limitTx + '" style="width:130px;padding:4px 8px;text-align:right"/></div>'
+                + '<div class="flex items-center justify-between"><span class="text-xs text-gray-500">日限额 (EUR)</span><input class="ddui-input" id="ci-day" type="number" min="1" value="' + c.limitDay + '" style="width:130px;padding:4px 8px;text-align:right"/></div>'
+                + '<div class="flex items-center justify-between"><span class="text-xs text-gray-500">月限额 (EUR)</span><input class="ddui-input" id="ci-mon" type="number" min="1" value="' + c.limit + '" style="width:130px;padding:4px 8px;text-align:right"/></div>'
+                + '<p style="font-size:11px;color:#9ca3af">需满足：单笔限额 ≤ 日限额 ≤ 月限额</p></div>';
+        } else {
+            limRows = '<div class="rounded-8 p-3.5 grid grid-cols-3 gap-2 text-center" style="background:#FFF9E6;border:1px solid rgba(255,208,8,.45)">'
+                + '<div><p class="text-[10px] text-gray-400 mb-0.5">单笔限额</p><p class="text-sm font-extrabold text-dark">€ ' + fmt(c.limitTx) + '</p></div>'
+                + '<div class="border-x border-yellow-100"><p class="text-[10px] text-gray-400 mb-0.5">日限额</p><p class="text-sm font-extrabold text-dark">€ ' + fmt(c.limitDay) + '</p></div>'
+                + '<div><p class="text-[10px] text-gray-400 mb-0.5">月限额</p><p class="text-sm font-extrabold text-dark">€ ' + fmt(c.limit) + '</p></div></div>';
+        }
+        return head
+            + '<div class="p-5">'
+            + kvRow('绑定子账户', '<a class="text-accent2 hover:underline" href="sub-account-detail.html?id=' + c.sub + '&tab=cards">' + sub.name + '</a>')
+            + kvRow('卡组织', c.brand === 'Visa' ? '<span class="italic font-extrabold" style="color:#1A1F71">VISA</span>' : '<span class="font-extrabold" style="color:#EB001B">Master</span><span class="font-extrabold" style="color:#F79E1B">card</span>')
+            + kvRow('类型', c.type === 'offline' ? '线下消费卡 · 支持 Apple Pay / Google Pay' : '线上付款卡 · 仅线上消费')
+            + kvRow('格式', '虚拟卡 · 法币')
+            + '<div class="py-2.5 border-b border-gray-50">' + limRows + '</div>'
+            + kvRow('本月花费', '€ ' + fmt(sp))
+            + kvRow('关联人员', c.owner ? DDTeam.name(c.owner) : '<span class="text-gray-300">未关联</span>')
+            + kvRow('状态', c.frozen ? '<span class="text-red-500">已冻结</span>' : '<span class="text-green-600">正常</span>')
+            + '</div>';
+    }
+    function bindInfo() {
+        var eb = document.getElementById('ci-edit');
+        if (eb) eb.onclick = function () { editing = true; render(); };
+        var sb = document.getElementById('ci-save');
+        if (sb) sb.onclick = function () {
+            var tx = parseFloat(document.getElementById('ci-tx').value);
+            var day = parseFloat(document.getElementById('ci-day').value);
+            var mon = parseFloat(document.getElementById('ci-mon').value);
+            if (!(tx > 0) || !(day > 0) || !(mon > 0)) { DDUI.toast('限额须大于 0', 'error'); return; }
+            if (tx > day || day > mon) { DDUI.toast('需满足：单笔限额 ≤ 日限额 ≤ 月限额', 'error'); return; }
+            var list = load(), cc = list.filter(function (x) { return x.no === no; })[0];
+            cc.limitTx = tx; cc.limitDay = day; cc.limit = mon;
+            save(list);
+            editing = false; render();
+            DDUI.toast('限额已保存', 'success');
+        };
+        var cb = document.getElementById('ci-cancel');
+        if (cb) cb.onclick = function () { editing = false; render(); };
     }
     function actOwner(c) {
         var opts = '<option value="">取消关联</option>' + DDTeam.load().map(function (m) {
@@ -278,7 +313,6 @@
             + '<p class="text-sm text-gray-500 mt-1">' + (c.type === 'offline' ? '线下消费卡 · 支持 Apple Pay / Google Pay' : '线上付款卡 · 仅线上消费') + ' · 绑定子账户 ' + sub.name + '</p></div>'
             + '<div class="flex flex-wrap gap-2">'
             + '<button class="px-4 py-2 text-sm font-bold border border-gray-200 rounded-8 hover:border-dark transition-colors" id="cd-info">查看卡信息</button>'
-            + '<button class="px-4 py-2 text-sm font-bold border border-gray-200 rounded-8 hover:border-dark transition-colors" id="cd-limit">调整限额</button>'
             + '<button class="px-4 py-2 text-sm font-bold border border-gray-200 rounded-8 hover:border-dark transition-colors" id="cd-owner">关联人员</button>'
             + '<button class="px-4 py-2 text-sm font-bold rounded-8 transition-colors ' + (c.frozen ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-red-500 text-white hover:bg-red-600') + '" id="cd-freeze">' + (c.frozen ? '解冻卡片' : '冻结卡片') + '</button>'
             + '<button class="bg-primary text-dark font-bold px-4 py-2 rounded-8 hover:shadow-lg transition-all active:scale-[0.98] text-sm" id="cd-dl">下载流水 CSV</button>'
@@ -292,15 +326,7 @@
             + '<div class="flex gap-8 text-xs"><div><p class="opacity-60">有效期</p><p class="font-bold" id="cd-exp">' + (revealed ? cardExp(c) : '** / **') + '</p></div><div><p class="opacity-60">CVV</p><p class="font-bold" id="cd-cvv">' + (revealed ? cardCvv(c) : '***') + '</p></div><div><p class="opacity-60">状态</p><p class="font-bold">' + (c.frozen ? '已冻结' : '正常') + '</p></div></div></div>'
             + (revealed ? '<p class="text-xs text-gray-400 mt-3 text-center">卡号与 CVV 为敏感信息，请勿泄露；本次查看已通过双因子验证。</p>' : '<p class="text-xs text-gray-400 mt-3 text-center">完整卡号、有效期与 CVV 需通过「查看卡信息」双因子验证后展示。</p>')
             + '</div>'
-            + '<div class="bg-white rounded-8 custom-shadow p-6"><p class="font-bold text-dark mb-2">卡信息</p>'
-            + '<div class="kv"><span>绑定子账户</span><b><a class="text-accent2 hover:underline" href="sub-account-detail.html?id=' + c.sub + '&tab=cards">' + sub.name + '</a></b></div>'
-            + '<div class="kv"><span>类型</span><b>' + (c.type === 'offline' ? '线下消费卡' : '线上付款卡') + '</b></div>'
-            + '<div class="kv"><span>格式</span><b>虚拟卡</b></div>'
-            + '<div class="kv"><span>月限额</span><b>€ ' + fmt(c.limit) + '</b></div>'
-            + '<div class="kv"><span>本月花费</span><b>€ ' + fmt(sp) + '</b></div>'
-            + '<div class="kv"><span>关联人员</span><b>' + (c.owner ? DDTeam.name(c.owner) : '<span class="text-gray-300">未关联</span>') + '</b></div>'
-            + '<div class="kv"><span>状态</span><b>' + (c.frozen ? '<span class="text-red-500">已冻结</span>' : '<span class="text-green-600">正常</span>') + '</b></div>'
-            + '</div></div>'
+            + '<div class="bg-white rounded-8 custom-shadow overflow-hidden">' + infoHtml(c, sub, sp) + '</div></div>'
 
             + '<div class="lg:col-span-2 bg-white rounded-8 custom-shadow p-6">'
             + '<div class="flex items-center justify-between mb-4"><p class="font-bold text-dark">卡流水</p><p class="text-xs text-gray-400">近 10 笔交易 · 可逐笔上传凭证/发票</p></div>'
@@ -310,10 +336,10 @@
         document.getElementById('cd-info').onclick = function () {
             DD2FA.require('查看卡信息', function () { revealed = true; render(); DDUI.toast('已通过验证，卡信息已展示', 'success'); });
         };
-        document.getElementById('cd-limit').onclick = function () { actLimit(card()); };
         document.getElementById('cd-owner').onclick = function () { actOwner(card()); };
         document.getElementById('cd-freeze').onclick = function () { actFreeze(card()); };
         document.getElementById('cd-dl').onclick = function () { downloadCsv(card()); };
+        bindInfo();
     }
     render();
 })();
